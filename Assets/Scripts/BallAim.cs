@@ -10,13 +10,18 @@ public class BallAim : Ball{
     public BallAim() {
         distFrom = 1.0f;  // in D ball
         distTo = 5.0f;    // in D ball
-        distStep = 0.5f;  // in D ball
+        //distStep = 0.5f;  // in D ball
         curDist = 0;       // phis
     } // ///////////////////////////////////////////////////////////////////////////////
     public void setRnd() {
         curDeg = getRnd(degMin, degMax, degStep);
         curRad = d2p.deg2rad(curDeg);
-        curDist = getRnd(distFrom, distTo, distStep) * Field.BallD;
+        curDist = getDist();
+    } // ///////////////////////////////////////////////////////////////////////////////
+    public void setDeg(float deg, float dist) {
+        curDeg = deg;
+        curRad = d2p.deg2rad(curDeg);
+        curDist = dist;
     } // ///////////////////////////////////////////////////////////////////////////////
     public void dbg(string s = "") {
         Debug.Log(s + " deg=" + curDeg.ToString() + " dist=" + curDist);

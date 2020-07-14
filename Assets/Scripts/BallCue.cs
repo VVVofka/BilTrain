@@ -14,12 +14,16 @@ public class BallCue : Ball {
 
         distFrom = 3.0f;  // in D ball
         distTo = 9.0f;    // in D ball
-        distStep = 0.5f;  // in D ball
+        //distStep = 0.5f;  // in D ball
         curDist = 0;       // phis
     } // ///////////////////////////////////////////////////////////////////////////////
     public void setRnd() {
         curK = getK();
-        curDist = getRnd(distFrom, distTo, distStep) * Field.BallD;
+        curDist = getDist();
+    } // ///////////////////////////////////////////////////////////////////////////////
+    public void setVal(float k, float dist) {
+        curK = k;
+        curDist = dist;
     } // ///////////////////////////////////////////////////////////////////////////////
     float getK() {
         int nfrom = (int)(kBallMin / kBallStep);

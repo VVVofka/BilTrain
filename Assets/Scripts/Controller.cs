@@ -25,6 +25,7 @@ public class Controller : MonoBehaviour {
     [SerializeField] private Camera plcamera;   // 
     [SerializeField] private GameObject luzeLeft;    // left
     [SerializeField] private GameObject luzeRight;   // right
+    [SerializeField] private bool showVirtBall;   // right
 
     float xmax, zmax;
     void Start() {
@@ -32,11 +33,8 @@ public class Controller : MonoBehaviour {
         xmax = luzeRight.transform.position.x;
         zmax = luzeLeft.transform.position.z;
         //luze = new Luze(luzeSelect);
-
-        //aimLeft.transform.position = new Vector3(luze.pointLeft.x, aimLeft.transform.localScale.y, luze.pointLeft.z);
-        //float h = (aimLeft.transform.localScale.y + aimRight.transform.localScale.y) / 2;
-        //aimCenter.transform.position = new Vector3(luze.pointCenter.x, h, luze.pointCenter.z);
-        //aimRight.transform.position = new Vector3(luze.pointRight.x, aimRight.transform.localScale.y, luze.pointRight.z);
+        if(!showVirtBall)
+            ballVirt.transform.position = new Vector3(ballVirt.transform.position.x, -100f, ballVirt.transform.position.z);
     } // ////////////////////////////////////////////////////////////////////////////////
     void Update() {
         switch(mode) {
@@ -59,17 +57,20 @@ public class Controller : MonoBehaviour {
     //                  MODES
     bool waitSetAimBall() {
         ballaim.setRnd();   // normal, ballAim.transform.localScale.x
-        //ballaim.curRad = Mathf.PI / 4f;         // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
+        ballaim.setDeg(12.5f, 2.622728f);         // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
+        ballaim.dbg("Aim ");
         d2p pluze = Field.luzeCornerAim(ballaim.curRad);
         //float normal = (3f / 4f) * Mathf.PI;    // luzeAimPoint.transform.rotation.eulerAngles.y;
         d2p paim = d2p.rotate(pluze, (3f / 4f) * Mathf.PI + ballaim.curRad, ballaim.curDist);
         if(isOutRange(paim))
             return true;
-        //paim.Set(14.88163f, 7.722063f);              // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
+        //paim.Set(13.42005f, 2.700449f);              // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
         paim.setObj(ballAim);
 
         ballcue.setRnd(); // ballCue.transform.localScale.x 
-        
+        ballcue.setVal(0.625f, 4.151007f);         // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
+        ballcue.dbg("Cue ");
+
         // Virtual ball
         float virdist = pluze.dist(paim) + Field.BallD;
         d2p pvir = d2p.setDist(pluze, paim, virdist);
@@ -85,7 +86,7 @@ public class Controller : MonoBehaviour {
         d2p pcue = pvir.CreateDp(rad, ballcue.curDist);
         if(isOutRange(pcue))
             return true;
-        //pcue.Set(10.91369f, 8.253479f);                   // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
+        //pcue.Set(11.83899f, 7.477563f);                   // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
         pcue.setObj(ballCue);
 
         // Marks
@@ -100,28 +101,37 @@ public class Controller : MonoBehaviour {
         pselin.setObj(aimRight);
 
         // Camera
-        d2p pbnd = new d2p(bounds);
-        //float aCueAim = pcue.rad(paim);
-        float aCueAim = pcue.rad(pvir);
+        d2p pbnd = new d2p(bounds); //  far point arc
+        float aCueAim = pcue.rad(paim);
+        //float aCueAim = pcue.rad(pvir);
         float agCueCam = d2p.rad2deg(aCueAim - Mathf.PI / 2);
         float dist_cue_long = pcue.z + pbnd.z;   // - & -
         float dist_cue_short = pcue.x + pbnd.x;  // - & -
-        float dist_cue_cam_long = dist_cue_long / Mathf.Sin(Mathf.PI - aCueAim);
-        float dist_cue_cam_short = dist_cue_short / Mathf.Cos(Mathf.PI - aCueAim);
+        float sin = Mathf.Sin(Mathf.PI - aCueAim);
+        float dist_cue_cam_long, dist_cue_cam_short;
+        if(sin == 0)
+            dist_cue_cam_long = pcue.x + Field.xmax;
+        else if(sin > 0)
+            dist_cue_cam_long = dist_cue_long / sin;
+        else
+            dist_cue_cam_long = (dist_cue_long - 2 * Field.zmax) / sin;
+        dist_cue_cam_short = dist_cue_short / Mathf.Cos(Mathf.PI - aCueAim);
         d2p pcam;
+        float dist;
         if(dist_cue_cam_long > 0 && dist_cue_cam_short > 0) {
             if(dist_cue_cam_long <= dist_cue_cam_short)
-                pcam = d2p.addDist(paim, pcue, dist_cue_cam_long);
+                dist = dist_cue_cam_long;                 // pcam = d2p.addDist(paim, pcue, dist_cue_cam_long);
             else
-                pcam = d2p.addDist(paim, pcue, dist_cue_cam_short);
+                dist = dist_cue_cam_short;                // pcam = d2p.addDist(paim, pcue, dist_cue_cam_short);
         } else if(dist_cue_cam_long <= 0 && dist_cue_cam_short <= 0) {
             return true;
         } else {
             if(dist_cue_cam_long > 0)
-                pcam = d2p.addDist(paim, pcue, dist_cue_cam_long);
+                dist = dist_cue_cam_long;                 // pcam = d2p.addDist(paim, pcue, dist_cue_cam_long);
             else
-                pcam = d2p.addDist(paim, pcue, dist_cue_cam_short);
+                dist = dist_cue_cam_short;                // pcam = d2p.addDist(paim, pcue, dist_cue_cam_short);
         }
+        pcam = d2p.addDist(paim, pcue, dist);
         //d2p viewcentr = new d2p((pcue.x + pbnd.x)/2, (pcue.z + pbnd.z)/2);
         float wfar = pcam.dist(pbnd);
         float wnear = pcam.dist(pcue);
