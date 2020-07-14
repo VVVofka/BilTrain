@@ -12,7 +12,9 @@ public class Field {
 
     static float luzeCornerR = 0.05f;
 
-    public static float BallR { get { return BallD / 2f; } }
+    public static float BallR {get => BallD / 2f;}
+    public static d2p endArc { get => new d2p(xmax + BallD, zmax + BallD); }
+
     public static d2p luzeCornerShortO {
         get {
             float x = xmax + luzeCornerR;

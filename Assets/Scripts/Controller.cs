@@ -101,38 +101,11 @@ public class Controller : MonoBehaviour {
         pselin.setObj(aimRight);
 
         // Camera
-        d2p pbnd = new d2p(bounds); //  far point arc
-        float aCueAim = pcue.rad(paim);
+        d2p pcam =  getPCameraHoriz(pvir, pcue);
         //float aCueAim = pcue.rad(pvir);
-        float agCueCam = d2p.rad2deg(aCueAim - Mathf.PI / 2);
-        float dist_cue_long = pcue.z + pbnd.z;   // - & -
-        float dist_cue_short = pcue.x + pbnd.x;  // - & -
-        float sin = Mathf.Sin(Mathf.PI - aCueAim);
-        float dist_cue_cam_long, dist_cue_cam_short;
-        if(sin == 0)
-            dist_cue_cam_long = pcue.x + Field.xmax;
-        else if(sin > 0)
-            dist_cue_cam_long = dist_cue_long / sin;
-        else
-            dist_cue_cam_long = (dist_cue_long - 2 * Field.zmax) / sin;
-        dist_cue_cam_short = dist_cue_short / Mathf.Cos(Mathf.PI - aCueAim);
-        d2p pcam;
-        float dist;
-        if(dist_cue_cam_long > 0 && dist_cue_cam_short > 0) {
-            if(dist_cue_cam_long <= dist_cue_cam_short)
-                dist = dist_cue_cam_long;                 // pcam = d2p.addDist(paim, pcue, dist_cue_cam_long);
-            else
-                dist = dist_cue_cam_short;                // pcam = d2p.addDist(paim, pcue, dist_cue_cam_short);
-        } else if(dist_cue_cam_long <= 0 && dist_cue_cam_short <= 0) {
-            return true;
-        } else {
-            if(dist_cue_cam_long > 0)
-                dist = dist_cue_cam_long;                 // pcam = d2p.addDist(paim, pcue, dist_cue_cam_long);
-            else
-                dist = dist_cue_cam_short;                // pcam = d2p.addDist(paim, pcue, dist_cue_cam_short);
-        }
-        pcam = d2p.addDist(paim, pcue, dist);
+
         //d2p viewcentr = new d2p((pcue.x + pbnd.x)/2, (pcue.z + pbnd.z)/2);
+        d2p pbnd = new d2p(bounds); //  far point arc
         float wfar = pcam.dist(pbnd);
         float wnear = pcam.dist(pcue);
         float h = plcamera.transform.position.y;
@@ -156,6 +129,51 @@ public class Controller : MonoBehaviour {
         mode = GameMode.waitChoice;
         return false;
     } // ///////////////////// EHD MODES ///////////////////////////////////////////////////
+    d2p getPCameraHoriz(d2p ptarget, d2p pcue) {
+        //float agCueCam = d2p.rad2deg(aCueAim - Mathf.PI / 2);
+        float alfa = -ptarget.rad(pcue);
+        if(alfa == 0)
+            return new d2p(-xmax, pcue.z);
+        else if(alfa == -Mathf.PI / 2)
+            return new d2p(pcue.x, -zmax);
+        else if(alfa > 0 && alfa < Mathf.PI / 2) {
+            // y = ax + b
+            float a = (ptarget.z - pcue.z) / (ptarget.x - pcue.x);  // >0
+            float b = pcue.z - a * pcue.x;
+            float z = b - a * xmax;
+            float x = (-zmax - b) / a;
+            d2p camshort = new d2p(-xmax, z);
+            d2p camlong = new d2p(x, -zmax);
+            if(camshort.dist(pcue) <= camlong.dist(pcue))
+                return camshort;
+            return camlong;
+        } else if(alfa < 0 && alfa > -Mathf.PI / 2) {
+            // y = ax + b
+            float a = (ptarget.z - pcue.z) / (ptarget.x - pcue.x);  // <0
+            float b = pcue.z - a * pcue.x;
+            float z = b - a * xmax;
+            float x = (zmax - b) / a;
+            d2p camshort = new d2p(-xmax, z);
+            d2p camlong = new d2p(x, zmax);
+            if(camshort.dist(pcue) <= camlong.dist(pcue))
+                return camshort;
+            return camlong;
+        }else if(alfa > -Mathf.PI && alfa < -Mathf.PI / 2){ 
+            // y = ax + b
+            float a = (pcue.z - ptarget.z) / (pcue.x - ptarget.x);  // <0
+            float b = pcue.z - a * pcue.x;
+            float z = b + a * xmax;
+            float x = (-zmax - b) / a;
+            d2p camshort = new d2p(xmax, z);
+            d2p camlong = new d2p(x, -zmax);
+            if(camshort.dist(pcue) <= camlong.dist(pcue))
+                return camshort;
+            return camlong;
+        } else {
+            Debug.Break();
+        }
+        return null;
+    } // //////////////////////////////////////////////////////////////////////////////////////////////////
     void getAngle(d2p cam, d2p pnt, float diam, out float min, out float max) {
         float dist = cam.dist(pnt);
         float alfa = Mathf.Atan2(Field.BallD / 2, dist);
