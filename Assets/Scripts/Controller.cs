@@ -60,7 +60,6 @@ public class Controller : MonoBehaviour {
         //ballaim.setDeg(17.5f, 3.218f);         // TODO ОООООООООООООООООООООООООООООООООО
         ballaim.dbg("Aim ");
         d2p pluze = Field.luzeCornerAim(ballaim.curRad);
-        //float normal = (3f / 4f) * Mathf.PI;    // luzeAimPoint.transform.rotation.eulerAngles.y;
         d2p paim = d2p.rotate(pluze, (3f / 4f) * Mathf.PI + ballaim.curRad, ballaim.curDist);
         if(isOutRange(paim))
             return true;
@@ -127,14 +126,13 @@ public class Controller : MonoBehaviour {
         float sectorMax = Mathf.Max(sectorVert, sectorHor);
         plcamera.fieldOfView = 1.05f * sectorMax;
 
-        paim.dbg("Aim ");
-        pcue.dbg("Cue ");
+        //paim.dbg("Aim ");
+        //pcue.dbg("Cue ");
         //p.dbg("aim:" + ballaim.curDeg.ToString() + " dist:" + ballaim.curDist.ToString() + "  " + " k:" + ballcue.curK);
         mode = GameMode.waitChoice;
         return false;
     } // ///////////////////// EHD MODES ///////////////////////////////////////////////////
     d2p getPCameraHoriz(d2p ptarget, d2p pcue) {
-        //float agCueCam = d2p.rad2deg(aCueAim - Mathf.PI / 2);
         float alfa = -ptarget.rad(pcue);
         if(alfa == 0)
             return new d2p(-xmax, pcue.z);
@@ -204,8 +202,8 @@ public class Controller : MonoBehaviour {
     bool isOutRange(d2p p) {
         float xr = p.x + Field.BallR;
         float zr = p.z + Field.BallR;
-        return !(xr <= xmax && zr <= zmax && xr >= -xmax && zr >= -zmax);
-        //return !(xr < xmax && zr < zmax && xr > -xmax && zr > -zmax);
+        //return !(xr <= xmax && zr <= zmax && xr >= -xmax && zr >= -zmax);
+        return !(xr < xmax && zr < zmax && xr > -xmax && zr > -zmax);
     } // /////////////////////////////////////////////////////////////////////////////////
 
 } // ************************************************************************************
