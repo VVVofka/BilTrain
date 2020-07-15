@@ -4483,7 +4483,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5b8ade9413abd748a051c9fd31cd130, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  luzeAimPoint: {fileID: 0}
   ballAim: {fileID: 1943455729}
   ballCue: {fileID: 1858889091}
   ballVirt: {fileID: 1333617973}
@@ -4494,6 +4493,7 @@ MonoBehaviour:
   plcamera: {fileID: 963194227}
   luzeLeft: {fileID: 550647682}
   luzeRight: {fileID: 2050695731}
+  showVirtBall: 0
 --- !u!1 &2073622783
 GameObject:
   m_ObjectHideFlags: 0

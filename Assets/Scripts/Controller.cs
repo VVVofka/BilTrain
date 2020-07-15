@@ -57,7 +57,7 @@ public class Controller : MonoBehaviour {
     //                  MODES
     bool waitSetAimBall() {
         ballaim.setRnd();   // normal, ballAim.transform.localScale.x
-        ballaim.setDeg(12.5f, 2.622728f);         // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
+        ballaim.setDeg(17.5f, 3.218f);         // TODO ОООООООООООООООООООООООООООООООООО
         ballaim.dbg("Aim ");
         d2p pluze = Field.luzeCornerAim(ballaim.curRad);
         //float normal = (3f / 4f) * Mathf.PI;    // luzeAimPoint.transform.rotation.eulerAngles.y;
@@ -68,7 +68,7 @@ public class Controller : MonoBehaviour {
         paim.setObj(ballAim);
 
         ballcue.setRnd(); // ballCue.transform.localScale.x 
-        ballcue.setVal(0.625f, 4.151007f);         // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
+        ballcue.setVal(0.5f, 3.7341f);         // TODO ОООООООООООООООООООООООООООООООО
         ballcue.dbg("Cue ");
 
         // Virtual ball
@@ -101,20 +101,23 @@ public class Controller : MonoBehaviour {
         pselin.setObj(aimRight);
 
         // Camera
-        d2p pcam =  getPCameraHoriz(pvir, pcue);
-        //float aCueAim = pcue.rad(pvir);
+        d2p ptarget = pvir;
+        d2p pcam =  getPCameraHoriz(ptarget, pcue);
 
         //d2p viewcentr = new d2p((pcue.x + pbnd.x)/2, (pcue.z + pbnd.z)/2);
         d2p pbnd = new d2p(bounds); //  far point arc
         float wfar = pcam.dist(pbnd);
         float wnear = pcam.dist(pcue);
         float h = plcamera.transform.position.y;
-        float degcamnear = d2p.rad2deg(Mathf.Atan2(h, wnear));
-        float degcamfar = d2p.rad2deg( Mathf.Atan2(h - bounds.transform.position.y, wfar));
 
-        //d2p pluz = new d2p(luzeAimPoint);
-        float sectorHor = getHorSector(pcam, pcue, paim, pluze, Field.BallD, Mathf.PI - aCueAim);
-        Quaternion rotation = Quaternion.Euler((degcamfar+degcamnear)/2, agCueCam, 0);
+        float degcamnear = d2p.rad2deg(Mathf.Atan2(h, wnear));
+        float degcamfar = d2p.rad2deg(Mathf.Atan2(h - bounds.transform.position.y, wfar));
+        float degcamavg = (degcamnear + degcamfar) / 2;
+
+        float aCueTarget = pcue.rad(ptarget);
+        float agCueCam = d2p.rad2deg(aCueTarget - Mathf.PI / 2);
+        float sectorHor = getHorSector(pcam, pcue, paim, pluze, Mathf.PI - aCueTarget);
+        Quaternion rotation = Quaternion.Euler(degcamavg, agCueCam, 0);
         plcamera.transform.SetPositionAndRotation(
             new Vector3(pcam.x, plcamera.transform.position.y, pcam.z),
             rotation);
@@ -158,7 +161,7 @@ public class Controller : MonoBehaviour {
             if(camshort.dist(pcue) <= camlong.dist(pcue))
                 return camshort;
             return camlong;
-        }else if(alfa > -Mathf.PI && alfa < -Mathf.PI / 2){ 
+        } else if(alfa > Mathf.PI / 2 && alfa < Mathf.PI) {
             // y = ax + b
             float a = (pcue.z - ptarget.z) / (pcue.x - ptarget.x);  // <0
             float b = pcue.z - a * pcue.x;
@@ -181,16 +184,16 @@ public class Controller : MonoBehaviour {
         min = Mathf.Min(beta - alfa, beta + alfa);
         max = Mathf.Max(beta - alfa, beta + alfa);
     } // //////////////////////////////////////////////////////////////////////////////////
-    float getHorSector(d2p cam, d2p cue, d2p aim, d2p luze, float diam, float agCueAim) {
+    float getHorSector(d2p cam, d2p cue, d2p aim, d2p luze, float agCueTarget) {
         float min, max, curmin, curmax;
-        getAngle(cam, cue, diam, out min, out max);
-        getAngle(cam, aim, diam, out curmin, out curmax);
+        getAngle(cam, cue, Field.BallD, out min, out max);
+        getAngle(cam, aim, Field.BallD, out curmin, out curmax);
         min = Mathf.Min(min, curmin);
         max = Mathf.Max(max, curmax);
-        getAngle(cam, luze, 2 * diam, out curmin, out curmax);
+        getAngle(cam, luze, 2 * Field.BallD, out curmin, out curmax);
         min = Mathf.Min(min, curmin);
         max = Mathf.Max(max, curmax);
-        float maxd = d2p.rad2deg( Mathf.Max(agCueAim - min, max - agCueAim));
+        float maxd = d2p.rad2deg( Mathf.Max(agCueTarget - min, max - agCueTarget));
         return 2 * maxd;
     } // //////////////////////////////////////////////////////////////////////////////////
     bool isOutRange(d2p p) {
