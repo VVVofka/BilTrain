@@ -4493,7 +4493,7 @@ MonoBehaviour:
   plcamera: {fileID: 963194227}
   luzeLeft: {fileID: 550647682}
   luzeRight: {fileID: 2050695731}
-  showVirtBall: 0
+  showVirtBall: 1
 --- !u!1 &2073622783
 GameObject:
   m_ObjectHideFlags: 0
