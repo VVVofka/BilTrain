@@ -1,37 +1,25 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
-public class Exercises {
-    List<Exercise> v;
+public class Exercises : DKCue {
+    List<Exercise> vripe;
     int[] vluzes = {2};
     int[] vsigns =  {1, -1};
-    float dkcue = 1.0f;
-    float stepk = 0.01f;
-
-    public float setResult(bool sucess) {
-        if(sucess)
-            dkcue = dkcue * (1 - stepk);
-        else
-            dkcue = dkcue * (1 + stepk);
-        return dkcue;
-    } // /////////////////////////////////////////////////////////////////////////////////
 
     public void Create(int outCount, List<ExerciseEnh> list) {
         list.Clear();
         Sortv();
         for(int j=0; j<outCount; j++) {
-            if(v[j].overdue(DateTime.Now) <= 0)
+            if(vripe[j].overdue(DateTime.Now) <= 0)
                 break;
             foreach(int luz in vluzes)
                 foreach(int sign in vsigns) 
-                    list.Add(new ExerciseEnh(v[j], sign, luz));
+                    list.Add(new ExerciseEnh(vripe[j], sign, luz));
         }
         Shuffle(list);
     } // ///////////////////////////////////////////////////////////////////////////////////////
     void Sortv() {
-        v.Sort(delegate (Exercise x, Exercise y) {
+        vripe.Sort(delegate (Exercise x, Exercise y) {
             DateTime dt = DateTime.Now;
             if(x.overdue(dt) > y.overdue(dt))
                 return -1;

@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\Controller.cs" />
     <Compile Include="Assets\Scripts\Field.cs" />
     <Compile Include="Assets\Scripts\Luze.cs" />
+    <Compile Include="Assets\Scripts\StudyProcess\DKCue.cs" />
     <Compile Include="Assets\Scripts\StudyProcess\Exercise.cs" />
     <Compile Include="Assets\Scripts\StudyProcess\ExerciseEnh.cs" />
     <Compile Include="Assets\Scripts\StudyProcess\Exercises.cs" />

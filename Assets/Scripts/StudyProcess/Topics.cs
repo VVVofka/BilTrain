@@ -4,6 +4,7 @@ public class Topics {
     public int ntopic { get; private set; } = 0;
     public int cntloop { get; private set; } = 0;
     List<Topic> topics = new List<Topic>();
+
     public Topics() {
         topics.Add(new Topic("Intro", 
             1.5f, 3.0f, 0.0f, 0.2f,

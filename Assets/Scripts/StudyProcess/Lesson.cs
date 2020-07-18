@@ -1,8 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-public class Lesson {
+public class Lesson : DKCue {
     List<ExerciseEnh> v;
-    float dkcue = 1.0f;
 
 } // *************************************************************

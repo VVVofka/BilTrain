@@ -10,7 +10,7 @@ public class ExerciseEnh : Exercise {
         layout = exercise.layout;
         topic = exercise.topic;
         interval = exercise.interval;
-        dkcue = exercise.dkcue;
+        base.dkcue = exercise.dkcue;
         sign = signum;
         nluze = NLuze;
     } // ////////////////////////////////////////////////////////////////////////////

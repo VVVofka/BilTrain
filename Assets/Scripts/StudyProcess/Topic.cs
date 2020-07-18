@@ -1,11 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-public class Topic {
+public class Topic : DKCue {
     public string name { get; private set; } = "no name";
     public Layout from { get; private set; }
     public Layout to { get; private set; }
-    public float dkcue { get; set; } = 1.0f;
 
     public Topic(string Name,
                 float distAimFrom,
