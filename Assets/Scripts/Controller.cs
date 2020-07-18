@@ -10,6 +10,7 @@ public enum GameMode {
 } // ******************************************************************************************
 public class Controller : MonoBehaviour {
     static public GameMode mode;
+    StudyProcess studyProcess = new StudyProcess();
     //Luze luze;
     //[SerializeField] private GameObject luzeAimPoint;
     public GameObject ballAim;
@@ -28,6 +29,7 @@ public class Controller : MonoBehaviour {
     [SerializeField] private bool showVirtBall;   // right
 
     float xmax, zmax;
+
     void Start() {
         mode = GameMode.waitSetAimBall;
         xmax = luzeRight.transform.position.x;
@@ -48,6 +50,8 @@ public class Controller : MonoBehaviour {
         case GameMode.waitChoice:
             if(Input.GetKeyDown(KeyCode.Space)) {
                 mode = GameMode.waitSetAimBall;
+            } else if(Input.GetKeyDown(KeyCode.Escape)) {
+                studyProcess.Close();
             }
             break;
         default:
@@ -182,7 +186,7 @@ public class Controller : MonoBehaviour {
         float beta = Mathf.PI - cam.rad(pnt);
         beta = d2p.normrad(beta);
         //if(beta > Mathf.PI)
-            //beta -= Mathf.PI;
+        //beta -= Mathf.PI;
         min = Mathf.Min(beta - alfa, beta + alfa);
         max = Mathf.Max(beta - alfa, beta + alfa);
     } // //////////////////////////////////////////////////////////////////////////////////

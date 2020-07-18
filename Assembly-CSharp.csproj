@@ -72,10 +72,11 @@
     <Compile Include="Assets\Scripts\StudyProcess\DKCue.cs" />
     <Compile Include="Assets\Scripts\StudyProcess\Exercise.cs" />
     <Compile Include="Assets\Scripts\StudyProcess\ExerciseEnh.cs" />
-    <Compile Include="Assets\Scripts\StudyProcess\Exercises.cs" />
     <Compile Include="Assets\Scripts\StudyProcess\Intervals.cs" />
     <Compile Include="Assets\Scripts\StudyProcess\Layout.cs" />
     <Compile Include="Assets\Scripts\StudyProcess\Lesson.cs" />
+    <Compile Include="Assets\Scripts\StudyProcess\RipeExercises.cs" />
+    <Compile Include="Assets\Scripts\StudyProcess\StudyProcess.cs" />
     <Compile Include="Assets\Scripts\StudyProcess\Topic.cs" />
     <Compile Include="Assets\Scripts\StudyProcess\Topics.cs" />
     <Compile Include="Assets\Scripts\v2d.cs" />

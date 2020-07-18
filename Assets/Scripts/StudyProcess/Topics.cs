@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System;
 
+[Serializable]
 public class Topics {
     public int ntopic { get; private set; } = 0;
     public int cntloop { get; private set; } = 0;

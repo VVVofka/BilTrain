@@ -1,4 +1,7 @@
-﻿public class DKCue {
+﻿using System;
+
+[Serializable]
+public class DKCue {
     public float dkcue { get; protected set; } = 1.0f;
     protected float stepdk = 0.01f;
 

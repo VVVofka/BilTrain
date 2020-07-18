@@ -1,19 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class Exercises : DKCue {
-    List<Exercise> vripe;
+[Serializable]
+public class RipeExercises : DKCue {
+    List<Exercise> vripe = new List<Exercise>();
     int[] vluzes = {2};
     int[] vsigns =  {1, -1};
 
+    public void Add(Exercise exercise) {
+        //vripe.Find()
+        //exercise.
+        // override object.Equals
+
+        vripe.Add(exercise);
+    } // ////////////////////////////////////////////////////////////////////////////////////
     public void Create(int outCount, List<ExerciseEnh> list) {
         list.Clear();
         Sortv();
-        for(int j=0; j<outCount; j++) {
+        for(int j = 0; j < outCount; j++) {
             if(vripe[j].overdue(DateTime.Now) <= 0)
                 break;
             foreach(int luz in vluzes)
-                foreach(int sign in vsigns) 
+                foreach(int sign in vsigns)
                     list.Add(new ExerciseEnh(vripe[j], sign, luz));
         }
         Shuffle(list);

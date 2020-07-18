@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 
+[Serializable]
 public class Layout {
     public float distAim { get; private set; }
     public float distCue { get; private set; }

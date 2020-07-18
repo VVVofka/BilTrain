@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System;
 
+[Serializable]
 public class Topic : DKCue {
     public string name { get; private set; } = "no name";
     public Layout from { get; private set; }
