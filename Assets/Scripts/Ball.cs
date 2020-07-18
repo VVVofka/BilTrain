@@ -10,10 +10,7 @@ public class Ball {
 
     //float xmax = 0, zmax = 0;
     
-    public void setField (d2p bound, float ballDiam) {
-        //xmax += Mathf.Abs(bound.x);
-        //zmax += Mathf.Abs(bound.z);
-    } // ///////////////////////////////////////////////////////////
+
     protected float getRnd(float min, float max, float step) {
         float lenhalf = Mathf.Abs( (max - min) / 2);
         int nmax = (int)(lenhalf / step);

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[Serializable]
 public class Intervals {
     static int[] vhours = {1, 3, 24, 3 * 24, 7 * 24, 28 * 24, 95 * 24 };
     int index = 0;
@@ -21,5 +22,8 @@ public class Intervals {
         DateTime expect = lastDT.AddHours(vhours[index]);
         TimeSpan d = dt.Subtract(expect);
         return d.Hours;
+    } // ///////////////////////////////////////////////////////////////////////
+    public bool EQ(Intervals other) {
+        return index == other.index && lastDT == other.lastDT;
     } // ///////////////////////////////////////////////////////////////////////
 } // ****************************************************************************

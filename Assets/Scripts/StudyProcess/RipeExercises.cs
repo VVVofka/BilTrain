@@ -8,13 +8,13 @@ public class RipeExercises : DKCue {
     int[] vsigns =  {1, -1};
 
     public void Add(Exercise exercise) {
-        //vripe.Find()
-        //exercise.
-        // override object.Equals
-
-        vripe.Add(exercise);
+        Exercise aaa = vripe.Find(x => x.EQ(exercise));
+        if(aaa == null)
+            vripe.Add(exercise);
+        else
+            aaa = exercise;
     } // ////////////////////////////////////////////////////////////////////////////////////
-    public void Create(int outCount, List<ExerciseEnh> list) {
+    public void Extract(int outCount, List<ExerciseEnh> list) {
         list.Clear();
         Sortv();
         for(int j = 0; j < outCount; j++) {

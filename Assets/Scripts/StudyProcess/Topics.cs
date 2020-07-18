@@ -8,22 +8,21 @@ public class Topics {
     List<Topic> topics = new List<Topic>();
 
     public Topics() {
-        topics.Add(new Topic("Intro", 
+        topics.Add(new Topic("Intro", 10, 
             1.5f, 3.0f, 0.0f, 0.2f,
             1.5f, 5.0f, 0.0f, 0.4f
             ));
-        topics.Add(new Topic("Second step I", 
+        topics.Add(new Topic("Second step I", 20,
             1.0f, 3.0f, 05.0f, 0.05f,
             2.5f, 5.0f, 15.0f, 0.25f
            ));
-        topics.Add(new Topic("Second step II", 
+        topics.Add(new Topic("Second step II", 25,
             1.0f, 3.0f, 05.0f, 0.3f,
             2.5f, 5.0f, 15.0f, 0.5f
            ));
     } // ////////////////////////////////////////////////////////////////////////////////////
 
     public Topic topic { get => topics[ntopic]; }
-    public int cntInLesson { get => 10; }
     public Topic MoveNext() {
         if(++ntopic >= topics.Count) {
             ntopic = 0;

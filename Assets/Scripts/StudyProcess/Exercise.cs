@@ -7,5 +7,12 @@ public class Exercise : DKCue {
     public Layout layout;
     public Topic topic;
     public Intervals interval;
+
+    public Exercise() {     // Topic inTopic
+        //topic = inTopic;
+        //layout = new Layout()
+    } // ///////////////////////////////////////////////////////////////
+    
     public int overdue(DateTime dt) { return interval.difH(dt); }
+    public bool EQ(Exercise other) { return layout.EQ(other.layout); }
 } // ************************************************************************************

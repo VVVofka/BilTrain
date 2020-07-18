@@ -2,6 +2,6 @@
 using System.Collections.Generic;
 
 public class Lesson : DKCue {
-    List<ExerciseEnh> v;
+    List<ExerciseEnh> v = new List<ExerciseEnh>();
 
 } // *************************************************************
