@@ -17,19 +17,25 @@ public class StudyProcess {
         LoadRipeExercisesFile();
         LoadLesson();
     } // //////////////////////////////////////////////////////////////////
-    public Layout curlay {
-        get {
-
-            return null;
-        }
-    } // ///////////////////////////////////////////////////
-    public void LoadLesson() {
+    public Layout curlay { get => lesson.curLayout; } // ///////////////////
+    public Layout moveNext() {
+        Layout lay = lesson.moveNext();
+        if(lay != null)
+            return lay;
+        LoadLesson();
+        return lesson.moveFirst();
+    } // //////////////////////////////////////////////////////////////////////
+    public Layout LoadLesson() {
         List<Exercise> vripe = ripeExercises.getRiped(lesson.ExercisesInLesson);
         int rest = lesson.LoadRipe(vripe);
         if(rest > 0) {
             Topic topic = topics.topic;
+            if(topic.cntCur >= topic.cntMax)
+                topic = topics.MoveNext();
             lesson.LoadNew(topic);
         }
+        lesson.moveFirst();
+        return lesson.curLayout;
     } // ///////////////////////////////////////////////////////////////////
     void LoadTopicFile() {
         BinaryFormatter formatter = new BinaryFormatter();
@@ -86,4 +92,7 @@ public class StudyProcess {
         CreateTopicFile();
         CreateRipeExercisesFile();
     } // ////////////////////////////////////////////////////////////////////////
-} // *******************************************************************************************
+    public void SetRes(bool sucess) {
+        lesson.SetRes(sucess);
+    } // ///////////////////////////////////////////////////////////////////////
+    } // *******************************************************************************************

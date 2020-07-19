@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 public class Lesson : DKCue {
@@ -7,12 +6,33 @@ public class Lesson : DKCue {
     public int ExercisesInLesson = 10;
     public int[] vluzes = {0, 2};
     public int[] vsigns = {-1, 1};
+    public Layout curLayout { get => v.Count > 0 ? v[nlayout].layout : null; }
+    public Exercise curExercise { get => v.Count > 0 ? v[nlayout] : null; }
+    int nlayout;
+
+    public Layout moveNext() {
+        if(++nlayout >= v.Count) {
+            nlayout = 0;
+            return null;
+        }
+        return curLayout;
+    } // /////////////////////////////////////////////////////////////////////////////////////
+    public Layout moveFirst() {
+        nlayout = 0;
+        if(v.Count == 0)
+            return null;
+        dkcue = 1.0f;
+        return curLayout;
+    } // /////////////////////////////////////////////////////////////////////////////////////
 
     public int LoadRipe(List<Exercise> vripe) {
         v.Clear();
         DateTime now = DateTime.Now;
+        int j = 0;
         foreach(Exercise p in vripe) {
             if(p.overdue(now) <= 0)
+                break;
+            if(++j >= ExercisesInLesson)
                 break;
             Layout lay = p.layout;
             float distAim = lay.distAim;
@@ -28,7 +48,7 @@ public class Lesson : DKCue {
                     }
                 }
         }
-        return ExercisesInLesson - v.Count;
+        return ExercisesInLesson - j;
     } // ////////////////////////////////////////////////////////////////
     public void LoadNew(Topic topic) {
         int jmax = ExercisesInLesson - v.Count;
@@ -48,9 +68,10 @@ public class Lesson : DKCue {
                 }
         }
         Shuffle();
+        dkcue = 1.0f;
     } // /////////////////////////////////////////////////////////////////////
     void Shuffle() {
-        System.Random rand = new System.Random();
+        Random rand = new Random();
         for(int i = v.Count - 1; i >= 1; i--) {
             int j = rand.Next(i + 1);
             ExerciseEnh tmp = v[j];
@@ -58,4 +79,9 @@ public class Lesson : DKCue {
             v[i] = tmp;
         }
     } // ////////////////////////////////////////////////////////////////
+    public new void SetRes(bool sucess) {
+        base.SetRes(sucess);
+        curExercise.SetRes(sucess);
+    } // ///////////////////////////////////////////////////////////////////////////////////////
+
 } // *************************************************************

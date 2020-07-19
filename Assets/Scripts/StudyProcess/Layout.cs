@@ -7,7 +7,7 @@ public class Layout {
     public float distAim { get; private set; }
     public float distCue { get; private set; }
     public float angAimDeg { get; private set; }
-    public float kCue { get; private set; }
+    public float kCue { get; set; }
     static Random rand = new Random();
 
     public Layout(float DistAim, float DistCue, float AngleAimDeg, float KoefCue) {
