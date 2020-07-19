@@ -8,6 +8,7 @@ public class Layout {
     public float distCue { get; private set; }
     public float angAimDeg { get; private set; }
     public float kCue { get; private set; }
+    static Random rand = new Random();
 
     public Layout(float DistAim, float DistCue, float AngleAimDeg, float KoefCue) {
         distAim = DistAim;
@@ -16,13 +17,17 @@ public class Layout {
         kCue = KoefCue;
     } // ////////////////////////////////////////////////////////////////////
     public Layout(Layout from, Layout to) {
-        distAim = UnityEngine.Random.Range(from.distAim, to.distAim) * Field.BallD;
-        distCue = UnityEngine.Random.Range(from.distCue, to.distCue) * Field.BallD;
-        angAimDeg = UnityEngine.Random.Range(from.angAimDeg, to.angAimDeg);
-        kCue = UnityEngine.Random.Range(from.kCue, to.kCue);
+        distAim = rnd(from.distAim, to.distAim) * Field.BallD;
+        distCue = rnd(from.distCue, to.distCue) * Field.BallD;
+        angAimDeg = rnd(from.angAimDeg, to.angAimDeg);
+        kCue = rnd(from.kCue, to.kCue);
     } // ////////////////////////////////////////////////////////////////////
     public bool EQ(Layout other) {
         return distAim == other.distAim && distCue == other.distCue &&
             angAimDeg == other.angAimDeg && kCue == other.kCue;
     } // ///////////////////////////////////////////////////////////////////////
+    float rnd(float from, float to) {
+        float rnd = (float)rand.NextDouble();
+        return from + rnd * (to - from);
+    } // /////////////////////////////////////////////////////////////////////////
 } // ***************************************************************************

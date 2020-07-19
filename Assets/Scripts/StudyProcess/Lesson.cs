@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Lesson : DKCue {
     List<ExerciseEnh> v = new List<ExerciseEnh>();
     public int ExercisesInLesson = 10;
-    public int[] vluzes = {2};
+    public int[] vluzes = {0, 2};
     public int[] vsigns = {-1, 1};
 
     public int LoadRipe(List<Exercise> vripe) {
@@ -31,7 +31,8 @@ public class Lesson : DKCue {
         return ExercisesInLesson - v.Count;
     } // ////////////////////////////////////////////////////////////////
     public void LoadNew(Topic topic) {
-        for(int j = 0; j < ExercisesInLesson - v.Count; j++) {
+        int jmax = ExercisesInLesson - v.Count;
+        for(int j = 0; j < jmax; j++) {
             Layout lay = new Layout(topic.from, topic.to);
             float distAim = lay.distAim;
             float distCue = lay.distCue;

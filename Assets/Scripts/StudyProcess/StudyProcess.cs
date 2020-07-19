@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using UnityEngine;
 
 public class StudyProcess {
-    const string ver = "ver:(0.0.1)";
+    const string ver = "ver:(0.0.2)";
     const string topicFile = "topics.dat";
     const string RipeExercisesFile = "RipeExercises.dat";
 
@@ -16,12 +15,21 @@ public class StudyProcess {
     public StudyProcess() {
         LoadTopicFile();
         LoadRipeExercisesFile();
+        LoadLesson();
     } // //////////////////////////////////////////////////////////////////
-    public void Run() {
+    public Layout curlay {
+        get {
+
+            return null;
+        }
+    } // ///////////////////////////////////////////////////
+    public void LoadLesson() {
         List<Exercise> vripe = ripeExercises.getRiped(lesson.ExercisesInLesson);
         int rest = lesson.LoadRipe(vripe);
-        if(rest > 0)
-            lesson.LoadNew(topics.topic);
+        if(rest > 0) {
+            Topic topic = topics.topic;
+            lesson.LoadNew(topic);
+        }
     } // ///////////////////////////////////////////////////////////////////
     void LoadTopicFile() {
         BinaryFormatter formatter = new BinaryFormatter();
@@ -30,15 +38,14 @@ public class StudyProcess {
             using(FileStream fs = new FileStream(topicFile, FileMode.Open)) {
                 string readver = (string)formatter.Deserialize(fs);
                 fileOk = (readver == ver);
-                if(fileOk) {
+                if(fileOk)
                     topics = (Topics)formatter.Deserialize(fs);
-                }
             }
             if(!fileOk) {
                 File.Delete(topicFile);
                 CreateTopicFile();
             }
-        } else 
+        } else
             CreateTopicFile();
     } // //////////////////////////////////////////////////////////////////
     void LoadRipeExercisesFile() {
@@ -62,16 +69,18 @@ public class StudyProcess {
     void CreateTopicFile() {
         topics = new Topics();
         BinaryFormatter formatter = new BinaryFormatter();
-        using FileStream fs = new FileStream(topicFile, FileMode.Create);
-        formatter.Serialize(fs, ver);
-        formatter.Serialize(fs, topics);
+        using(FileStream fs = new FileStream(topicFile, FileMode.Create)) {
+            formatter.Serialize(fs, ver);
+            formatter.Serialize(fs, topics);
+        }
     } // ////////////////////////////////////////////////////////////////////////
     void CreateRipeExercisesFile() {
         ripeExercises = new RipeExercises();
         BinaryFormatter formatter = new BinaryFormatter();
-        using FileStream fs = new FileStream(RipeExercisesFile, FileMode.Create);
-        formatter.Serialize(fs, ver);
-        formatter.Serialize(fs, ripeExercises);
+        using(FileStream fs = new FileStream(RipeExercisesFile, FileMode.Create)) {
+            formatter.Serialize(fs, ver);
+            formatter.Serialize(fs, ripeExercises);
+        }
     } // ////////////////////////////////////////////////////////////////////////
     public void Close() {
         CreateTopicFile();

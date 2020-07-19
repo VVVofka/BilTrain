@@ -15,7 +15,8 @@ public class RipeExercises : DKCue {
     public List<Exercise> getRiped(int outCount) {
         List<Exercise> ret = new List<Exercise>();
         Sortv();
-        for(int j = 0; j < outCount; j++) {
+        int cnt = Math.Min(outCount, vripe.Count);
+        for(int j = 0; j < cnt; j++) {
             if(vripe[j].overdue(DateTime.Now) <= 0)
                 break;
             ret.Add(vripe[j]);

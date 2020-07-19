@@ -136,6 +136,83 @@ public class Controller : MonoBehaviour {
         mode = GameMode.waitChoice;
         return false;
     } // ///////////////////// EHD MODES ///////////////////////////////////////////////////
+    bool waitSetAimBallbak() {
+        ballaim.setRnd();   // normal, ballAim.transform.localScale.x
+        //ballaim.setDeg(17.5f, 3.218f);         // TODO ОООООООООООООООООООООООООООООООООО
+        ballaim.dbg("Aim ");
+        d2p pluze = Field.luzeCornerAim(ballaim.curRad);
+        d2p paim = d2p.rotate(pluze, (3f / 4f) * Mathf.PI + ballaim.curRad, ballaim.curDist);
+        if(isOutRange(paim))
+            return true;
+        //paim.Set(13.42005f, 2.700449f);              // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
+        paim.setObj(ballAim);
+
+        ballcue.setRnd(); // ballCue.transform.localScale.x 
+        //ballcue.setVal(0.5f, 3.7341f);         // TODO ОООООООООООООООООООООООООООООООО
+        ballcue.dbg("Cue ");
+
+        // Virtual ball
+        float virdist = pluze.dist(paim) + Field.BallD;
+        d2p pvir = d2p.setDist(pluze, paim, virdist);
+        if(isOutRange(pvir))
+            return true;
+        pvir.setObj(ballVirt);
+
+        // Cue ball
+        float alfa = Mathf.Asin(ballcue.curK * ballAim.transform.localScale.x / Field.BallD);
+        float beta = Mathf.Asin((paim.z - pvir.z) / Field.BallD);
+        float rad = alfa - beta - Mathf.PI;
+
+        d2p pcue = pvir.CreateDp(rad, ballcue.curDist);
+        if(isOutRange(pcue))
+            return true;
+        //pcue.Set(11.83899f, 7.477563f);                   // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
+        pcue.setObj(ballCue);
+
+        // Marks
+        float gama = alfa - beta;
+        float dsel = Field.BallD * Mathf.Cos(alfa);
+        d2p psel = pvir.CreateDp(gama, dsel);
+        psel.setObj(aimCenter);
+
+        d2p pselout = d2p.addDist(paim, psel, Field.BallD / 16);
+        pselout.setObj(aimLeft);
+        d2p pselin = d2p.addDist(paim, psel, -Field.BallD / 16);
+        pselin.setObj(aimRight);
+
+        // Camera
+        d2p ptarget = pvir;
+        d2p pcam =  getPCameraHoriz(ptarget, pcue);
+
+        d2p pbnd = new d2p(bounds); //  far point arc
+        float wfar = pcam.dist(pbnd);
+        float wnear = pcam.dist(pcue);
+        float h = plcamera.transform.position.y;
+
+        float degcamnear = d2p.rad2deg(Mathf.Atan2(h, wnear));
+        float degcamfar = d2p.rad2deg(Mathf.Atan2(h - bounds.transform.position.y, wfar));
+        float degcamavg = (degcamnear + degcamfar) / 2;
+        Debug.Log("degcamavg " + degcamavg);
+
+        float aCueTarget = pcue.rad(ptarget);
+        float agCueCam = d2p.rad2deg(aCueTarget - Mathf.PI / 2);
+
+        Quaternion rotation = Quaternion.Euler(degcamavg, agCueCam, 0);
+        plcamera.transform.SetPositionAndRotation(
+            new Vector3(pcam.x, plcamera.transform.position.y, pcam.z),
+            rotation);
+
+        float sectorHor = getHorSector(pcam, pcue, paim, pluze, Mathf.PI - aCueTarget);
+        float sectorVert = degcamnear - degcamfar;
+        float sectorMax = Mathf.Max(sectorVert, sectorHor);
+        plcamera.fieldOfView = 1.05f * sectorMax;
+
+        //paim.dbg("Aim ");
+        //pcue.dbg("Cue ");
+        //p.dbg("aim:" + ballaim.curDeg.ToString() + " dist:" + ballaim.curDist.ToString() + "  " + " k:" + ballcue.curK);
+        mode = GameMode.waitChoice;
+        return false;
+    } // ///////////////////// EHD MODES ///////////////////////////////////////////////////
     d2p getPCameraHoriz(d2p ptarget, d2p pcue) {
         float alfa = -ptarget.rad(pcue);
         if(alfa == 0)
