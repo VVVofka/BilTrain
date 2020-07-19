@@ -18,7 +18,7 @@ public class StudyProcess {
         LoadRipeExercisesFile();
     } // //////////////////////////////////////////////////////////////////
     public void Run() {
-        List<Exercise> vripe = ripeExercises.getRiped(lesson.ExercisesInLesson, lesson.vluzes, lesson.vsigns);
+        List<Exercise> vripe = ripeExercises.getRiped(lesson.ExercisesInLesson);
         int rest = lesson.LoadRipe(vripe);
         if(rest > 0)
             lesson.LoadNew(topics.topic);

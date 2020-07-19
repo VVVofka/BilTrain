@@ -14,19 +14,36 @@ public class Lesson : DKCue {
         foreach(Exercise p in vripe) {
             if(p.overdue(now) <= 0)
                 break;
+            Layout lay = p.layout;
+            float distAim = lay.distAim;
+            float distCue = lay.distCue;
             foreach(int luz in vluzes)
-                foreach(int sign in vsigns)
-                    v.Add(new ExerciseEnh(p, sign, luz));
+                foreach(int signAng in vsigns) {
+                    float angle = lay.angAimDeg * signAng;
+                    foreach(int signK in vsigns) {
+                        float kCue = lay.kCue * signK;
+                        Layout layout = new Layout(distAim, distCue, angle, kCue);
+                        Exercise psign = new Exercise(p.topic, layout);
+                        v.Add(new ExerciseEnh(psign, luz));
+                    }
+                }
         }
         return ExercisesInLesson - v.Count;
     } // ////////////////////////////////////////////////////////////////
     public void LoadNew(Topic topic) {
         for(int j = 0; j < ExercisesInLesson - v.Count; j++) {
+            Layout lay = new Layout(topic.from, topic.to);
+            float distAim = lay.distAim;
+            float distCue = lay.distCue;
             foreach(int luz in vluzes)
-                foreach(int sign in vsigns) {
-                    Layout layout = new Layout(topic.from, topic.to);
-                    Exercise p = new Exercise(topic, layout);
-                    v.Add(new ExerciseEnh(p, sign, luz));
+                foreach(int signAng in vsigns) {
+                    float angle = lay.angAimDeg * signAng;
+                    foreach(int signK in vsigns) {
+                        float kCue = lay.kCue * signK;
+                        Layout layout = new Layout(distAim, distCue, angle, kCue);
+                        Exercise psign = new Exercise(topic, layout);
+                        v.Add(new ExerciseEnh(psign, luz));
+                    }
                 }
         }
         Shuffle();

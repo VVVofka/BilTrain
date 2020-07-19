@@ -16,10 +16,10 @@ public class Layout {
         kCue = KoefCue;
     } // ////////////////////////////////////////////////////////////////////
     public Layout(Layout from, Layout to) {
-        //distAim = DistAim;
-        //distCue = DistCue;
-        //angAimDeg = AngleAimDeg;
-        //kCue = KoefCue;
+        distAim = UnityEngine.Random.Range(from.distAim, to.distAim) * Field.BallD;
+        distCue = UnityEngine.Random.Range(from.distCue, to.distCue) * Field.BallD;
+        angAimDeg = UnityEngine.Random.Range(from.angAimDeg, to.angAimDeg);
+        kCue = UnityEngine.Random.Range(from.kCue, to.kCue);
     } // ////////////////////////////////////////////////////////////////////
     public bool EQ(Layout other) {
         return distAim == other.distAim && distCue == other.distCue &&

@@ -12,15 +12,13 @@ public class RipeExercises : DKCue {
         else
             aaa = exercise;
     } // ////////////////////////////////////////////////////////////////////////////////////
-    public List<Exercise> getRiped(int outCount, int[] vluzes, int[] vsigns) {
+    public List<Exercise> getRiped(int outCount) {
         List<Exercise> ret = new List<Exercise>();
         Sortv();
         for(int j = 0; j < outCount; j++) {
             if(vripe[j].overdue(DateTime.Now) <= 0)
                 break;
-            foreach(int luz in vluzes)
-                foreach(int sign in vsigns)
-                    ret.Add(new ExerciseEnh(vripe[j], sign, luz));
+            ret.Add(vripe[j]);
         }
         return ret;
     } // ///////////////////////////////////////////////////////////////////////////////////////

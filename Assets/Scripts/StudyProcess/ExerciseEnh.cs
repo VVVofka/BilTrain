@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 
 public class ExerciseEnh : Exercise {
-    int sign;
     int nluze;
 
     //public ExerciseEnh() {    }
-    public ExerciseEnh(Exercise exercise, int signum, int NLuze) {
-        layout = exercise.layout;
-        topic = exercise.topic;
-        interval = exercise.interval;
+    public ExerciseEnh(Exercise exercise, int NLuze) {
         base.dkcue = exercise.dkcue;
-        sign = signum;
+        base.layout = exercise.layout;
+        base.topic = exercise.topic;
+        base.interval = exercise.interval;
         nluze = NLuze;
     } // ////////////////////////////////////////////////////////////////////////////
 } // **********************************************************************

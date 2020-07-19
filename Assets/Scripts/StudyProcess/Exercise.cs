@@ -8,6 +8,7 @@ public class Exercise : DKCue {
     public Topic topic;
     public Intervals interval;
 
+    public Exercise() { }     // Topic inTopic
     public Exercise(Topic inTopic, Layout inLayout) {     // Topic inTopic
         topic = inTopic;
         layout = inLayout;
