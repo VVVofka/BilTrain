@@ -11,12 +11,18 @@ public class StudyProcess {
 
     Topics topics;
     RipeExercises ripeExercises;
+    Lesson lesson = new Lesson();
 
     public StudyProcess() {
         LoadTopicFile();
         LoadRipeExercisesFile();
     } // //////////////////////////////////////////////////////////////////
-
+    public void Run() {
+        List<Exercise> vripe = ripeExercises.getRiped(lesson.ExercisesInLesson, lesson.vluzes, lesson.vsigns);
+        int rest = lesson.LoadRipe(vripe);
+        if(rest > 0)
+            lesson.LoadNew(topics.topic);
+    } // ///////////////////////////////////////////////////////////////////
     void LoadTopicFile() {
         BinaryFormatter formatter = new BinaryFormatter();
         bool fileOk;

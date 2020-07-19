@@ -15,6 +15,12 @@ public class Layout {
         angAimDeg = AngleAimDeg;
         kCue = KoefCue;
     } // ////////////////////////////////////////////////////////////////////
+    public Layout(Layout from, Layout to) {
+        //distAim = DistAim;
+        //distCue = DistCue;
+        //angAimDeg = AngleAimDeg;
+        //kCue = KoefCue;
+    } // ////////////////////////////////////////////////////////////////////
     public bool EQ(Layout other) {
         return distAim == other.distAim && distCue == other.distCue &&
             angAimDeg == other.angAimDeg && kCue == other.kCue;
