@@ -10,14 +10,15 @@ public enum GameMode {
 } // ******************************************************************************************
 public class Controller : MonoBehaviour {
     static public GameMode mode;
-    StudyProcess studyProcess = new StudyProcess();
+    BallAim ballaim;
+    BallCue ballcue;
+    StudyProcess studyProcess;
+
     //Luze luze;
     //[SerializeField] private GameObject luzeAimPoint;
     public GameObject ballAim;
     public GameObject ballCue;
     public GameObject ballVirt;
-    BallAim ballaim = new BallAim();
-    BallCue ballcue = new BallCue();
 
     [SerializeField] private GameObject aimCenter;  // center
     [SerializeField] private GameObject aimLeft;    // left
@@ -29,14 +30,30 @@ public class Controller : MonoBehaviour {
     [SerializeField] private bool showVirtBall;   // right
 
     float xmax, zmax;
+    TrueAim selectAim = TrueAim.none;
+
+    public Controller() {
+    } // ////////////////////////////////////////////////////////////////////////////////
 
     void Start() {
+        ballaim = new BallAim();
+        ballcue = new BallCue();
+        studyProcess = new StudyProcess();
+        studyProcess.on_aim += OnReactOnChoose;
+
         mode = GameMode.waitSetAimBall;
         xmax = luzeRight.transform.position.x;
         zmax = luzeLeft.transform.position.z;
         //luze = new Luze(luzeSelect);
         if(!showVirtBall)
             ballVirt.transform.position = new Vector3(ballVirt.transform.position.x, -100f, ballVirt.transform.position.z);
+    } // ////////////////////////////////////////////////////////////////////////////////
+    void OnReactOnChoose(TrueAim trueAim) {
+        if(selectAim == trueAim) {
+
+        } else {
+
+        }
     } // ////////////////////////////////////////////////////////////////////////////////
     void Update() {
         switch(mode) {
@@ -52,6 +69,12 @@ public class Controller : MonoBehaviour {
                 mode = GameMode.waitSetAimBall;
             } else if(Input.GetKeyDown(KeyCode.Escape)) {
                 studyProcess.Close();
+            } else if(Input.GetKeyDown(KeyCode.A)) {
+                studyProcess.SetRes(TrueAim.left);
+            } else if(Input.GetKeyDown(KeyCode.C)) {
+                studyProcess.SetRes(TrueAim.center);
+            } else if(Input.GetKeyDown(KeyCode.D)) {
+                studyProcess.SetRes(TrueAim.right);
             }
             break;
         default:
@@ -98,9 +121,10 @@ public class Controller : MonoBehaviour {
         d2p psel = pvir.CreateDp(gama, dsel);
         psel.setObj(aimCenter);
 
-        d2p pselout = d2p.addDist(paim, psel, Field.BallD / 16);
+        float dkcue = 0.25f * studyProcess.dkcue;
+        d2p pselout = d2p.addDist(paim, psel, Field.BallD * dkcue);
         pselout.setObj(aimLeft);
-        d2p pselin = d2p.addDist(paim, psel, -Field.BallD / 16);
+        d2p pselin = d2p.addDist(paim, psel, -Field.BallD * dkcue);
         pselin.setObj(aimRight);
 
         // Camera

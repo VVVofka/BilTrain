@@ -1,9 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
+public enum TrueAim {
+    left = -1,
+    center = 0,
+    right = 1,
+    none = -2
+} // ***********************************************************************************
+
 public class StudyProcess {
-    const string ver = "ver:(0.0.3)";
+    const string ver = "ver:(0.0.9)";
     const string TopicsFileDefault = "Develop.tpcs";
     const string RipeExercisesFileDefault = "Develop.rpex";
     const string LessonFileDefault = "Develop.lesn";
@@ -11,15 +19,23 @@ public class StudyProcess {
     Topics topics;
     RipeExercises ripeExercises;
     Lesson lesson;
+    TrueAim curAim = TrueAim.none;
 
-    float dkcue { get => (topics.dkcue + topics.topic.dkcue + lesson.dkcue + lesson.curExercise.dkcue) / 4; }
+    static Random rand = new Random();
+
+    public float dkcue {
+        get {
+            curAim = (TrueAim)rand.Next(-1, 1);
+            return (topics.dkcue + topics.topic.dkcue + lesson.dkcue + lesson.curExercise.dkcue) / 4;
+        }
+    }
 
     public StudyProcess() {
         LoadTopicFile(TopicsFileDefault);
         LoadRipeExercisesFile(RipeExercisesFileDefault);
         LoadLessonFile(LessonFileDefault);
 
-        lesson.OnChoose += OnChoose;
+        lesson.On_Choose += OnChoose;
         lesson.OnEndOfLesson += OnEndLesson;
         //lesson.RegisterHandler(new Lesson.LessonStateHandler(DelStuded));
     } // //////////////////////////////////////////////////////////////////
@@ -124,16 +140,21 @@ public class StudyProcess {
         CreateRipeExercisesFile(RipeExercisesFileDefault);
         CreateLessonFile(LessonFileDefault);
     } // ////////////////////////////////////////////////////////////////////////
-    public void SetRes(bool sucess) {
+    public void SetRes(TrueAim aim) {
+        bool sucess = (aim == curAim);
         topics.SetRes(sucess);
         lesson.SetRes(sucess);
+
     } // ///////////////////////////////////////////////////////////////////////
     void OnChoose(bool isSucess) {
         foreach(var x in lesson.vstuded) {
 
         }
+        on_aim?.Invoke(curAim);
     } // ///////////////////////////////////////////////////////////////////////
     void OnEndLesson() {
 
     } // /////////////////////////////////////////////////////////////////////////
+    public delegate void StateHandlerAim(TrueAim realAim);   // Объявляем делегат
+    public event StateHandlerAim on_aim;                 // Создаем переменную делегата
 } // *******************************************************************************************

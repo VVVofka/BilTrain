@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 
+[Serializable]
 public class Lesson : DKCue {
     List<ExerciseEnh> v = new List<ExerciseEnh>();
-    public List<Exercise> vstuded;
+    public List<Exercise> vstuded = new List<Exercise>();
 
     public int ExercisesInLesson = 10;
     public int[] vluzes = {0, 2};
     public int[] vsigns = {-1, 1};
     int index;
-    List<Exercise> vripe;   // ptr
+    List<Exercise> vripe = new List<Exercise>();   // ptr
 
     public Layout curLayout { get => v.Count > 0 ? v[index].layout : null; }
     public ExerciseEnh curExercise { get => v.Count > 0 ? v[index] : null; }
@@ -98,12 +99,12 @@ public class Lesson : DKCue {
 
         }
         Shuffle();
-        OnChoose?.Invoke(sucess);
+        On_Choose?.Invoke(sucess);
     } // ///////////////////////////////////////////////////////////////////////////////////////
 
     public delegate void StateHandlerOnChoose(bool isSucess);   // Объявляем делегат
+    public event StateHandlerOnChoose On_Choose;                 // Создаем переменную делегата
     public delegate void StateHandlerOnEndOfLesson();           // Объявляем делегат
     public event StateHandlerOnEndOfLesson OnEndOfLesson;       // Создаем переменную делегата
-    public event StateHandlerOnChoose OnChoose;                 // Создаем переменную делегата
     //public void RegisterHandler(LessonStateHandler deleg){_deleg += deleg;}  // Регистрируем делегат
 } // *************************************************************
