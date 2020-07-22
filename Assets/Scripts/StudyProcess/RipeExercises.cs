@@ -31,5 +31,14 @@ public class RipeExercises : DKCue {
             return 0;
         });
     } // ////////////////////////////////////////////////////////////////
+    void Sortvfind() {
+        DateTime dt = DateTime.Now;
+        List<Exercise> resfind = vripe.FindAll(delegate (Exercise x) {
+            return x.overdue(dt) > 0;
+        });
+        resfind.Sort(delegate (Exercise x, Exercise y) {
+            return x.overdue(dt) > y.overdue(dt) ? -1 : 0;
+        });
+    } // ////////////////////////////////////////////////////////////////
 
 } // *************************************************************************************

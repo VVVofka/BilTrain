@@ -5,18 +5,21 @@ using System.Collections.Generic;
 [Serializable]
 public class Intervals {
     static int[] vhours = {1, 3, 24, 3 * 24, 7 * 24, 28 * 24, 95 * 24 };
-    int index = 0;
+    int index = -1;
     DateTime lastDT = DateTime.Now;
 
-    public void setVal(bool val) {
-        if(val)
+    public bool isComplete { get => index >= vhours.Length; }
+    public void setResult(bool val) {
+        if(val) {
             index++;
-        else
-            index--;
-        lastDT = DateTime.Now;
+            lastDT = DateTime.Now;
+        } else {
+            if(--index < 0)
+                index = 0;
+        }
     } // ///////////////////////////////////////////////////////////////////////
-    public void setSuc() { setVal(true); }
-    public void setErr() { setVal(false); }
+    //public void setSuc() { setResult(true); }
+    //public void setErr() { setResult(false); }
 
     public int difH(DateTime dt) { // if > 0 - expired
         DateTime expect = lastDT.AddHours(vhours[index]);

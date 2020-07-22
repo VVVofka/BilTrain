@@ -16,18 +16,9 @@ public class Exercise : DKCue {
     
     public int overdue(DateTime dt) { return interval.difH(dt); }
     public bool EQ(Exercise other) { return layout.EQ(other.layout); }
-    public new void SetRes(bool sucess) {
+    public new bool SetRes(bool sucess) {
         base.SetRes(sucess);
         topic.SetRes(sucess);
-        if(sucess)
-            setSucess();
-        else
-            setWrong();
+        return !interval.setResult(true);
     } // ///////////////////////////////////////////////////////////////////////////////////////
-    void setSucess() {
-        
-    } // /////////////////////////////////////////////////////////////////
-   void setWrong() {
-
-    } // /////////////////////////////////////////////////////////////////
 } // ************************************************************************************

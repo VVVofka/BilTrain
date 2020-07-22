@@ -3,29 +3,36 @@ using System.Collections.Generic;
 
 public class Lesson : DKCue {
     List<ExerciseEnh> v = new List<ExerciseEnh>();
+    public List<Exercise> vstuded;
+
     public int ExercisesInLesson = 10;
     public int[] vluzes = {0, 2};
     public int[] vsigns = {-1, 1};
-    public Layout curLayout { get => v.Count > 0 ? v[nlayout].layout : null; }
-    public Exercise curExercise { get => v.Count > 0 ? v[nlayout] : null; }
-    int nlayout;
+    int index;
+    List<Exercise> vripe;   // ptr
+
+    public Layout curLayout { get => v.Count > 0 ? v[index].layout : null; }
+    public ExerciseEnh curExercise { get => v.Count > 0 ? v[index] : null; }
+    public bool isEndOfLesson { get => index >= v.Count; }
 
     public Layout moveNext() {
-        if(++nlayout >= v.Count) {
-            nlayout = 0;
+        if(++index >= v.Count) {
+            index = 0;
             return null;
         }
         return curLayout;
     } // /////////////////////////////////////////////////////////////////////////////////////
     public Layout moveFirst() {
-        nlayout = 0;
+        index = 0;
+        vstuded.Clear();
         if(v.Count == 0)
             return null;
         dkcue = 1.0f;
         return curLayout;
     } // /////////////////////////////////////////////////////////////////////////////////////
 
-    public int LoadRipe(List<Exercise> vripe) {
+    public int LoadRipe(List<Exercise> vRipe) {
+        vripe = vRipe;
         v.Clear();
         DateTime now = DateTime.Now;
         int j = 0;
@@ -79,9 +86,29 @@ public class Lesson : DKCue {
             v[i] = tmp;
         }
     } // ////////////////////////////////////////////////////////////////
-    public new void SetRes(bool sucess) {
+    public new bool SetRes(bool sucess) {
         base.SetRes(sucess);
-        curExercise.SetRes(sucess);
-    } // ///////////////////////////////////////////////////////////////////////////////////////
+        bool isfinish = curExercise.SetRes(sucess);
+        if(sucess) {
+            vstuded.Add(curExercise);
+            v.Remove(curExercise);
+            if(v.Count <= 0)
+                endOfLesson();
+        } else {
 
+        }
+        Shuffle();
+        return isfinish;
+    } // ///////////////////////////////////////////////////////////////////////////////////////
+    void endOfLesson() {
+        foreach(Exercise x in vstuded) {
+            if(x.interval.isComplete) {
+
+                _deleg?.Invoke();
+            }
+        }
+    } // /////////////////////////////////////////////////////////////////////////////////////////
+    public delegate void LessonStateHandler();  // Объявляем делегат
+    LessonStateHandler _deleg;                  // Создаем переменную делегата
+    public void RegisterHandler(LessonStateHandler deleg){_deleg += deleg;}  // Регистрируем делегат
 } // *************************************************************

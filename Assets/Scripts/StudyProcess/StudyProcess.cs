@@ -15,6 +15,8 @@ public class StudyProcess {
     public StudyProcess() {
         LoadTopicFile();
         LoadRipeExercisesFile();
+
+        lesson.RegisterHandler(new Lesson.LessonStateHandler(DelStuded));
         LoadLesson();
     } // //////////////////////////////////////////////////////////////////
     public Layout curlay { get => lesson.curLayout; } // ///////////////////
@@ -93,6 +95,12 @@ public class StudyProcess {
         CreateRipeExercisesFile();
     } // ////////////////////////////////////////////////////////////////////////
     public void SetRes(bool sucess) {
-        lesson.SetRes(sucess);
+        bool isFinish =   lesson.SetRes(sucess);
+
     } // ///////////////////////////////////////////////////////////////////////
-    } // *******************************************************************************************
+    void DelStuded() {
+        foreach(var x in lesson.vstuded) {
+
+        }
+    }
+} // *******************************************************************************************
