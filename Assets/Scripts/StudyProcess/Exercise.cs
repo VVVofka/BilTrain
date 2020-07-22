@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 
 [Serializable]
 public class Exercise : DKCue {
@@ -16,9 +14,9 @@ public class Exercise : DKCue {
     
     public int overdue(DateTime dt) { return interval.difH(dt); }
     public bool EQ(Exercise other) { return layout.EQ(other.layout); }
-    public new bool SetRes(bool sucess) {
+    public new void SetRes(bool sucess) {
         base.SetRes(sucess);
         topic.SetRes(sucess);
-        return !interval.setResult(true);
+
     } // ///////////////////////////////////////////////////////////////////////////////////////
 } // ************************************************************************************

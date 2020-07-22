@@ -1,23 +1,26 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 public class StudyProcess {
-    const string ver = "ver:(0.0.2)";
-    const string topicFile = "topics.dat";
-    const string RipeExercisesFile = "RipeExercises.dat";
+    const string ver = "ver:(0.0.3)";
+    const string TopicsFileDefault = "Develop.tpcs";
+    const string RipeExercisesFileDefault = "Develop.rpex";
+    const string LessonFileDefault = "Develop.lesn";
 
     Topics topics;
     RipeExercises ripeExercises;
-    Lesson lesson = new Lesson();
+    Lesson lesson;
+
+    float dkcue { get => (topics.dkcue + ripeExercises.dkcue + lesson.dkcue + lesson.curLayout.dkcue) / 4.0f; }
 
     public StudyProcess() {
-        LoadTopicFile();
-        LoadRipeExercisesFile();
+        LoadTopicFile(TopicsFileDefault);
+        LoadRipeExercisesFile(RipeExercisesFileDefault);
+        LoadLessonFile(LessonFileDefault);
 
-        lesson.RegisterHandler(new Lesson.LessonStateHandler(DelStuded));
-        LoadLesson();
+        lesson.OnChoose += OnChoose;
+        //lesson.RegisterHandler(new Lesson.LessonStateHandler(DelStuded));
     } // //////////////////////////////////////////////////////////////////
     public Layout curlay { get => lesson.curLayout; } // ///////////////////
     public Layout moveNext() {
@@ -27,40 +30,57 @@ public class StudyProcess {
         LoadLesson();
         return lesson.moveFirst();
     } // //////////////////////////////////////////////////////////////////////
+    void LoadLessonFile(string fname) {
+        BinaryFormatter formatter = new BinaryFormatter();
+        bool fileOk;
+        if(File.Exists(fname)) {
+            using(FileStream fs = new FileStream(fname, FileMode.Open)) {
+                string readver = (string)formatter.Deserialize(fs);
+                fileOk = (readver == ver);
+                if(fileOk)
+                    lesson = (Lesson)formatter.Deserialize(fs);
+            }
+            if(!fileOk) {
+                File.Delete(fname);
+                CreateLessonFile(fname);
+            }
+        } else
+            CreateLessonFile(fname);
+    } // //////////////////////////////////////////////////////////////////
     public Layout LoadLesson() {
         List<Exercise> vripe = ripeExercises.getRiped(lesson.ExercisesInLesson);
         int rest = lesson.LoadRipe(vripe);
         if(rest > 0) {
             Topic topic = topics.topic;
             if(topic.cntCur >= topic.cntMax)
-                topic = topics.MoveNext();
+                topic = topics.ToNextTopic();
             lesson.LoadNew(topic);
         }
         lesson.moveFirst();
         return lesson.curLayout;
     } // ///////////////////////////////////////////////////////////////////
-    void LoadTopicFile() {
+    void LoadTopicFile(string fname) {
         BinaryFormatter formatter = new BinaryFormatter();
         bool fileOk;
-        if(File.Exists(topicFile)) {
-            using(FileStream fs = new FileStream(topicFile, FileMode.Open)) {
+        if(File.Exists(fname)) {
+            using(FileStream fs = new FileStream(fname, FileMode.Open)) {
                 string readver = (string)formatter.Deserialize(fs);
                 fileOk = (readver == ver);
                 if(fileOk)
                     topics = (Topics)formatter.Deserialize(fs);
             }
             if(!fileOk) {
-                File.Delete(topicFile);
-                CreateTopicFile();
+                File.Delete(fname);
+                CreateTopicFile(fname);
             }
         } else
-            CreateTopicFile();
+            CreateTopicFile(fname);
     } // //////////////////////////////////////////////////////////////////
-    void LoadRipeExercisesFile() {
+    void LoadRipeExercisesFile(string fname) {
         bool fileOk;
         BinaryFormatter formatter = new BinaryFormatter();
-        if(File.Exists(RipeExercisesFile)) {
-            using(FileStream fs = new FileStream(RipeExercisesFile, FileMode.Open)) {
+        if(File.Exists(fname)) {
+            using(FileStream fs = new FileStream(fname, FileMode.Open)) {
                 string readver = (string)formatter.Deserialize(fs);
                 fileOk = (readver == ver);
                 if(fileOk) {
@@ -68,39 +88,48 @@ public class StudyProcess {
                 }
             }
             if(!fileOk) {
-                File.Delete(RipeExercisesFile);
-                CreateRipeExercisesFile();
+                File.Delete(fname);
+                CreateRipeExercisesFile(fname);
             }
         } else
-            CreateRipeExercisesFile();
+            CreateRipeExercisesFile(fname);
     } // ///////////////////////////////////////////////////////////////////////////
-    void CreateTopicFile() {
+    void CreateTopicFile(string fname) {
         topics = new Topics();
         BinaryFormatter formatter = new BinaryFormatter();
-        using(FileStream fs = new FileStream(topicFile, FileMode.Create)) {
+        using(FileStream fs = new FileStream(fname, FileMode.Create)) {
             formatter.Serialize(fs, ver);
             formatter.Serialize(fs, topics);
         }
     } // ////////////////////////////////////////////////////////////////////////
-    void CreateRipeExercisesFile() {
+    void CreateLessonFile(string fname) {
+        lesson = new Lesson();
+        BinaryFormatter formatter = new BinaryFormatter();
+        using(FileStream fs = new FileStream(fname, FileMode.Create)) {
+            formatter.Serialize(fs, ver);
+            formatter.Serialize(fs, lesson);
+        }
+    } // ////////////////////////////////////////////////////////////////////////
+    void CreateRipeExercisesFile(string fname) {
         ripeExercises = new RipeExercises();
         BinaryFormatter formatter = new BinaryFormatter();
-        using(FileStream fs = new FileStream(RipeExercisesFile, FileMode.Create)) {
+        using(FileStream fs = new FileStream(fname, FileMode.Create)) {
             formatter.Serialize(fs, ver);
             formatter.Serialize(fs, ripeExercises);
         }
     } // ////////////////////////////////////////////////////////////////////////
     public void Close() {
-        CreateTopicFile();
-        CreateRipeExercisesFile();
+        CreateTopicFile(TopicsFileDefault);
+        CreateRipeExercisesFile(RipeExercisesFileDefault);
+        CreateLessonFile(LessonFileDefault);
     } // ////////////////////////////////////////////////////////////////////////
     public void SetRes(bool sucess) {
-        bool isFinish =   lesson.SetRes(sucess);
+        lesson.SetRes(sucess);
 
     } // ///////////////////////////////////////////////////////////////////////
-    void DelStuded() {
+    void OnChoose(bool isSucess) {
         foreach(var x in lesson.vstuded) {
 
         }
-    }
+    } // ///////////////////////////////////////////////////////////////////////
 } // *******************************************************************************************

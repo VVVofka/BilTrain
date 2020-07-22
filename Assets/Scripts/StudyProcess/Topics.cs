@@ -4,7 +4,6 @@ using System;
 [Serializable]
 public class Topics {
     public int ntopic { get; private set; } = 0;
-    public int cntloop { get; private set; } = 0;
     List<Topic> topics = new List<Topic>();
 
     public Topics() {
@@ -23,11 +22,17 @@ public class Topics {
     } // ////////////////////////////////////////////////////////////////////////////////////
 
     public Topic topic { get => topics[ntopic]; }
-    public Topic MoveNext() {
+    public float dkcue { get => topics[ntopic].dkcue; }
+    
+    public Topic ToNextTopic() {
         if(++ntopic >= topics.Count) {
             ntopic = 0;
-            cntloop++;
+            EndOfTopics?.Invoke();
+            return null;
         }
         return topic;
     } // ////////////////////////////////////////////////////////////////////////////////////
+    public delegate void TopicsStateHandler();      // Объявляем делегат
+    public event TopicsStateHandler EndOfTopics;    // Создаем переменную делегата
+
 } // ****************************************************************************************

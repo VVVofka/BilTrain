@@ -86,29 +86,23 @@ public class Lesson : DKCue {
             v[i] = tmp;
         }
     } // ////////////////////////////////////////////////////////////////
-    public new bool SetRes(bool sucess) {
+    public new void SetRes(bool sucess) {
         base.SetRes(sucess);
-        bool isfinish = curExercise.SetRes(sucess);
+        curExercise.SetRes(sucess);
         if(sucess) {
             vstuded.Add(curExercise);
             v.Remove(curExercise);
             if(v.Count <= 0)
-                endOfLesson();
+                OnEndOfLesson?.Invoke();
         } else {
 
         }
         Shuffle();
-        return isfinish;
     } // ///////////////////////////////////////////////////////////////////////////////////////
-    void endOfLesson() {
-        foreach(Exercise x in vstuded) {
-            if(x.interval.isComplete) {
 
-                _deleg?.Invoke();
-            }
-        }
-    } // /////////////////////////////////////////////////////////////////////////////////////////
-    public delegate void LessonStateHandler();  // Объявляем делегат
-    LessonStateHandler _deleg;                  // Создаем переменную делегата
-    public void RegisterHandler(LessonStateHandler deleg){_deleg += deleg;}  // Регистрируем делегат
+    public delegate void StateHandlerOnChoose(bool isSucess);   // Объявляем делегат
+    public delegate void StateHandlerOnEndOfLesson();           // Объявляем делегат
+    public event StateHandlerOnChoose OnChoose;                 // Создаем переменную делегата
+    public event StateHandlerOnEndOfLesson OnEndOfLesson;       // Создаем переменную делегата
+    //public void RegisterHandler(LessonStateHandler deleg){_deleg += deleg;}  // Регистрируем делегат
 } // *************************************************************
