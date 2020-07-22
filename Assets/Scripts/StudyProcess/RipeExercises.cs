@@ -24,16 +24,7 @@ public class RipeExercises {
         vriped = resfind.GetRange(0, outCount);
         return vriped;
     } // ///////////////////////////////////////////////////////////////////////////////////////
-    public float dkcue {
-        get {
-            if(vriped.Count == 0)
-                return 1.0f;
-            float ret = 0;
-            foreach(var x in vriped)
-                ret += x.dkcue;
-            return ret / vriped.Count;
-        }
-    } // ///////////////////////////////////////////////////////////////////////////////////////
+
     //void Sortv() {
     //    vripe.Sort(delegate (Exercise x, Exercise y) {
     //        DateTime dt = DateTime.Now;

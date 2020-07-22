@@ -2,7 +2,7 @@
 using System;
 
 [Serializable]
-public class Topics {
+public class Topics : DKCue {
     public int ntopic { get; private set; } = 0;
     List<Topic> topics = new List<Topic>();
 
@@ -22,7 +22,7 @@ public class Topics {
     } // ////////////////////////////////////////////////////////////////////////////////////
 
     public Topic topic { get => topics[ntopic]; }
-    public float dkcue { get => topics[ntopic].dkcue; }
+    public new void SetRes(bool sucess) { base.SetRes(sucess); topic.SetRes(sucess);}
     
     public Topic ToNextTopic() {
         if(++ntopic >= topics.Count) {

@@ -12,7 +12,7 @@ public class StudyProcess {
     RipeExercises ripeExercises;
     Lesson lesson;
 
-    float dkcue { get => (topics.dkcue + ripeExercises.dkcue + lesson.dkcue + lesson.curLayout.dkcue) / 4.0f; }
+    float dkcue { get => (topics.dkcue + topics.topic.dkcue + lesson.dkcue + lesson.curExercise.dkcue) / 4; }
 
     public StudyProcess() {
         LoadTopicFile(TopicsFileDefault);
@@ -20,6 +20,7 @@ public class StudyProcess {
         LoadLessonFile(LessonFileDefault);
 
         lesson.OnChoose += OnChoose;
+        lesson.OnEndOfLesson += OnEndLesson;
         //lesson.RegisterHandler(new Lesson.LessonStateHandler(DelStuded));
     } // //////////////////////////////////////////////////////////////////
     public Layout curlay { get => lesson.curLayout; } // ///////////////////
@@ -124,12 +125,15 @@ public class StudyProcess {
         CreateLessonFile(LessonFileDefault);
     } // ////////////////////////////////////////////////////////////////////////
     public void SetRes(bool sucess) {
+        topics.SetRes(sucess);
         lesson.SetRes(sucess);
-
     } // ///////////////////////////////////////////////////////////////////////
     void OnChoose(bool isSucess) {
         foreach(var x in lesson.vstuded) {
 
         }
     } // ///////////////////////////////////////////////////////////////////////
+    void OnEndLesson() {
+
+    } // /////////////////////////////////////////////////////////////////////////
 } // *******************************************************************************************

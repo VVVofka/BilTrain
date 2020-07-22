@@ -50,8 +50,8 @@ public class Lesson : DKCue {
                     foreach(int signK in vsigns) {
                         float kCue = lay.kCue * signK;
                         Layout layout = new Layout(distAim, distCue, angle, kCue);
-                        Exercise psign = new Exercise(p.topic, layout);
-                        v.Add(new ExerciseEnh(psign, luz));
+                        Exercise psign = new Exercise(layout);
+                        v.Add(new ExerciseEnh(psign, luz, signK));
                     }
                 }
         }
@@ -69,8 +69,8 @@ public class Lesson : DKCue {
                     foreach(int signK in vsigns) {
                         float kCue = lay.kCue * signK;
                         Layout layout = new Layout(distAim, distCue, angle, kCue);
-                        Exercise psign = new Exercise(topic, layout);
-                        v.Add(new ExerciseEnh(psign, luz));
+                        Exercise psign = new Exercise(layout);
+                        v.Add(new ExerciseEnh(psign, luz, signK));
                     }
                 }
         }
@@ -98,11 +98,12 @@ public class Lesson : DKCue {
 
         }
         Shuffle();
+        OnChoose?.Invoke(sucess);
     } // ///////////////////////////////////////////////////////////////////////////////////////
 
     public delegate void StateHandlerOnChoose(bool isSucess);   // Объявляем делегат
     public delegate void StateHandlerOnEndOfLesson();           // Объявляем делегат
-    public event StateHandlerOnChoose OnChoose;                 // Создаем переменную делегата
     public event StateHandlerOnEndOfLesson OnEndOfLesson;       // Создаем переменную делегата
+    public event StateHandlerOnChoose OnChoose;                 // Создаем переменную делегата
     //public void RegisterHandler(LessonStateHandler deleg){_deleg += deleg;}  // Регистрируем делегат
 } // *************************************************************
