@@ -21,8 +21,11 @@ public class RipeExercises {
         resfind.Sort(delegate (Exercise x, Exercise y) {
             return x.overdue(dt) > y.overdue(dt) ? -1 : 0;
         });
-        vriped = resfind.GetRange(0, outCount);
-        return vriped;
+        if(resfind.Count > outCount) {
+            vriped = resfind.GetRange(0, outCount);
+            return vriped;
+        }
+        return resfind;
     } // ///////////////////////////////////////////////////////////////////////////////////////
 
     //void Sortv() {

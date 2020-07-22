@@ -129,7 +129,7 @@ public class Controller : MonoBehaviour {
         d2p psel = pvir.CreateDp(gama, dsel);
         psel.setObj(aimCenter);
 
-        float dkcue = 0.25f * studyProcess.dkcue;
+        float dkcue = 0.5f * studyProcess.dkcue;
         d2p pselout = d2p.addDist(paim, psel, Field.BallD * dkcue);
         pselout.setObj(aimLeft);
         d2p pselin = d2p.addDist(paim, psel, -Field.BallD * dkcue);
