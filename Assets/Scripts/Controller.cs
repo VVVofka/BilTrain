@@ -32,10 +32,13 @@ public class Controller : MonoBehaviour {
     float xmax, zmax;
     TrueAim selectAim = TrueAim.none;
 
+    bool inupdate = false;
+
     public Controller() {
     } // ////////////////////////////////////////////////////////////////////////////////
 
     void Start() {
+        inupdate = true;
         ballaim = new BallAim();
         ballcue = new BallCue();
         studyProcess = new StudyProcess();
@@ -47,6 +50,7 @@ public class Controller : MonoBehaviour {
         //luze = new Luze(luzeSelect);
         if(!showVirtBall)
             ballVirt.transform.position = new Vector3(ballVirt.transform.position.x, -100f, ballVirt.transform.position.z);
+        inupdate = false;
     } // ////////////////////////////////////////////////////////////////////////////////
     void OnReactOnChoose(TrueAim trueAim) {
         if(selectAim == trueAim) {
@@ -56,6 +60,9 @@ public class Controller : MonoBehaviour {
         }
     } // ////////////////////////////////////////////////////////////////////////////////
     void Update() {
+        if(inupdate)
+            return;
+        inupdate = true;
         switch(mode) {
         case GameMode.waitSetAimBall:
             if(ballAim != null) {
@@ -80,6 +87,7 @@ public class Controller : MonoBehaviour {
         default:
             break;
         }
+        inupdate = false;
     } // ///////////////////////////////////////////////////////////////////////////////////
     //                  MODES
     bool waitSetAimBall() {

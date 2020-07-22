@@ -11,7 +11,7 @@ public enum TrueAim {
 } // ***********************************************************************************
 
 public class StudyProcess {
-    const string ver = "ver:(0.0.9)";
+    const string ver = "ver:(0.0.11)";
     const string TopicsFileDefault = "Develop.tpcs";
     const string RipeExercisesFileDefault = "Develop.rpex";
     const string LessonFileDefault = "Develop.lesn";
