@@ -7,17 +7,17 @@ public class Topics : DKCue {
     List<Topic> topics = new List<Topic>();
 
     public Topics() {
-        topics.Add(new Topic("Intro", 10, 
-            1.0f, 3.0f, 0.0f, 0.0f,
-            1.0f, 5.0f, 0.0f, 0.0f
+        topics.Add(new Topic("Intro", 30, 
+            3.0f, 4.0f, 10.0f, 0.2f,     // distAimFrom, distCueFrom, angAimDegFrom, kCueFrom,
+            5.0f, 7.0f, 40.0f, 0.5f      // distAimTo,   distCueTo,   angAimDegTo,   kCueTo
             ));
         topics.Add(new Topic("Second step I", 20,
-            1.0f, 3.0f, 05.0f, 0.05f,
-            2.5f, 5.0f, 15.0f, 0.25f
+            1.0f, 3.0f, 05.0f, 0.05f,     // distAimFrom, distCueFrom, angAimDegFrom, kCueFrom,
+            2.5f, 5.0f, 15.0f, 0.25f      // distAimTo,   distCueTo,   angAimDegTo,   kCueTo
            ));
         topics.Add(new Topic("Second step II", 25,
-            1.0f, 3.0f, 05.0f, 0.3f,
-            2.5f, 5.0f, 15.0f, 0.5f
+            1.0f, 3.0f, 05.0f, 0.3f,     // distAimFrom, distCueFrom, angAimDegFrom, kCueFrom,
+            2.5f, 5.0f, 15.0f, 0.5f      // distAimTo,   distCueTo,   angAimDegTo,   kCueTo
            ));
     } // ////////////////////////////////////////////////////////////////////////////////////
 

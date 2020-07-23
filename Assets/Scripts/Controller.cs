@@ -9,6 +9,7 @@ public enum GameMode {
 public class Controller : MonoBehaviour {
     static public GameMode mode;
     StudyProcess studyProcess;
+    float kCue0 = 0.3f;
 
     //[SerializeField] private GameObject luzeAimPoint;
     public GameObject ballAim;
@@ -119,17 +120,18 @@ public class Controller : MonoBehaviour {
         // Marks aim
         float gama = alfa - beta;
         float dsel = Field.BallD * Mathf.Cos(alfa);
-        d2p psel = pvir.CreateDp(gama, dsel);
-        psel.setObj(aimCenter);
+        d2p pAimCenter = pvir.CreateDp(gama, dsel);
+        pAimCenter.setObj(aimCenter);
 
-        float dkcue = 0.5f * studyProcess.dkcue;
-        d2p pselout = d2p.addDist(paim, psel, Field.BallD * dkcue);
-        pselout.setObj(aimLeft);
-        d2p pselin = d2p.addDist(paim, psel, -Field.BallD * dkcue);
-        pselin.setObj(aimRight);
+        float dkcue = kCue0 * studyProcess.dkcue;
+        d2p pAimLeft = d2p.addDist(paim, pAimCenter, Field.BallD * dkcue);
+        pAimLeft.setObj(aimLeft);
+        d2p pAimRight = d2p.addDist(paim, pAimCenter, -Field.BallD * dkcue);
+        pAimRight.setObj(aimRight);
 
+ 
         // Camera
-        d2p ptarget = pvir;
+        d2p ptarget = paim;
         d2p pcam =  getPCameraHoriz(ptarget, pcue);
 
         d2p pbnd = new d2p(bounds); //  far point arc
@@ -235,3 +237,74 @@ public class Controller : MonoBehaviour {
     } // /////////////////////////////////////////////////////////////////////////////////
 
 } // ************************************************************************************
+//bool waitSetAimBall() {
+//    Layout lay = studyProcess.layout;
+//    d2p pluze = Field.luzeCornerAim(lay.angAimRad);
+//    d2p paim = d2p.rotate(pluze, (3f / 4f) * Mathf.PI + lay.angAimRad, lay.distAimPhys);
+//    if(isOutRange(paim))
+//        return true;
+//    //paim.Set(13.42005f, 2.700449f);              // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
+//    paim.setObj(ballAim);
+
+//    // Virtual ball
+//    float virdist = pluze.dist(paim) + Field.BallD;
+//    d2p pvir = d2p.setDist(pluze, paim, virdist);
+//    if(isOutRange(pvir))
+//        return true;
+//    pvir.setObj(ballVirt);
+
+//    // Cue ball
+//    float alfa = Mathf.Asin(lay.kCue * ballAim.transform.localScale.x / Field.BallD);
+//    float beta = Mathf.Asin((paim.z - pvir.z) / Field.BallD);
+//    float rad = alfa - beta - Mathf.PI;
+
+//    d2p pcue = pvir.CreateDp(rad, lay.distCuePhys);
+//    if(isOutRange(pcue))
+//        return true;
+//    //pcue.Set(11.83899f, 7.477563f);                   // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
+//    pcue.setObj(ballCue);
+
+//    // Marks aim
+//    float gama = alfa - beta;
+//    float dsel = Field.BallD * Mathf.Cos(alfa);
+//    d2p psel = pvir.CreateDp(gama, dsel);
+//    psel.setObj(aimCenter);
+
+//    float dkcue = 0.5f * studyProcess.dkcue;
+//    d2p pselout = d2p.addDist(paim, psel, Field.BallD * dkcue);
+//    pselout.setObj(aimLeft);
+//    d2p pselin = d2p.addDist(paim, psel, -Field.BallD * dkcue);
+//    pselin.setObj(aimRight);
+
+//    // Camera
+//    d2p ptarget = pvir;
+//    d2p pcam =  getPCameraHoriz(ptarget, pcue);
+
+//    d2p pbnd = new d2p(bounds); //  far point arc
+//    float wfar = pcam.dist(pbnd);
+//    float wnear = pcam.dist(pcue);
+//    float h = plcamera.transform.position.y;
+
+//    float degcamnear = d2p.rad2deg(Mathf.Atan2(h, wnear));
+//    float degcamfar = d2p.rad2deg(Mathf.Atan2(h - bounds.transform.position.y, wfar));
+//    float degcamavg = (degcamnear + degcamfar) / 2;
+//    Debug.Log("degcamavg " + degcamavg);
+
+//    float aCueTarget = pcue.rad(ptarget);
+//    float agCueCam = d2p.rad2deg(aCueTarget - Mathf.PI / 2);
+
+//    Quaternion rotation = Quaternion.Euler(degcamavg, agCueCam, 0);
+//    plcamera.transform.SetPositionAndRotation(
+//        new Vector3(pcam.x, plcamera.transform.position.y, pcam.z),
+//        rotation);
+
+//    float sectorHor = getHorSector(pcam, pcue, paim, pluze, Mathf.PI - aCueTarget);
+//    float sectorVert = degcamnear - degcamfar;
+//    float sectorMax = Mathf.Max(sectorVert, sectorHor);
+//    plcamera.fieldOfView = 1.05f * sectorMax;
+
+//    //paim.dbg("Aim ");        pcue.dbg("Cue ");
+//    //p.dbg("aim:" + ballaim.curDeg.ToString() + " dist:" + ballaim.curDist.ToString() + "  " + " k:" + ballcue.curK);
+//    mode = GameMode.waitChoice;
+//    return false;
+//} // ///////////////////// EHD MODES ///////////////////////////////////////////////////
