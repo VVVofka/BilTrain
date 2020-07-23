@@ -1,17 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+﻿using UnityEngine;
 
 public enum GameMode {
     waitSetAimBall,
-    waitSetCueBall,
-    waitChoice
+    waitChoice,
+    waitShowResult,
+    waitExitShowResult
 } // ******************************************************************************************
 public class Controller : MonoBehaviour {
     static public GameMode mode;
-    //BallAim ballaim;
-    //BallCue ballcue;
     StudyProcess studyProcess;
 
     //[SerializeField] private GameObject luzeAimPoint;
@@ -31,36 +27,24 @@ public class Controller : MonoBehaviour {
     float xmax, zmax;
     TrueAim selectAim = TrueAim.none;
 
-    //bool inupdate = false;
-
     public Controller() {
-        //ballaim = new BallAim();
-        //ballcue = new BallCue();
         studyProcess = new StudyProcess();
         studyProcess.on_aim += OnReactOnChoose;
     } // ////////////////////////////////////////////////////////////////////////////////
 
     void Start() {
-        //inupdate = true;
         mode = GameMode.waitSetAimBall;
         xmax = luzeRight.transform.position.x;
         zmax = luzeLeft.transform.position.z;
-        //luze = new Luze(luzeSelect);
         if(!showVirtBall)
             ballVirt.transform.position = new Vector3(ballVirt.transform.position.x, -100f, ballVirt.transform.position.z);
-        //inupdate = false;
     } // ////////////////////////////////////////////////////////////////////////////////
     void OnReactOnChoose(TrueAim trueAim) {
         if(selectAim == trueAim) {
-
         } else {
-
         }
     } // ////////////////////////////////////////////////////////////////////////////////
     void Update() {
-        //if(inupdate)
-            //return;
-        //inupdate = true;
         switch(mode) {
         case GameMode.waitSetAimBall:
             if(ballAim != null) {
@@ -76,18 +60,35 @@ public class Controller : MonoBehaviour {
                 studyProcess.Close();
             } else if(Input.GetKeyDown(KeyCode.A)) {
                 studyProcess.SetRes(TrueAim.left);
-            } else if(Input.GetKeyDown(KeyCode.C)) {
+                mode = GameMode.waitShowResult;
+            } else if(Input.GetKeyDown(KeyCode.S)) {
                 studyProcess.SetRes(TrueAim.center);
+                mode = GameMode.waitShowResult;
             } else if(Input.GetKeyDown(KeyCode.D)) {
                 studyProcess.SetRes(TrueAim.right);
+                mode = GameMode.waitShowResult;
+            }
+            break;
+        case GameMode.waitShowResult:
+            ShowResult();
+            mode = GameMode.waitExitShowResult;
+            break;
+        case GameMode.waitExitShowResult:
+            if(Input.GetKeyDown(KeyCode.Space)) {   // TODO: press true key
+                mode = GameMode.waitSetAimBall;
+            } else if(Input.GetKeyDown(KeyCode.Escape)) {
+                studyProcess.Close();
             }
             break;
         default:
             break;
         }
-        //inupdate = false;
     } // ///////////////////////////////////////////////////////////////////////////////////
     //                  MODES
+    void ShowResult() {
+        aimLeft.GetComponent<Renderer>().material.color = Color.white;
+        aimRight.GetComponent<Renderer>().material.color = new Color(1, 0, 1, 0.5f);
+    } // ////////////////////////////////////////////////////////////////////////////////////
     bool waitSetAimBall() {
         Layout lay = studyProcess.layout;
         d2p pluze = Field.luzeCornerAim(lay.angAimRad);
@@ -96,10 +97,6 @@ public class Controller : MonoBehaviour {
             return true;
         //paim.Set(13.42005f, 2.700449f);              // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
         paim.setObj(ballAim);
-
-        //@ballcue.setRnd(); // ballCue.transform.localScale.x 
-        //---ballcue.setVal(lay.kCue, lay.distCueInD);
-        //ballcue.setVal(0.5f, 3.7341f);         // TODO ОООООООООООООООООООООООООООООООО
 
         // Virtual ball
         float virdist = pluze.dist(paim) + Field.BallD;
@@ -158,87 +155,9 @@ public class Controller : MonoBehaviour {
         float sectorMax = Mathf.Max(sectorVert, sectorHor);
         plcamera.fieldOfView = 1.05f * sectorMax;
 
-        //paim.dbg("Aim ");
-        //pcue.dbg("Cue ");
+        //paim.dbg("Aim ");        pcue.dbg("Cue ");
         //p.dbg("aim:" + ballaim.curDeg.ToString() + " dist:" + ballaim.curDist.ToString() + "  " + " k:" + ballcue.curK);
         mode = GameMode.waitChoice;
-        return false;
-    } // ///////////////////// EHD MODES ///////////////////////////////////////////////////
-    bool waitSetAimBallbak() {
-        //ballaim.setRnd();   // normal, ballAim.transform.localScale.x
-        ////ballaim.setDeg(17.5f, 3.218f);         // TODO ОООООООООООООООООООООООООООООООООО
-        //ballaim.dbg("Aim ");
-        //d2p pluze = Field.luzeCornerAim(ballaim.curRad);
-        //d2p paim = d2p.rotate(pluze, (3f / 4f) * Mathf.PI + ballaim.curRad, ballaim.curDistPhys);
-        //if(isOutRange(paim))
-        //    return true;
-        ////paim.Set(13.42005f, 2.700449f);              // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
-        //paim.setObj(ballAim);
-
-        //ballcue.setRnd(); // ballCue.transform.localScale.x 
-        ////ballcue.setVal(0.5f, 3.7341f);         // TODO ОООООООООООООООООООООООООООООООО
-        //ballcue.dbg("Cue ");
-
-        //// Virtual ball
-        //float virdist = pluze.dist(paim) + Field.BallD;
-        //d2p pvir = d2p.setDist(pluze, paim, virdist);
-        //if(isOutRange(pvir))
-        //    return true;
-        //pvir.setObj(ballVirt);
-
-        //// Cue ball
-        //float alfa = Mathf.Asin(ballcue.curK * ballAim.transform.localScale.x / Field.BallD);
-        //float beta = Mathf.Asin((paim.z - pvir.z) / Field.BallD);
-        //float rad = alfa - beta - Mathf.PI;
-
-        //d2p pcue = pvir.CreateDp(rad, ballcue.curDistPhys);
-        //if(isOutRange(pcue))
-        //    return true;
-        ////pcue.Set(11.83899f, 7.477563f);                   // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
-        //pcue.setObj(ballCue);
-
-        //// Marks
-        //float gama = alfa - beta;
-        //float dsel = Field.BallD * Mathf.Cos(alfa);
-        //d2p psel = pvir.CreateDp(gama, dsel);
-        //psel.setObj(aimCenter);
-
-        //d2p pselout = d2p.addDist(paim, psel, Field.BallD / 16);
-        //pselout.setObj(aimLeft);
-        //d2p pselin = d2p.addDist(paim, psel, -Field.BallD / 16);
-        //pselin.setObj(aimRight);
-
-        //// Camera
-        //d2p ptarget = pvir;
-        //d2p pcam =  getPCameraHoriz(ptarget, pcue);
-
-        //d2p pbnd = new d2p(bounds); //  far point arc
-        //float wfar = pcam.dist(pbnd);
-        //float wnear = pcam.dist(pcue);
-        //float h = plcamera.transform.position.y;
-
-        //float degcamnear = d2p.rad2deg(Mathf.Atan2(h, wnear));
-        //float degcamfar = d2p.rad2deg(Mathf.Atan2(h - bounds.transform.position.y, wfar));
-        //float degcamavg = (degcamnear + degcamfar) / 2;
-        //Debug.Log("degcamavg " + degcamavg);
-
-        //float aCueTarget = pcue.rad(ptarget);
-        //float agCueCam = d2p.rad2deg(aCueTarget - Mathf.PI / 2);
-
-        //Quaternion rotation = Quaternion.Euler(degcamavg, agCueCam, 0);
-        //plcamera.transform.SetPositionAndRotation(
-        //    new Vector3(pcam.x, plcamera.transform.position.y, pcam.z),
-        //    rotation);
-
-        //float sectorHor = getHorSector(pcam, pcue, paim, pluze, Mathf.PI - aCueTarget);
-        //float sectorVert = degcamnear - degcamfar;
-        //float sectorMax = Mathf.Max(sectorVert, sectorHor);
-        //plcamera.fieldOfView = 1.05f * sectorMax;
-
-        ////paim.dbg("Aim ");
-        ////pcue.dbg("Cue ");
-        ////p.dbg("aim:" + ballaim.curDeg.ToString() + " dist:" + ballaim.curDist.ToString() + "  " + " k:" + ballcue.curK);
-        //mode = GameMode.waitChoice;
         return false;
     } // ///////////////////// EHD MODES ///////////////////////////////////////////////////
     d2p getPCameraHoriz(d2p ptarget, d2p pcue) {
