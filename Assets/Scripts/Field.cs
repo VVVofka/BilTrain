@@ -38,9 +38,9 @@ public class Field {
     }
     public static d2p luzeCornerAimLong { get => new d2p(xmax - BallD, zmax); }
     public static d2p luzeCornerAimShort { get => new d2p(xmax, zmax - BallD); }
-    public static d2p luzeCornerAim(float angle) {
-        float x,z,k = 4 * angle / Mathf.PI; // 45dgr = Pi / 4
-        if(angle <= 0) {
+    public static d2p luzeCornerAim(float angleRad) {
+        float x,z,k = 4 * angleRad / Mathf.PI; // 45dgr = Pi / 4
+        if(angleRad <= 0) {
             z = zmax;
             x = xmax + k * BallR;
         } else {

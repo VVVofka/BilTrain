@@ -8,6 +8,10 @@ public class Layout {
     public float kCue { get; set; }
     static Random rand = new Random();
 
+    public float angAimRad { get => d2p.deg2rad(angAimDeg); }
+    public float distAimPhys { get => distAimInD * Field.BallD; }
+    public float distCuePhys { get => distCueInD * Field.BallD; }
+
     public Layout(float DistAimInD, float DistCueInD, float AngleAimDeg, float KoefCue) {
         distAimInD = DistAimInD;
         distCueInD = DistCueInD;
@@ -15,8 +19,8 @@ public class Layout {
         kCue = KoefCue;
     } // ////////////////////////////////////////////////////////////////////
     public Layout(Layout fromInD, Layout toInD) {
-        distAimInD = rnd(fromInD.distAimInD, toInD.distAimInD) * Field.BallD;
-        distCueInD = rnd(fromInD.distCueInD, toInD.distCueInD) * Field.BallD;
+        distAimInD = rnd(fromInD.distAimInD, toInD.distAimInD);
+        distCueInD = rnd(fromInD.distCueInD, toInD.distCueInD);
         angAimDeg = rnd(fromInD.angAimDeg, toInD.angAimDeg);
         kCue = rnd(fromInD.kCue, toInD.kCue);
     } // ////////////////////////////////////////////////////////////////////
