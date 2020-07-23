@@ -67,58 +67,87 @@ public class StudyProcess {
     //        CreateLessonFile(fname);
     //} // //////////////////////////////////////////////////////////////////
     public Layout LoadLesson() {
-        List<Exercise> vripe = ripeExercises.getRiped(lesson.ExercisesInLesson);
-        int rest = lesson.LoadRipe(vripe);
-        if(rest > 0) {
-            Topic topic = topics.topic;
-            if(topic.cntCur >= topic.cntMax)
-                topic = topics.ToNextTopic();
-            lesson.LoadNew(topic);
+        try {
+            List<Exercise> vripe = ripeExercises.getRiped(Lesson.ExercisesInLesson);
+            int rest = lesson.LoadRipe(vripe);
+            if(rest > 0) {
+                Topic topic = topics.topic;
+                if(topic.cntCur >= topic.cntMax)
+                    topic = topics.ToNextTopic();
+                lesson.LoadNew(topic);
+            }
+            lesson.moveFirst();
+            return lesson.curLayout;
+        } catch(Exception ex) {
+            Console.WriteLine($"Исключение in public Layout LoadLesson(): {ex.Message}");
+            Console.WriteLine($"Метод: {ex.TargetSite}");
+            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+            //throw;
+            return null;
         }
-        lesson.moveFirst();
-        return lesson.curLayout;
     } // ///////////////////////////////////////////////////////////////////
     void LoadTopicFile(string fname) {
-        BinaryFormatter formatter = new BinaryFormatter();
-        bool fileOk;
-        if(File.Exists(fname)) {
-            using(FileStream fs = new FileStream(fname, FileMode.Open)) {
-                string readver = (string)formatter.Deserialize(fs);
-                fileOk = (readver == ver);
-                if(fileOk)
-                    topics = (Topics)formatter.Deserialize(fs);
-            }
-            if(!fileOk) {
-                File.Delete(fname);
+        try {
+            BinaryFormatter formatter = new BinaryFormatter();
+            bool fileOk;
+            if(File.Exists(fname)) {
+                using(FileStream fs = new FileStream(fname, FileMode.Open)) {
+                    string readver = (string)formatter.Deserialize(fs);
+                    fileOk = (readver == ver);
+                    if(fileOk)
+                        topics = (Topics)formatter.Deserialize(fs);
+                }
+                if(!fileOk) {
+                    File.Delete(fname);
+                    CreateTopicFile(fname);
+                }
+            } else
                 CreateTopicFile(fname);
-            }
-        } else
-            CreateTopicFile(fname);
+        } catch(Exception ex) {
+            Console.WriteLine($"Исключение in {fname}: {ex.Message}");
+            Console.WriteLine($"Метод: {ex.TargetSite}");
+            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+            //throw;
+        }
     } // //////////////////////////////////////////////////////////////////
     void LoadRipeExercisesFile(string fname) {
         bool fileOk;
-        BinaryFormatter formatter = new BinaryFormatter();
-        if(File.Exists(fname)) {
-            using(FileStream fs = new FileStream(fname, FileMode.Open)) {
-                string readver = (string)formatter.Deserialize(fs);
-                fileOk = (readver == ver);
-                if(fileOk) {
-                    ripeExercises = (RipeExercises)formatter.Deserialize(fs);
+        try {
+            BinaryFormatter formatter = new BinaryFormatter();
+            if(File.Exists(fname)) {
+                using(FileStream fs = new FileStream(fname, FileMode.Open)) {
+                    string readver = (string)formatter.Deserialize(fs);
+                    fileOk = (readver == ver);
+                    if(fileOk) {
+                        ripeExercises = (RipeExercises)formatter.Deserialize(fs);
+                    }
                 }
-            }
-            if(!fileOk) {
-                File.Delete(fname);
+                if(!fileOk) {
+                    File.Delete(fname);
+                    CreateRipeExercisesFile(fname);
+                }
+            } else
                 CreateRipeExercisesFile(fname);
-            }
-        } else
-            CreateRipeExercisesFile(fname);
+        } catch(Exception ex) {
+            Console.WriteLine($"Исключение in {fname}: {ex.Message}");
+            Console.WriteLine($"Метод: {ex.TargetSite}");
+            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+            //throw;
+        }
     } // ///////////////////////////////////////////////////////////////////////////
     void CreateTopicFile(string fname) {
-        topics = new Topics();
-        BinaryFormatter formatter = new BinaryFormatter();
-        using(FileStream fs = new FileStream(fname, FileMode.Create)) {
-            formatter.Serialize(fs, ver);
-            formatter.Serialize(fs, topics);
+        try {
+            topics = new Topics();
+            BinaryFormatter formatter = new BinaryFormatter();
+            using(FileStream fs = new FileStream(fname, FileMode.Create)) {
+                formatter.Serialize(fs, ver);
+                formatter.Serialize(fs, topics);
+            }
+        } catch(Exception ex) {
+            Console.WriteLine($"Исключение in {fname}: {ex.Message}");
+            Console.WriteLine($"Метод: {ex.TargetSite}");
+            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+            //throw;
         }
     } // ////////////////////////////////////////////////////////////////////////
     //void CreateLessonFile(string fname) {
@@ -130,32 +159,53 @@ public class StudyProcess {
     //    }
     //} // ////////////////////////////////////////////////////////////////////////
     void CreateRipeExercisesFile(string fname) {
-        ripeExercises = new RipeExercises();
-        BinaryFormatter formatter = new BinaryFormatter();
-        using(FileStream fs = new FileStream(fname, FileMode.Create)) {
-            formatter.Serialize(fs, ver);
-            formatter.Serialize(fs, ripeExercises);
+        try {
+            ripeExercises = new RipeExercises();
+            BinaryFormatter formatter = new BinaryFormatter();
+            using(FileStream fs = new FileStream(fname, FileMode.Create)) {
+                formatter.Serialize(fs, ver);
+                formatter.Serialize(fs, ripeExercises);
+            }
+        } catch(Exception ex) {
+            Console.WriteLine($"Исключение in {fname}: {ex.Message}");
+            Console.WriteLine($"Метод: {ex.TargetSite}");
+            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
         }
     } // ////////////////////////////////////////////////////////////////////////
     public void Close() {
-        CreateTopicFile(TopicsFileDefault);
-        CreateRipeExercisesFile(RipeExercisesFileDefault);
-        //CreateLessonFile(LessonFileDefault);
+        try {
+            CreateTopicFile(TopicsFileDefault);
+            CreateRipeExercisesFile(RipeExercisesFileDefault);
+            //CreateLessonFile(LessonFileDefault);
+        } catch(Exception ex) {
+            Console.WriteLine($"Исключение in Close(): {ex.Message}");
+            Console.WriteLine($"Метод: {ex.TargetSite}");
+            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+        }
     } // ////////////////////////////////////////////////////////////////////////
     public void SetRes(TrueAim aim) {
-        bool sucess = (aim == curAim);
-        topics.SetRes(sucess);
-        lesson.SetRes(sucess);
-
+        try {
+            bool sucess = (aim == curAim);
+            topics.SetRes(sucess);
+            lesson.SetRes(sucess);
+        } catch(Exception ex) {
+            Console.WriteLine($"Исключение in SetRes({aim}): {ex.Message}");
+            Console.WriteLine($"Метод: {ex.TargetSite}");
+            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+        }
     } // ///////////////////////////////////////////////////////////////////////
     void OnChoose(bool isSucess) {
-        foreach(var x in lesson.vstuded) {
-
+        try {
+            foreach(var x in lesson.vstuded) {
+            }
+            on_aim?.Invoke(curAim);
+        } catch(Exception ex) {
+            Console.WriteLine($"Исключение in SetRes({isSucess}): {ex.Message}");
+            Console.WriteLine($"Метод: {ex.TargetSite}");
+            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
         }
-        on_aim?.Invoke(curAim);
     } // ///////////////////////////////////////////////////////////////////////
     void OnEndLesson() {
-
     } // /////////////////////////////////////////////////////////////////////////
     public delegate void StateHandlerAim(TrueAim realAim);   // Объявляем делегат
     public event StateHandlerAim on_aim;                 // Создаем переменную делегата

@@ -6,7 +6,7 @@ public class Lesson : DKCue {
     List<ExerciseEnh> v = new List<ExerciseEnh>();
     public List<Exercise> vstuded = new List<Exercise>();
 
-    public int ExercisesInLesson = 10;
+    public static int ExercisesInLesson = 10;
     public int[] vluzes = {0, 2};
     public int[] vsigns = {-1, 1};
     int index;
@@ -33,6 +33,7 @@ public class Lesson : DKCue {
     } // /////////////////////////////////////////////////////////////////////////////////////
 
     public int LoadRipe(List<Exercise> vRipe) {
+        try {
         vripe = vRipe;
         v.Clear();
         DateTime now = DateTime.Now;
@@ -57,8 +58,16 @@ public class Lesson : DKCue {
                 }
         }
         return ExercisesInLesson - j;
+
+        } catch(Exception ex) {
+            Console.WriteLine($"Исключение in LoadRipe(): {ex.Message}");
+            Console.WriteLine($"Метод: {ex.TargetSite}");
+            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+            return -1;
+        }
     } // ////////////////////////////////////////////////////////////////
     public void LoadNew(Topic topic) {
+        try {
         int jmax = ExercisesInLesson - v.Count;
         for(int j = 0; j < jmax; j++) {
             Layout lay = new Layout(topic.from, topic.to);
@@ -77,6 +86,11 @@ public class Lesson : DKCue {
         }
         Shuffle();
         dkcue = 1.0f;
+        } catch(Exception ex) {
+            Console.WriteLine($"Исключение in LoadNew({topic.name}): {ex.Message}");
+            Console.WriteLine($"Метод: {ex.TargetSite}");
+            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+        }
     } // /////////////////////////////////////////////////////////////////////
     void Shuffle() {
         Random rand = new Random();
@@ -88,18 +102,23 @@ public class Lesson : DKCue {
         }
     } // ////////////////////////////////////////////////////////////////
     public new void SetRes(bool sucess) {
-        base.SetRes(sucess);
-        curExercise.SetRes(sucess);
-        if(sucess) {
-            vstuded.Add(curExercise);
-            v.Remove(curExercise);
-            if(v.Count <= 0)
-                OnEndOfLesson?.Invoke();
-        } else {
-
+        try {
+            base.SetRes(sucess);
+            curExercise.SetRes(sucess);
+            if(sucess) {
+                vstuded.Add(curExercise);
+                v.Remove(curExercise);
+                if(v.Count <= 0)
+                    OnEndOfLesson?.Invoke();
+            } else {
+            }
+            Shuffle();
+            On_Choose?.Invoke(sucess);
+        } catch(Exception ex) {
+            Console.WriteLine($"Исключение in SetRes({sucess}): {ex.Message}");
+            Console.WriteLine($"Метод: {ex.TargetSite}");
+            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
         }
-        Shuffle();
-        On_Choose?.Invoke(sucess);
     } // ///////////////////////////////////////////////////////////////////////////////////////
 
     public delegate void StateHandlerOnChoose(bool isSucess);   // Объявляем делегат
