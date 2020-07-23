@@ -8,8 +8,8 @@ public class Topics : DKCue {
 
     public Topics() {
         topics.Add(new Topic("Intro", 10, 
-            1.5f, 3.0f, 0.0f, 0.2f,
-            1.5f, 5.0f, 0.0f, 0.4f
+            1.0f, 3.0f, 0.0f, 0.0f,
+            1.0f, 5.0f, 0.0f, 0.0f
             ));
         topics.Add(new Topic("Second step I", 20,
             1.0f, 3.0f, 05.0f, 0.05f,

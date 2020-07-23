@@ -32,25 +32,24 @@ public class Controller : MonoBehaviour {
     float xmax, zmax;
     TrueAim selectAim = TrueAim.none;
 
-    bool inupdate = false;
+    //bool inupdate = false;
 
     public Controller() {
-    } // ////////////////////////////////////////////////////////////////////////////////
-
-    void Start() {
-        inupdate = true;
         ballaim = new BallAim();
         ballcue = new BallCue();
         studyProcess = new StudyProcess();
         studyProcess.on_aim += OnReactOnChoose;
+    } // ////////////////////////////////////////////////////////////////////////////////
 
+    void Start() {
+        //inupdate = true;
         mode = GameMode.waitSetAimBall;
         xmax = luzeRight.transform.position.x;
         zmax = luzeLeft.transform.position.z;
         //luze = new Luze(luzeSelect);
         if(!showVirtBall)
             ballVirt.transform.position = new Vector3(ballVirt.transform.position.x, -100f, ballVirt.transform.position.z);
-        inupdate = false;
+        //inupdate = false;
     } // ////////////////////////////////////////////////////////////////////////////////
     void OnReactOnChoose(TrueAim trueAim) {
         if(selectAim == trueAim) {
@@ -60,9 +59,9 @@ public class Controller : MonoBehaviour {
         }
     } // ////////////////////////////////////////////////////////////////////////////////
     void Update() {
-        if(inupdate)
-            return;
-        inupdate = true;
+        //if(inupdate)
+            //return;
+        //inupdate = true;
         switch(mode) {
         case GameMode.waitSetAimBall:
             if(ballAim != null) {
@@ -87,21 +86,25 @@ public class Controller : MonoBehaviour {
         default:
             break;
         }
-        inupdate = false;
+        //inupdate = false;
     } // ///////////////////////////////////////////////////////////////////////////////////
     //                  MODES
     bool waitSetAimBall() {
-        ballaim.setRnd();   // normal, ballAim.transform.localScale.x
-        //ballaim.setDeg(17.5f, 3.218f);         // TODO ОООООООООООООООООООООООООООООООООО
+        Layout lay = studyProcess.layout;
+        //@ballaim.setRnd();   // normal, ballAim.transform.localScale.x
+        ballaim.setDeg(lay.angAimDeg, lay.distAimInD);
+        //ballaim.setDeg(0.0f, 3.218f);         // TODO ОООООООООООООООООООООООООООООООООО
         ballaim.dbg("Aim ");
+        
         d2p pluze = Field.luzeCornerAim(ballaim.curRad);
-        d2p paim = d2p.rotate(pluze, (3f / 4f) * Mathf.PI + ballaim.curRad, ballaim.curDist);
+        d2p paim = d2p.rotate(pluze, (3f / 4f) * Mathf.PI + ballaim.curRad, ballaim.curDistPhys);
         if(isOutRange(paim))
             return true;
         //paim.Set(13.42005f, 2.700449f);              // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
         paim.setObj(ballAim);
 
-        ballcue.setRnd(); // ballCue.transform.localScale.x 
+        //@ballcue.setRnd(); // ballCue.transform.localScale.x 
+        ballcue.setVal(lay.kCue, lay.distCueInD);
         //ballcue.setVal(0.5f, 3.7341f);         // TODO ОООООООООООООООООООООООООООООООО
         ballcue.dbg("Cue ");
 
@@ -117,13 +120,13 @@ public class Controller : MonoBehaviour {
         float beta = Mathf.Asin((paim.z - pvir.z) / Field.BallD);
         float rad = alfa - beta - Mathf.PI;
 
-        d2p pcue = pvir.CreateDp(rad, ballcue.curDist);
+        d2p pcue = pvir.CreateDp(rad, ballcue.curDistPhys);
         if(isOutRange(pcue))
             return true;
         //pcue.Set(11.83899f, 7.477563f);                   // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
         pcue.setObj(ballCue);
 
-        // Marks
+        // Marks aim
         float gama = alfa - beta;
         float dsel = Field.BallD * Mathf.Cos(alfa);
         d2p psel = pvir.CreateDp(gama, dsel);
@@ -173,7 +176,7 @@ public class Controller : MonoBehaviour {
         //ballaim.setDeg(17.5f, 3.218f);         // TODO ОООООООООООООООООООООООООООООООООО
         ballaim.dbg("Aim ");
         d2p pluze = Field.luzeCornerAim(ballaim.curRad);
-        d2p paim = d2p.rotate(pluze, (3f / 4f) * Mathf.PI + ballaim.curRad, ballaim.curDist);
+        d2p paim = d2p.rotate(pluze, (3f / 4f) * Mathf.PI + ballaim.curRad, ballaim.curDistPhys);
         if(isOutRange(paim))
             return true;
         //paim.Set(13.42005f, 2.700449f);              // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
@@ -195,7 +198,7 @@ public class Controller : MonoBehaviour {
         float beta = Mathf.Asin((paim.z - pvir.z) / Field.BallD);
         float rad = alfa - beta - Mathf.PI;
 
-        d2p pcue = pvir.CreateDp(rad, ballcue.curDist);
+        d2p pcue = pvir.CreateDp(rad, ballcue.curDistPhys);
         if(isOutRange(pcue))
             return true;
         //pcue.Set(11.83899f, 7.477563f);                   // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ

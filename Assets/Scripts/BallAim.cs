@@ -8,22 +8,22 @@ public class BallAim : Ball{
     public float curRad = 0;
 
     public BallAim() {
-        distFrom = 1.0f;  // in D ball
-        distTo = 5.0f;    // in D ball
+        distFromInD = 1.0f;  // in D ball
+        distToInD = 5.0f;    // in D ball
         //distStep = 0.5f;  // in D ball
-        curDist = 0;       // phis
+        curDistPhys = 0;       // phis
     } // ///////////////////////////////////////////////////////////////////////////////
     public void setRnd() {
         curDeg = getRnd(degMin, degMax, degStep);
         curRad = d2p.deg2rad(curDeg);
-        curDist = getDist();
+        setDistRnd();
     } // ///////////////////////////////////////////////////////////////////////////////
-    public void setDeg(float deg, float dist) {
+    public void setDeg(float deg, float distInD) {
         curDeg = deg;
         curRad = d2p.deg2rad(curDeg);
-        curDist = dist;
+        curDistPhys = distInD;
     } // ///////////////////////////////////////////////////////////////////////////////
     public void dbg(string s = "") {
-        Debug.Log(s + " deg=" + curDeg.ToString() + " dist=" + curDist);
+        Debug.Log(s + " deg=" + curDeg.ToString() + " dist=" + curDistPhys);
     } // ///////////////////////////////////////////////////////////////////////////////
 } // ***************************************************************************************

@@ -11,7 +11,7 @@ public enum TrueAim {
 } // ***********************************************************************************
 
 public class StudyProcess {
-    const string ver = "ver:(0.0.11)";
+    const string ver = "ver:(0.0.12)";
     const string TopicsFileDefault = "Develop.tpcs";
     const string RipeExercisesFileDefault = "Develop.rpex";
     const string LessonFileDefault = "Develop.lesn";
@@ -41,13 +41,13 @@ public class StudyProcess {
         lesson.OnEndOfLesson += OnEndLesson;
         //lesson.RegisterHandler(new Lesson.LessonStateHandler(DelStuded));
     } // //////////////////////////////////////////////////////////////////
-    public Layout curlay { get => lesson.curLayout; } // ///////////////////
+    public Layout layout { get => lesson.layout; } // ///////////////////
     public Layout moveNext() {
-        Layout lay = lesson.moveNext();
+        Layout lay = lesson.layout;
         if(lay != null)
             return lay;
         LoadLesson();
-        return lesson.moveFirst();
+        return lesson.layout;
     } // //////////////////////////////////////////////////////////////////////
     //void LoadLessonFile(string fname) {
     //    BinaryFormatter formatter = new BinaryFormatter();
@@ -76,8 +76,7 @@ public class StudyProcess {
                     topic = topics.ToNextTopic();
                 lesson.LoadNew(topic);
             }
-            lesson.moveFirst();
-            return lesson.curLayout;
+            return lesson.layout;
         } catch(Exception ex) {
             Console.WriteLine($"Исключение in public Layout LoadLesson(): {ex.Message}");
             Console.WriteLine($"Метод: {ex.TargetSite}");

@@ -1,29 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System;
+﻿using System;
 
 [Serializable]
 public class Layout {
-    public float distAim { get; private set; }
-    public float distCue { get; private set; }
+    public float distAimInD { get; private set; }
+    public float distCueInD { get; private set; }
     public float angAimDeg { get; private set; }
     public float kCue { get; set; }
     static Random rand = new Random();
 
-    public Layout(float DistAim, float DistCue, float AngleAimDeg, float KoefCue) {
-        distAim = DistAim;
-        distCue = DistCue;
+    public Layout(float DistAimInD, float DistCueInD, float AngleAimDeg, float KoefCue) {
+        distAimInD = DistAimInD;
+        distCueInD = DistCueInD;
         angAimDeg = AngleAimDeg;
         kCue = KoefCue;
     } // ////////////////////////////////////////////////////////////////////
-    public Layout(Layout from, Layout to) {
-        distAim = rnd(from.distAim, to.distAim) * Field.BallD;
-        distCue = rnd(from.distCue, to.distCue) * Field.BallD;
-        angAimDeg = rnd(from.angAimDeg, to.angAimDeg);
-        kCue = rnd(from.kCue, to.kCue);
+    public Layout(Layout fromInD, Layout toInD) {
+        distAimInD = rnd(fromInD.distAimInD, toInD.distAimInD) * Field.BallD;
+        distCueInD = rnd(fromInD.distCueInD, toInD.distCueInD) * Field.BallD;
+        angAimDeg = rnd(fromInD.angAimDeg, toInD.angAimDeg);
+        kCue = rnd(fromInD.kCue, toInD.kCue);
     } // ////////////////////////////////////////////////////////////////////
     public bool EQ(Layout other) {
-        return distAim == other.distAim && distCue == other.distCue &&
+        return distAimInD == other.distAimInD && distCueInD == other.distCueInD &&
             angAimDeg == other.angAimDeg && kCue == other.kCue;
     } // ///////////////////////////////////////////////////////////////////////
     float rnd(float from, float to) {

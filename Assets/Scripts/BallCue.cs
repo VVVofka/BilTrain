@@ -12,26 +12,27 @@ public class BallCue : Ball {
         kBallMin = 1.0f * kBallStep;
         kBallMax = 1.0f - kBallStep;
 
-        distFrom = 3.0f;  // in D ball
-        distTo = 9.0f;    // in D ball
+        distFromInD = 3.0f;  // in D ball
+        distToInD = 9.0f;    // in D ball
         //distStep = 0.5f;  // in D ball
-        curDist = 0;       // phis
+        curDistPhys = 0;       // phis
     } // ///////////////////////////////////////////////////////////////////////////////
     public void setRnd() {
-        curK = getK();
-        curDist = getDist();
+        setKRnd();
+        setDistRnd();
     } // ///////////////////////////////////////////////////////////////////////////////
     public void setVal(float k, float dist) {
         curK = k;
-        curDist = dist;
+        curDistPhys = dist;
     } // ///////////////////////////////////////////////////////////////////////////////
-    float getK() {
+    void setKRnd() {
         int nfrom = (int)(kBallMin / kBallStep);
         int nto = (int)(kBallMax / kBallStep);
         int n = Random.Range(nfrom, nto + 1);
-        return Mathf.Sign(Random.Range(-1, 1)) * n * kBallStep;
+        int sign = Random.Range(0, 1) * 2 - 1;
+        curK = sign * n * kBallStep;
     } // /////////////////////////////////////////////////////////////////////////////
     public void dbg(string s = "") {
-        Debug.Log(s + " k=" + curK.ToString() + " dist=" + curDist);
+        Debug.Log(s + " k=" + curK.ToString() + " dist=" + curDistPhys);
     } // ///////////////////////////////////////////////////////////////////////////////
 } // *****************************************************************************

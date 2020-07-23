@@ -9,28 +9,10 @@ public class Lesson : DKCue {
     public static int ExercisesInLesson = 10;
     public int[] vluzes = {0, 2};
     public int[] vsigns = {-1, 1};
-    int index;
-    List<Exercise> vripe = new List<Exercise>();   // ptr
+    List<Exercise> vripe = new List<Exercise>();   
 
-    public Layout curLayout { get => v.Count > 0 ? v[index].layout : null; }
-    public ExerciseEnh curExercise { get => v.Count > 0 ? v[index] : null; }
-    public bool isEndOfLesson { get => index >= v.Count; }
-
-    public Layout moveNext() {
-        if(++index >= v.Count) {
-            index = 0;
-            return null;
-        }
-        return curLayout;
-    } // /////////////////////////////////////////////////////////////////////////////////////
-    public Layout moveFirst() {
-        index = 0;
-        vstuded.Clear();
-        if(v.Count == 0)
-            return null;
-        dkcue = 1.0f;
-        return curLayout;
-    } // /////////////////////////////////////////////////////////////////////////////////////
+    public Layout layout { get => v.Count > 0 ? v[0].layout : null; }
+    public ExerciseEnh curExercise { get => v.Count > 0 ? v[0] : null; }
 
     public int LoadRipe(List<Exercise> vRipe) {
         try {
@@ -44,8 +26,8 @@ public class Lesson : DKCue {
             if(++j >= ExercisesInLesson)
                 break;
             Layout lay = p.layout;
-            float distAim = lay.distAim;
-            float distCue = lay.distCue;
+            float distAim = lay.distAimInD;
+            float distCue = lay.distCueInD;
             foreach(int luz in vluzes)
                 foreach(int signAng in vsigns) {
                     float angle = lay.angAimDeg * signAng;
@@ -58,7 +40,6 @@ public class Lesson : DKCue {
                 }
         }
         return ExercisesInLesson - j;
-
         } catch(Exception ex) {
             Console.WriteLine($"Исключение in LoadRipe(): {ex.Message}");
             Console.WriteLine($"Метод: {ex.TargetSite}");
@@ -71,8 +52,8 @@ public class Lesson : DKCue {
         int jmax = ExercisesInLesson - v.Count;
         for(int j = 0; j < jmax; j++) {
             Layout lay = new Layout(topic.from, topic.to);
-            float distAim = lay.distAim;
-            float distCue = lay.distCue;
+            float distAim = lay.distAimInD;
+            float distCue = lay.distCueInD;
             foreach(int luz in vluzes)
                 foreach(int signAng in vsigns) {
                     float angle = lay.angAimDeg * signAng;
