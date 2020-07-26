@@ -6,7 +6,6 @@ public class d2p {
     public float x;
     public float z;
     public d2p(float V = 0) { x = z = V; } // /////////////////////////////////////////////////////
-    public d2p(double V = 0) { x = z = (float)V; } // /////////////////////////////////////////////
     public d2p(d2p V) { x = V.x; z = V.z; } // ////////////////////////////////////////////////////
     public d2p(float X, float Z) { x = X; z = Z; } // /////////////////////////////////////////////
     public d2p(double X, double Z) { x = (float)X; z = (float)Z; } // /////////////////////////////
@@ -92,6 +91,13 @@ public class d2p {
     public void dbg(string s = "") {
         Debug.Log(s + x + "*" + z);
     } // /////////////////////////////////////////////////////////////////////////////////////////
+    static public bool Intersection(d2p a1, d2p a2, d2p b1, d2p b2, out d2p Cross) {
+        d2p cross;
+        Utils.Intersections.Info info;
+        bool ret = Utils.Intersections.LineLine(a1, a2, b1, b2, out cross, out info);
+        Cross = cross;
+        return ret;
+    } // ////////////////////////////////////////////////////////////////////////////////////////
 } // ********************************************************************************
 
 //public class d2v {
