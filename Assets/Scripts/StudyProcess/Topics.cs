@@ -9,7 +9,7 @@ public class Topics : DKCue {
     public Topics() {
         topics.Add(new Topic("Intro", 30, 
             3.0f, 4.0f, 10.0f, 0.2f,     // distAimFrom, distCueFrom, angAimDegFrom, kCueFrom,
-            5.0f, 7.0f, 40.0f, 0.5f      // distAimTo,   distCueTo,   angAimDegTo,   kCueTo
+            5.0f, 7.0f, 30.0f, 0.4f      // distAimTo,   distCueTo,   angAimDegTo,   kCueTo
             ));
         topics.Add(new Topic("Second step I", 20,
             1.0f, 3.0f, 05.0f, 0.05f,     // distAimFrom, distCueFrom, angAimDegFrom, kCueFrom,

@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\StudyProcess\DKCue.cs" />
     <Compile Include="Assets\Scripts\StudyProcess\Exercise.cs" />
     <Compile Include="Assets\Scripts\Intersections.cs" />
+    <Compile Include="Assets\Scripts\Squadre.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

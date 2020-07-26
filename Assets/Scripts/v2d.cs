@@ -28,7 +28,7 @@ public class d2p {
         return Mathf.Atan2(Base.z - z, x - Base.x);
     } // //////////////////////////////////////////////////////////////////////////////////////////
     // return /_ AOB
-    static float rad3(d2p A, d2p O, d2p B) {
+    static public float rad3(d2p A, d2p O, d2p B) {
         return B.rad(O) - A.rad(O);
     } // //////////////////////////////////////////////////////////////////////////////////////////
     public float deg(d2p Base) { return rad2deg(rad(Base)); }
@@ -47,7 +47,7 @@ public class d2p {
         return p2.sum(Base);
     } // ////////////////////////////////////////////////////////////////////
     public static d2p sum(d2p p1, d2p p2) { return new d2p(p1.x + p2.x, p1.z + p2.z); }
-    public d2p sum(d2p p1) { return new d2p(p1.x + x, p1.z + z); }
+    public d2p sum(d2p p1) { return new d2p(p1.x + x, p1.z + z); } // ///////////////
     public static d2p setDist(d2p baza, d2p other, float newsize) {
         float len = baza.dist(other);
         if(len == 0)
@@ -87,6 +87,15 @@ public class d2p {
         Cross = cross;
         return ret;
     } // ////////////////////////////////////////////////////////////////////////////////////////
+    static public d2p rotateRef(d2p Base, d2p p, float rad) {
+        float len = Base.dist(p);
+        float sinalfa = (Base.z - p.z) / len;
+        float alfa = Mathf.Asin(sinalfa);
+        float gamma = alfa + rad;
+        float x = Base.x + len * Mathf.Cos(gamma);
+        float z = Base.z - len * Mathf.Sin(gamma);
+        return new d2p(x, z);
+    } // ////////////////////////////////////////////////////////////////////////////////////
 } // ********************************************************************************
 
 //public class d2v {
