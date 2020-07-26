@@ -117,19 +117,6 @@ public class Controller : MonoBehaviour {
         //pcue.Set(11.83899f, 7.477563f);                   // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
         pcue.setObj(ballCue);
 
-        // Marks aim
-        float gama = alfa - beta;
-        float dsel = Field.BallD * Mathf.Cos(alfa);
-        d2p pAimCenter = pvir.CreateDp(gama, dsel);
-        pAimCenter.setObj(aimCenter);
-
-        float dkcue = kCue0 * studyProcess.dkcue;
-        d2p pAimLeft = d2p.addDist(paim, pAimCenter, Field.BallD * dkcue);
-        pAimLeft.setObj(aimLeft);
-        d2p pAimRight = d2p.addDist(paim, pAimCenter, -Field.BallD * dkcue);
-        pAimRight.setObj(aimRight);
-
- 
         // Camera
         d2p ptarget = paim;
         d2p pcam =  getPCameraHoriz(ptarget, pcue);
@@ -142,7 +129,6 @@ public class Controller : MonoBehaviour {
         float degcamnear = d2p.rad2deg(Mathf.Atan2(h, wnear));
         float degcamfar = d2p.rad2deg(Mathf.Atan2(h - bounds.transform.position.y, wfar));
         float degcamavg = (degcamnear + degcamfar) / 2;
-        Debug.Log("degcamavg " + degcamavg);
 
         float aCueTarget = pcue.rad(ptarget);
         float agCueCam = d2p.rad2deg(aCueTarget - Mathf.PI / 2);
@@ -156,6 +142,22 @@ public class Controller : MonoBehaviour {
         float sectorVert = degcamnear - degcamfar;
         float sectorMax = Mathf.Max(sectorVert, sectorHor);
         plcamera.fieldOfView = 1.05f * sectorMax;
+
+        // Marks aim
+        d2p px, ptmp = new d2p(pcue.x + pcam.z - pcue.z, pcue.z + pcue.x - pcam.x);
+        _ = d2p.Intersection(pcue, ptmp, pcam, pvir, out px);
+
+
+        float gama = alfa - beta;
+        float dsel = Field.BallD * Mathf.Cos(alfa);
+        d2p pAimCenter = pvir.CreateDp(gama, dsel);
+        pAimCenter.setObj(aimCenter);
+
+        float dkcue = kCue0 * studyProcess.dkcue;
+        d2p pAimLeft = d2p.addDist(paim, pAimCenter, Field.BallD * dkcue);
+        pAimLeft.setObj(aimLeft);
+        d2p pAimRight = d2p.addDist(paim, pAimCenter, -Field.BallD * dkcue);
+        pAimRight.setObj(aimRight);
 
         //paim.dbg("Aim ");        pcue.dbg("Cue ");
         //p.dbg("aim:" + ballaim.curDeg.ToString() + " dist:" + ballaim.curDist.ToString() + "  " + " k:" + ballcue.curK);

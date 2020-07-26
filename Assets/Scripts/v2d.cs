@@ -27,6 +27,10 @@ public class d2p {
             return 0;
         return Mathf.Atan2(Base.z - z, x - Base.x);
     } // //////////////////////////////////////////////////////////////////////////////////////////
+    // return /_ AOB
+    static float rad3(d2p A, d2p O, d2p B) {
+        return B.rad(O) - A.rad(O);
+    } // //////////////////////////////////////////////////////////////////////////////////////////
     public float deg(d2p Base) { return rad2deg(rad(Base)); }
     public static float rad2deg(float rad) { return 180f * rad / Mathf.PI; }
     public static float deg2rad(float deg) { return Mathf.PI * deg / 180f; }
@@ -62,21 +66,6 @@ public class d2p {
         float dz = k * (other.z - baza.z);
         return new d2p(baza.x + dx, baza.z + dz);
     } // ///////////////////////////////////////////////////////////////////////////
-    public static d2p cross(d2p pABDot1, d2p pABDot2, d2p pCDDot1, d2p pCDDot2) {
-        // https://www.interestprograms.ru/source-codes-tochka-peresecheniya-dvuh-pryamyh-na-ploskosti
-        double a1 = pABDot2.z - pABDot1.z;
-        double b1 = pABDot1.x - pABDot2.x;
-        double c1 = -pABDot1.x * pABDot2.z + pABDot1.z * pABDot2.x;
-
-        double a2 = pCDDot2.z - pCDDot1.z;
-        double b2 = pCDDot1.x - pCDDot2.x;
-        double c2 = -pCDDot1.x * pCDDot2.z + pCDDot1.z * pCDDot2.x;
-
-        double q = (a1 * b2 - a2 * b1);
-        if(q == 0) // Прямые параллельны другу друг и не имеют точек пересечения
-            return null;
-        return new d2p((b1 * c2 - b2 * c1) / q, (a2 * c1 - a1 * c2) / q);
-    }  // //////////////////////////////////////////////////////////////////////////////////////////
     public d2p inv() { return new d2p(-x, -z); } // ////////////////////////////////////////////////
     public d2p invx() { return new d2p(-x, z); } // ////////////////////////////////////////////////
     public d2p invz() { return new d2p(x, -z); } // ////////////////////////////////////////////////
