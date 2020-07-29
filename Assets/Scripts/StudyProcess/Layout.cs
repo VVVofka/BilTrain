@@ -38,6 +38,7 @@ public class Layout {
         //kCue = rnd(fromInD.kCue, toInD.kCue);
     } // ////////////////////////////////////////////////////////////////////
     public bool Set() {
+        int j = 128;
         do {
             // Target point
             angAimDeg = rnd(_fromInD.angAimDeg, _toInD.angAimDeg);
@@ -58,10 +59,12 @@ public class Layout {
             distCueInD = rnd(_fromInD.distCueInD, _toInD.distCueInD);
             kCue = rnd(_fromInD.kCue, _toInD.kCue);
 
+            float kd = kCue * Field.BallD;
+            float alfa = getAlfa(kd, distCuePhys);
 
             break;
-        } while(true);
-        return true;
+        } while(--j > 0);
+        return j > 0;
     } // ////////////////////////////////////////////////////////////////////
     bool isOutRange(d2p p) {
         float xr = p.x + Field.BallR;
@@ -76,4 +79,21 @@ public class Layout {
         float rnd = (float)rand.NextDouble();
         return from + rnd * (to - from);
     } // /////////////////////////////////////////////////////////////////////////
+    float getAlfa(float kD, float distCue) {
+        float kD2 = kD * kD;
+        float a = 1 + kD2 / (distCue * distCue);
+        float b = -2 * kD2 / distCue;
+        float c = kD2 - Field.BallD * Field.BallD;
+        Utils.Squdre quadro = new Utils.Squdre(a, b, c);
+        float res = float.NaN;
+        if(quadro.cnt == 2) {
+            if(quadro.res1 >= 0 && quadro.res2 < 0)
+                res = quadro.res1;
+            else if(quadro.res2 >= 0 && quadro.res1 < 0)
+                res = quadro.res2;
+        } else if(quadro.cnt == 1) {
+            res = quadro.res1;
+        }
+        return Mathf.Acos(res / Field.BallD);
+    } // ////////////////////////////////////////////////////////////////////////////////
 } // ***************************************************************************
