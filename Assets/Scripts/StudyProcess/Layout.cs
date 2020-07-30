@@ -3,16 +3,16 @@ using UnityEngine;
 
 [Serializable]
 public class Layout {
-    public float distAimInD { get; private set; }
-    public float distCueInD { get; private set; }
-    public float angAimDeg { get; private set; }
-    public float kCue { get; set; }
+    public float distAimInD;
+    public float distCueInD;
+    public float angAimDeg;
+    public float kCue;
 
-    public d2p pluze { get; private set; }
-    public d2p paim { get; private set; }
-    public d2p pvirt { get; private set; }
-    public d2p ppcue { get; private set; }
-    public d2p ptargCentre { get; private set; }
+    public d2p pluze;
+    public d2p paim;
+    public d2p pvir;
+    public d2p pcue;
+    public d2p ptargCentre;
     public d2p ptargLeft { get; private set; }
     public d2p ptargRight { get; private set; }
 
@@ -32,43 +32,47 @@ public class Layout {
     public Layout(Layout fromInD, Layout toInD) {
         _fromInD = fromInD;
         _toInD = toInD;
-        //distAimInD = rnd(fromInD.distAimInD, toInD.distAimInD);
-        //distCueInD = rnd(fromInD.distCueInD, toInD.distCueInD);
-        //angAimDeg = rnd(fromInD.angAimDeg, toInD.angAimDeg);
-        //kCue = rnd(fromInD.kCue, toInD.kCue);
     } // ////////////////////////////////////////////////////////////////////
-    public bool Set() {
+    bool Set() {
+        // Target point
+        pluze = Field.luzeCornerAim(angAimRad);
+        d2p pluzeabs = Field.luzeCornerAim(0f);
+
+        // Aim ball
+        paim = new d2p(Field.xmax, Field.zmax);
+        paim = d2p.rotateRef(pluzeabs, paim, Mathf.PI + angAimRad);
+        paim = d2p.setDist(pluzeabs, paim, distAimPhys);
+        if(isOutRange(paim))
+            return false;
+
+        // Virtual ball
+        float virdist = pluze.dist(paim) + Field.BallD;
+        pvir = d2p.setDist(pluze, paim, virdist);
+        if(isOutRange(pvir))
+            return false;
+
+        // Target point
+        float kd = kCue * Field.BallD;
+        float alfa = getAlfa(kd, distCuePhys);
+        ptargCentre = d2p.rotateRef(paim, pvir, Mathf.PI / 2 - alfa);
+        ptargCentre = d2p.setDist(paim, ptargCentre, kd);
+
+        // Cue ball
+        pcue = d2p.rotateRef(paim, pvir, -alfa);
+        pcue = d2p.setDist(paim, pcue, distCuePhys);
+        if(isOutRange(pcue))
+            return false;
+        return true;
+    } // ////////////////////////////////////////////////////////////////////////////////////////
+    public bool SetBandRnd(int signAngAim, int signKCue) {
         for(int j = 0; j < 128; j++) {
-            // Target point
-            angAimDeg = rnd(_fromInD.angAimDeg, _toInD.angAimDeg);
-            pluze = Field.luzeCornerAim(angAimRad);
-
-            // Aim ball
+            angAimDeg = rnd(_fromInD.angAimDeg, _toInD.angAimDeg) * Math.Sign(signAngAim);
             distAimInD = rnd(_fromInD.distAimInD, _toInD.distAimInD);
-            paim = d2p.rotate(pluze, (3f / 4f) * Mathf.PI + angAimRad, distAimPhys);
-            if(isOutRange(paim))
-                continue;
-
-            // Virtual ball
-            float virdist = pluze.dist(paim) + Field.BallD;
-            d2p pvir = d2p.setDist(pluze, paim, virdist);
-            if(isOutRange(pvir))
-                continue;
-
-            // Target point
             distCueInD = rnd(_fromInD.distCueInD, _toInD.distCueInD);
-            kCue = rnd(_fromInD.kCue, _toInD.kCue);
-            float kd = kCue * Field.BallD;
-            float alfa = getAlfa(kd, distCuePhys);
-            ptargCentre = d2p.rotateRef(paim, pvir, Mathf.PI / 2 - alfa);
-            ptargCentre = d2p.setDist(paim, ptargCentre, kd);
-
-            // Cue ball
-            d2p pcue = d2p.rotateRef(paim, pvir, -alfa);
-            pcue = d2p.setDist(paim, pcue, distCuePhys);
-            if(isOutRange(pcue))
-                continue;
-            return true;
+            kCue = rnd(_fromInD.kCue, _toInD.kCue) * Math.Sign(signKCue);
+            bool bsuccess = Set();
+            if(bsuccess)
+                return true;
         }
         return false;
     } // ////////////////////////////////////////////////////////////////////

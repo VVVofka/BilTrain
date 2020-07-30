@@ -92,57 +92,32 @@ public class Controller : MonoBehaviour {
     } // ////////////////////////////////////////////////////////////////////////////////////
     bool waitSetAimBall() {
         Layout lay = studyProcess.layout;
-        d2p pluze = Field.luzeCornerAim(lay.angAimRad);
-        d2p paim = d2p.rotate(pluze, (3f / 4f) * Mathf.PI + lay.angAimRad, lay.distAimPhys);
-        if(isOutRange(paim))
-            return true;
-        //paim.Set(13.42005f, 2.700449f);              // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
-        paim.setObj(ballAim);
 
-        // Virtual ball
-        float virdist = pluze.dist(paim) + Field.BallD;
-        d2p pvir = d2p.setDist(pluze, paim, virdist);
-        if(isOutRange(pvir))
-            return true;
-        pvir.setObj(ballVirt);
+        lay.paim.setObj(ballAim);
+        lay.pvir.setObj(ballVirt);
+        lay.ptargCentre.setObj(aimCenter);
+        lay.pcue.setObj(ballCue);
 
-        // Marks aim
-        float kd = lay.kCue * Field.BallD;
-        float alfa = getAlfa(kd, lay.distCuePhys);
-
-        d2p ptargCentre = d2p.rotateRef(paim, pvir, Mathf.PI / 2 - alfa);
-        ptargCentre = d2p.setDist(paim, ptargCentre, kd);
-        ptargCentre.setObj(aimCenter);
-
-        float dkcue = kCue0 * studyProcess.dkcue;
-        d2p ptargLeft = d2p.addDist(paim, ptargCentre, kd + Field.BallD * dkcue);
-        ptargLeft.setObj(aimLeft);
-        d2p ptargRight = d2p.addDist(paim, ptargCentre, kd - Field.BallD * dkcue);
-        ptargRight.setObj(aimRight);
-
-        // Cue ball
-        d2p pcue = d2p.rotateRef(paim, pvir, -alfa);
-        pcue = d2p.setDist(paim, pcue, lay.distCuePhys);
-
-        if(isOutRange(pcue))
-            return true;
-        //pcue.Set(11.83899f, 7.477563f);                   // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
-        pcue.setObj(ballCue);
+        //float dkcue = kCue0 * studyProcess.dkcue;
+        //d2p ptargLeft = d2p.addDist(paim, ptargCentre, kd + Field.BallD * dkcue);
+        //ptargLeft.setObj(aimLeft);
+        //d2p ptargRight = d2p.addDist(paim, ptargCentre, kd - Field.BallD * dkcue);
+        //ptargRight.setObj(aimRight);
 
         // Camera
-        d2p ptarget = paim;
-        d2p pcam =  getPCameraHoriz(ptarget, pcue);
+        d2p ptarget = lay.paim;
+        d2p pcam =  getPCameraHoriz(ptarget, lay.pcue);
 
         d2p pbnd = new d2p(bounds); //  far point arc
         float wfar = pcam.dist(pbnd);
-        float wnear = pcam.dist(pcue);
+        float wnear = pcam.dist(lay.pcue);
         float h = plcamera.transform.position.y;
 
         float degcamnear = d2p.rad2deg(Mathf.Atan2(h, wnear));
         float degcamfar = d2p.rad2deg(Mathf.Atan2(h - bounds.transform.position.y, wfar));
         float degcamavg = (degcamnear + degcamfar) / 2;
 
-        float aCueTarget = pcue.rad(ptarget);
+        float aCueTarget = lay.pcue.rad(ptarget);
         float agCueCam = d2p.rad2deg(aCueTarget - Mathf.PI / 2);
 
         Quaternion rotation = Quaternion.Euler(degcamavg, agCueCam, 0);
@@ -150,7 +125,7 @@ public class Controller : MonoBehaviour {
             new Vector3(pcam.x, plcamera.transform.position.y, pcam.z),
             rotation);
 
-        float sectorHor = getHorSector(pcam, pcue, paim, pluze, Mathf.PI - aCueTarget);
+        float sectorHor = getHorSector(pcam, lay.pcue, lay.paim, lay.pluze, Mathf.PI - aCueTarget);
         float sectorVert = degcamnear - degcamfar;
         float sectorMax = Mathf.Max(sectorVert, sectorHor);
         plcamera.fieldOfView = 1.05f * sectorMax;
@@ -160,23 +135,6 @@ public class Controller : MonoBehaviour {
         mode = GameMode.waitChoice;
         return false;
     } // ///////////////////// EHD MODES ///////////////////////////////////////////////////
-    float getAlfa(float kD, float distCue) {
-        float kD2 = kD * kD;
-        float a = 1 + kD2 / (distCue * distCue);
-        float b = -2 * kD2 / distCue;
-        float c = kD2 - Field.BallD * Field.BallD;
-        Utils.Squdre quadro = new Utils.Squdre(a, b, c);
-        float res = float.NaN;
-        if(quadro.cnt == 2) {
-            if(quadro.res1 >= 0 && quadro.res2 < 0)
-                res = quadro.res1;
-            else if(quadro.res2 >= 0 && quadro.res1 < 0)
-                res = quadro.res2;
-        } else if(quadro.cnt == 1){
-            res = quadro.res1;
-        }
-        return Mathf.Acos(res / Field.BallD);
-    } // ////////////////////////////////////////////////////////////////////////////////
 
     bool waitSetAimBall2() {
         Layout lay = studyProcess.layout;
@@ -327,14 +285,14 @@ public class Controller : MonoBehaviour {
     } // /////////////////////////////////////////////////////////////////////////////////
 
 } // ************************************************************************************
-//bool waitSetAimBall() {
-//    Layout lay = studyProcess.layout;
-//    d2p pluze = Field.luzeCornerAim(lay.angAimRad);
-//    d2p paim = d2p.rotate(pluze, (3f / 4f) * Mathf.PI + lay.angAimRad, lay.distAimPhys);
-//    if(isOutRange(paim))
-//        return true;
-//    //paim.Set(13.42005f, 2.700449f);              // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
-//    paim.setObj(ballAim);
+  //bool waitSetAimBall() {
+  //    Layout lay = studyProcess.layout;
+  //    d2p pluze = Field.luzeCornerAim(lay.angAimRad);
+  //    d2p paim = d2p.rotate(pluze, (3f / 4f) * Mathf.PI + lay.angAimRad, lay.distAimPhys);
+  //    if(isOutRange(paim))
+  //        return true;
+  //    //paim.Set(13.42005f, 2.700449f);              // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
+  //    paim.setObj(ballAim);
 
 //    // Virtual ball
 //    float virdist = pluze.dist(paim) + Field.BallD;

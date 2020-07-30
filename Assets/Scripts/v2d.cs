@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using UnityEngine;
+[Serializable]
 public class d2p {
     public float x;
     public float z;
@@ -72,13 +71,18 @@ public class d2p {
     public void setObj(GameObject obj) {
         obj.transform.position = new Vector3(x, obj.transform.position.y, z);
     } // //////////////////////////////////////////////////////////////////////////////////////////
-    public static float normrad(float rad) {
-        if(rad >= Mathf.PI)
-            return rad - Mathf.PI * 2;
-        return rad;
-    } // /////////////////////////////////////////////////////////////////////////////////////
     public void dbg(string s = "") {
         Debug.Log(s + x + "*" + z);
+    } // /////////////////////////////////////////////////////////////////////////////////////////
+    static public float normrad(float angl) {
+        float pi2 = (2f * Mathf.PI);
+        int n = (int)(angl / pi2);
+        float ret = angl - n * pi2;
+        if(ret > Mathf.PI)
+            return ret - pi2;
+        if(ret < -Mathf.PI)
+            return ret + pi2;
+        return ret;
     } // /////////////////////////////////////////////////////////////////////////////////////////
     static public bool Intersection(d2p a1, d2p a2, d2p b1, d2p b2, out d2p Cross) {
         d2p cross;
@@ -89,12 +93,25 @@ public class d2p {
     } // ////////////////////////////////////////////////////////////////////////////////////////
     static public d2p rotateRef(d2p Base, d2p p, float rad) {
         float len = Base.dist(p);
-        float sinalfa = (Base.z - p.z) / len;
-        float alfa = Mathf.Asin(sinalfa);
-        float gamma = alfa + rad;
-        float x = Base.x + len * Mathf.Cos(gamma);
-        float z = Base.z - len * Mathf.Sin(gamma);
-        return new d2p(x, z);
+        d2p nrm = new d2p(p.x - Base.x, p.z - Base.z);
+        float alfa;
+        if(nrm.x > 0) {
+            if(nrm.z < 0) {
+                alfa = Mathf.Asin(-nrm.z / len);
+            } else {
+                alfa = Mathf.Asin(nrm.z / len);
+            }
+        } else {    // if(nrm.x <= 0)
+            if(nrm.z < 0) {
+                alfa = Mathf.PI - Mathf.Asin(-nrm.z / len);
+            } else {
+                alfa = Mathf.PI + Mathf.Asin(nrm.z / len);
+            }
+        }
+        float beta = alfa - rad;
+        float x = len * Mathf.Cos(-beta);
+        float z = len * Mathf.Sin(-beta);
+        return new d2p(Base.x + x, Base.z + z);
     } // ////////////////////////////////////////////////////////////////////////////////////
 } // ********************************************************************************
 

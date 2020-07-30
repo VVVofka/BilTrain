@@ -8,38 +8,32 @@ public class Lesson : DKCue {
 
     public static int ExercisesInLesson = 10;
     public int[] vluzes = {0, 2};
-    public int[] vsigns = {-1, 1};
-    List<Exercise> vripe = new List<Exercise>();   
+    public int[] vsigns = {1, -1};
+    List<Exercise> vripe = new List<Exercise>();
 
     public Layout layout { get => v.Count > 0 ? v[0].layout : null; }
     public ExerciseEnh curExercise { get => v.Count > 0 ? v[0] : null; }
 
     public int LoadRipe(List<Exercise> vRipe) {
         try {
-        vripe = vRipe;
-        v.Clear();
-        DateTime now = DateTime.Now;
-        int j = 0;
-        foreach(Exercise p in vripe) {
-            if(p.overdue(now) <= 0)
-                break;
-            if(++j >= ExercisesInLesson)
-                break;
-            Layout lay = p.layout;
-            float distAim = lay.distAimInD;
-            float distCue = lay.distCueInD;
-            foreach(int luz in vluzes)
-                foreach(int signAng in vsigns) {
-                    float angle = lay.angAimDeg * signAng;
-                    foreach(int signK in vsigns) {
-                        float kCue = lay.kCue * signK;
-                        Layout layout = new Layout(distAim, distCue, angle, kCue);
-                        Exercise psign = new Exercise(layout);
-                        v.Add(new ExerciseEnh(psign, luz, signK));
-                    }
-                }
-        }
-        return ExercisesInLesson - j;
+            vripe = vRipe;
+            v.Clear();
+            DateTime now = DateTime.Now;
+            int j = 0;
+            foreach(Exercise exercise in vripe) {
+                if(exercise.overdue(now) <= 0)
+                    break;
+                if(++j >= ExercisesInLesson)
+                    break;
+                Layout lay = exercise.layout;
+                foreach(int luz in vluzes)
+                    foreach(int signAng in vsigns)
+                        foreach(int signK in vsigns) {
+                            if(lay.SetBandRnd(signAng, signK))
+                                v.Add(new ExerciseEnh(new Exercise(lay), luz, signK));
+                        }
+            }
+            return ExercisesInLesson - j;
         } catch(Exception ex) {
             Console.WriteLine($"Исключение in LoadRipe(): {ex.Message}");
             Console.WriteLine($"Метод: {ex.TargetSite}");
@@ -47,30 +41,27 @@ public class Lesson : DKCue {
             return -1;
         }
     } // ////////////////////////////////////////////////////////////////
-    public void LoadNew(Topic topic) {
+    public int LoadNew(Topic topic) {
         try {
-        int jmax = ExercisesInLesson - v.Count;
-        for(int j = 0; j < jmax; j++) {
-            Layout lay = new Layout(topic.from, topic.to);
-            float distAim = lay.distAimInD;
-            float distCue = lay.distCueInD;
-            foreach(int luz in vluzes)
-                foreach(int signAng in vsigns) {
-                    float angle = lay.angAimDeg * signAng;
-                    foreach(int signK in vsigns) {
-                        float kCue = lay.kCue * signK;
-                        Layout layout = new Layout(distAim, distCue, angle, kCue);
-                        Exercise psign = new Exercise(layout);
-                        v.Add(new ExerciseEnh(psign, luz, signK));
+            int jmax = ExercisesInLesson - v.Count;
+            for(int j = 0; j < jmax; j++) {
+                Layout lay = new Layout(topic.from, topic.to);
+                foreach(int luz in vluzes)
+                    foreach(int signAng in vsigns) {
+                        foreach(int signK in vsigns) {
+                            if(lay.SetBandRnd(signAng, signK))
+                                v.Add(new ExerciseEnh(new Exercise(lay), luz, signK));
+                        }
                     }
-                }
-        }
-        Shuffle();
-        dkcue = 1.0f;
+            }
+            Shuffle();
+            dkcue = 1.0f;
+            return v.Count;
         } catch(Exception ex) {
             Console.WriteLine($"Исключение in LoadNew({topic.name}): {ex.Message}");
             Console.WriteLine($"Метод: {ex.TargetSite}");
             Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+            return -1;
         }
     } // /////////////////////////////////////////////////////////////////////
     void Shuffle() {
