@@ -38,13 +38,13 @@ public class Layout {
         //kCue = rnd(fromInD.kCue, toInD.kCue);
     } // ////////////////////////////////////////////////////////////////////
     public bool Set() {
-        int j = 128;
-        do {
+        for(int j = 0; j < 128; j++) {
             // Target point
             angAimDeg = rnd(_fromInD.angAimDeg, _toInD.angAimDeg);
             pluze = Field.luzeCornerAim(angAimRad);
 
             // Aim ball
+            distAimInD = rnd(_fromInD.distAimInD, _toInD.distAimInD);
             paim = d2p.rotate(pluze, (3f / 4f) * Mathf.PI + angAimRad, distAimPhys);
             if(isOutRange(paim))
                 continue;
@@ -55,16 +55,22 @@ public class Layout {
             if(isOutRange(pvir))
                 continue;
 
-            distAimInD = rnd(_fromInD.distAimInD, _toInD.distAimInD);
+            // Target point
             distCueInD = rnd(_fromInD.distCueInD, _toInD.distCueInD);
             kCue = rnd(_fromInD.kCue, _toInD.kCue);
-
             float kd = kCue * Field.BallD;
             float alfa = getAlfa(kd, distCuePhys);
+            ptargCentre = d2p.rotateRef(paim, pvir, Mathf.PI / 2 - alfa);
+            ptargCentre = d2p.setDist(paim, ptargCentre, kd);
 
-            break;
-        } while(--j > 0);
-        return j > 0;
+            // Cue ball
+            d2p pcue = d2p.rotateRef(paim, pvir, -alfa);
+            pcue = d2p.setDist(paim, pcue, distCuePhys);
+            if(isOutRange(pcue))
+                continue;
+            return true;
+        }
+        return false;
     } // ////////////////////////////////////////////////////////////////////
     bool isOutRange(d2p p) {
         float xr = p.x + Field.BallR;
