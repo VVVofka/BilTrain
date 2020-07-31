@@ -68,7 +68,7 @@ public class d2p {
     public d2p inv() { return new d2p(-x, -z); } // ////////////////////////////////////////////////
     public d2p invx() { return new d2p(-x, z); } // ////////////////////////////////////////////////
     public d2p invz() { return new d2p(x, -z); } // ////////////////////////////////////////////////
-    public void setObj(GameObject obj) {
+    public void setObj(ref GameObject obj) {
         obj.transform.position = new Vector3(x, obj.transform.position.y, z);
     } // //////////////////////////////////////////////////////////////////////////////////////////
     public void dbg(string s = "") {

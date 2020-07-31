@@ -87,22 +87,22 @@ public class Controller : MonoBehaviour {
     } // ///////////////////////////////////////////////////////////////////////////////////
     //                  MODES
     void ShowResult() {
-        aimLeft.GetComponent<Renderer>().material.color = Color.white;
-        aimRight.GetComponent<Renderer>().material.color = new Color(1, 0, 1, 0.5f);
+        //aimLeft.GetComponent<Renderer>().material.color = Color.white;
+        //aimRight.GetComponent<Renderer>().material.color = new Color(1, 0, 1, 0.5f);
     } // ////////////////////////////////////////////////////////////////////////////////////
     bool waitSetAimBall() {
         Layout lay = studyProcess.layout;
 
-        lay.paim.setObj(ballAim);
-        lay.pvir.setObj(ballVirt);
-        lay.ptargCentre.setObj(aimCenter);
-        lay.pcue.setObj(ballCue);
+        lay.paim.setObj(ref ballAim);
+        lay.pvir.setObj(ref ballVirt);
+        lay.ptargCentre.setObj(ref aimCenter);
+        lay.pcue.setObj(ref ballCue);
 
-        //float dkcue = kCue0 * studyProcess.dkcue;
-        //d2p ptargLeft = d2p.addDist(paim, ptargCentre, kd + Field.BallD * dkcue);
-        //ptargLeft.setObj(aimLeft);
-        //d2p ptargRight = d2p.addDist(paim, ptargCentre, kd - Field.BallD * dkcue);
-        //ptargRight.setObj(aimRight);
+        float dkcue = kCue0 * studyProcess.dkcue;
+        d2p ptargLeft = d2p.addDist(lay.paim, lay.ptargCentre, Field.BallD * dkcue);
+        ptargLeft.setObj(ref aimLeft);
+        d2p ptargRight = d2p.addDist(lay.paim, lay.ptargCentre, -Field.BallD * dkcue);
+        ptargRight.setObj(ref aimRight);
 
         // Camera
         d2p ptarget = lay.paim;
@@ -130,8 +130,8 @@ public class Controller : MonoBehaviour {
         float sectorMax = Mathf.Max(sectorVert, sectorHor);
         plcamera.fieldOfView = 1.05f * sectorMax;
 
-        //paim.dbg("Aim ");        pcue.dbg("Cue ");
-        //p.dbg("aim:" + ballaim.curDeg.ToString() + " dist:" + ballaim.curDist.ToString() + "  " + " k:" + ballcue.curK);
+        //lay.paim.dbg("Aim ");        pcue.dbg("Cue ");
+        Debug.Log("aim:" + lay.paim.x + "*" + lay.paim.z + " virt:" + lay.pvir.x + "*" + lay.pvir.z + " cue:" + lay.pcue.x + "*" + lay.pcue.z + "  targ:" + lay.ptargCentre.x + "*" + lay.ptargCentre.z);
         mode = GameMode.waitChoice;
         return false;
     } // ///////////////////// EHD MODES ///////////////////////////////////////////////////
@@ -143,14 +143,14 @@ public class Controller : MonoBehaviour {
         if(isOutRange(paim))
             return true;
         //paim.Set(13.42005f, 2.700449f);              // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
-        paim.setObj(ballAim);
+        paim.setObj(ref ballAim);
 
         // Virtual ball
         float virdist = pluze.dist(paim) + Field.BallD;
         d2p pvir = d2p.setDist(pluze, paim, virdist);
         if(isOutRange(pvir))
             return true;
-        pvir.setObj(ballVirt);
+        pvir.setObj(ref ballVirt);
 
         // Cue ball
         float alfa = Mathf.Asin(lay.kCue * ballAim.transform.localScale.x / Field.BallD);
@@ -161,7 +161,7 @@ public class Controller : MonoBehaviour {
         if(isOutRange(pcue))
             return true;
         //pcue.Set(11.83899f, 7.477563f);                   // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
-        pcue.setObj(ballCue);
+        pcue.setObj(ref ballCue);
 
         // Camera
         d2p ptarget = paim;
@@ -197,13 +197,13 @@ public class Controller : MonoBehaviour {
         float gama = alfa - beta;
         float dsel = Field.BallD * Mathf.Cos(alfa);
         d2p pAimCenter = pvir.CreateDp(gama, dsel);
-        pAimCenter.setObj(aimCenter);
+        pAimCenter.setObj(ref aimCenter);
 
         float dkcue = kCue0 * studyProcess.dkcue;
         d2p pAimLeft = d2p.addDist(paim, pAimCenter, Field.BallD * dkcue);
-        pAimLeft.setObj(aimLeft);
+        pAimLeft.setObj(ref aimLeft);
         d2p pAimRight = d2p.addDist(paim, pAimCenter, -Field.BallD * dkcue);
-        pAimRight.setObj(aimRight);
+        pAimRight.setObj(ref aimRight);
 
         //paim.dbg("Aim ");        pcue.dbg("Cue ");
         //p.dbg("aim:" + ballaim.curDeg.ToString() + " dist:" + ballaim.curDist.ToString() + "  " + " k:" + ballcue.curK);
