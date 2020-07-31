@@ -63,7 +63,7 @@ public class Layout {
         // Target point
         float kd = kCue * Field.BallD;
         float alfa = getAlfa(kd, distCuePhys);
-        ptargCentre = d2p.rotateRef(paim, pvir, Mathf.PI / 2 - alfa);
+        ptargCentre = d2p.rotateRef(paim, pvir, Mathf.Sign(kd) * Mathf.PI / 2 - alfa);
         ptargCentre = d2p.setDist(paim, ptargCentre, kd);
 
         // Cue ball
