@@ -91,26 +91,21 @@ public class d2p {
         Cross = cross;
         return ret;
     } // ////////////////////////////////////////////////////////////////////////////////////////
-    static public d2p rotateRef(d2p Base, d2p p, float rad) {
+    static public d2p rotateRefQQQ(d2p Base, d2p p, float rad) {
         float len = Base.dist(p);
         d2p nrm = new d2p(p.x - Base.x, p.z - Base.z);
-        float alfa;
-        if(nrm.x > 0) {
-            if(nrm.z < 0) {
-                alfa = Mathf.Asin(-nrm.z / len);
-            } else {
-                alfa = Mathf.Asin(nrm.z / len);
-            }
-        } else {    // if(nrm.x <= 0)
-            if(nrm.z < 0) {
-                alfa = Mathf.PI - Mathf.Asin(-nrm.z / len);
-            } else {
-                alfa = Mathf.PI + Mathf.Asin(nrm.z / len);
-            }
-        }
+        float alfa = -Mathf.Asin(nrm.z / len);
         float beta = alfa - rad;
-        float x = len * Mathf.Cos(-beta);
-        float z = len * Mathf.Sin(-beta);
+        float x = len * Mathf.Cos(beta);
+        float z = len * Mathf.Sin(beta);
+        return new d2p(Base.x + x, Base.z + z);
+    } // ////////////////////////////////////////////////////////////////////////////////////
+    static public d2p rotateRef(d2p Base, d2p p, float rad) {
+        d2p nrm = new d2p(p.x - Base.x, p.z - Base.z);
+        float cos = Mathf.Cos(rad);
+        float sin = Mathf.Sin(rad);
+        float x = +nrm.x * cos + nrm.z * sin;
+        float z = -nrm.x * sin + nrm.z * cos;
         return new d2p(Base.x + x, Base.z + z);
     } // ////////////////////////////////////////////////////////////////////////////////////
 } // ********************************************************************************

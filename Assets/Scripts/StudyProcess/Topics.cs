@@ -8,8 +8,8 @@ public class Topics : DKCue {
 
     public Topics() {
         topics.Add(new Topic("TestDbg", 1,
-            2.0f, 2.0f, 30.0f, 0.3f,     // distAimFrom, distCueFrom, angAimDegFrom, kCueFrom,
-            2.0f, 2.0f, 30.0f, 0.3f      // distAimTo,   distCueTo,   angAimDegTo,   kCueTo
+            1.0f, 1.5f, 30.0f, 0.4f,     // distAimFrom, distCueFrom, angAimDegFrom, kCueFrom,
+            1.0f, 1.5f, 30.0f, 0.4f      // distAimTo,   distCueTo,   angAimDegTo,   kCueTo
             ));
 
         //topics.Add(new Topic("Intro", 30, 
