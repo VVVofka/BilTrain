@@ -2,6 +2,7 @@
 
 public enum GameMode {
     waitSetAimBall,
+    waitTakeAim,
     waitChoice,
     waitShowResult,
     waitExitShowResult
@@ -52,6 +53,20 @@ public class Controller : MonoBehaviour {
                 int cnt = 0;
                 while(cnt < 64 && waitSetAimBall())
                     cnt++;
+            }
+            break;
+        case GameMode.waitTakeAim:
+            if(Input.GetKeyDown(KeyCode.Escape)) {
+                studyProcess.Close();
+            } else if(Input.GetKeyDown(KeyCode.A)) {
+                setCamera(aimLeft);
+                mode = GameMode.waitChoice;
+            } else if(Input.GetKeyDown(KeyCode.S)) {
+                setCamera(aimCenter);
+                mode = GameMode.waitChoice;
+            } else if(Input.GetKeyDown(KeyCode.D)) {
+                setCamera(aimRight);
+                mode = GameMode.waitChoice;
             }
             break;
         case GameMode.waitChoice:
@@ -105,7 +120,42 @@ public class Controller : MonoBehaviour {
         ptargRight.setObj(ref aimRight);
 
         // Camera
-        d2p ptarget = lay.paim;
+        setCamera(lay.paim);
+        //d2p ptarget = lay.paim;
+        //d2p pcam =  getPCameraHoriz(ptarget, lay.pcue);
+
+        //d2p pbnd = new d2p(bounds); //  far point arc
+        //float wfar = pcam.dist(pbnd);
+        //float wnear = pcam.dist(lay.pcue);
+        //float h = plcamera.transform.position.y;
+
+        //float degcamnear = d2p.rad2deg(Mathf.Atan2(h, wnear));
+        //float degcamfar = d2p.rad2deg(Mathf.Atan2(h - bounds.transform.position.y, wfar));
+        //float degcamavg = (degcamnear + degcamfar) / 2;
+
+        //float aCueTarget = lay.pcue.rad(ptarget);
+        //float agCueCam = d2p.rad2deg(aCueTarget - Mathf.PI / 2);
+
+        //Quaternion rotation = Quaternion.Euler(degcamavg, agCueCam, 0);
+        //plcamera.transform.SetPositionAndRotation(
+        //    new Vector3(pcam.x, plcamera.transform.position.y, pcam.z),
+        //    rotation);
+
+        //float sectorHor = getHorSector(pcam, lay.pcue, lay.paim, lay.pluze, Mathf.PI - aCueTarget);
+        //float sectorVert = degcamnear - degcamfar;
+        //float sectorMax = Mathf.Max(sectorVert, sectorHor);
+        //plcamera.fieldOfView = 1.05f * sectorMax;
+        //lay.paim.dbg("Aim ");        pcue.dbg("Cue ");
+        Debug.Log("aim:" + lay.paim.x + "*" + lay.paim.z + " virt:" + lay.pvir.x + "*" + lay.pvir.z + " cue:" + lay.pcue.x + "*" + lay.pcue.z + "  targ:" + lay.ptargCentre.x + "*" + lay.ptargCentre.z);
+        mode = GameMode.waitTakeAim;
+        return false;
+    } // ///////////////////// EHD MODES ///////////////////////////////////////////////////
+    void setCamera(GameObject gobj) {
+        d2p p = new d2p(gobj);
+        setCamera(p);
+    } // //////////////////////////////////////////////////////////////////////////////////////
+    void setCamera(d2p ptarget) {
+        Layout lay = studyProcess.layout;
         d2p pcam =  getPCameraHoriz(ptarget, lay.pcue);
 
         d2p pbnd = new d2p(bounds); //  far point arc
@@ -129,87 +179,7 @@ public class Controller : MonoBehaviour {
         float sectorVert = degcamnear - degcamfar;
         float sectorMax = Mathf.Max(sectorVert, sectorHor);
         plcamera.fieldOfView = 1.05f * sectorMax;
-
-        //lay.paim.dbg("Aim ");        pcue.dbg("Cue ");
-        Debug.Log("aim:" + lay.paim.x + "*" + lay.paim.z + " virt:" + lay.pvir.x + "*" + lay.pvir.z + " cue:" + lay.pcue.x + "*" + lay.pcue.z + "  targ:" + lay.ptargCentre.x + "*" + lay.ptargCentre.z);
-        mode = GameMode.waitChoice;
-        return false;
-    } // ///////////////////// EHD MODES ///////////////////////////////////////////////////
-
-    bool waitSetAimBall2() {
-        Layout lay = studyProcess.layout;
-        d2p pluze = Field.luzeCornerAim(lay.angAimRad);
-        d2p paim = d2p.rotate(pluze, (3f / 4f) * Mathf.PI + lay.angAimRad, lay.distAimPhys);
-        if(isOutRange(paim))
-            return true;
-        //paim.Set(13.42005f, 2.700449f);              // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
-        paim.setObj(ref ballAim);
-
-        // Virtual ball
-        float virdist = pluze.dist(paim) + Field.BallD;
-        d2p pvir = d2p.setDist(pluze, paim, virdist);
-        if(isOutRange(pvir))
-            return true;
-        pvir.setObj(ref ballVirt);
-
-        // Cue ball
-        float alfa = Mathf.Asin(lay.kCue * ballAim.transform.localScale.x / Field.BallD);
-        float beta = Mathf.Asin((paim.z - pvir.z) / Field.BallD);
-        float rad = alfa - beta - Mathf.PI;
-
-        d2p pcue = pvir.CreateDp(rad, lay.distCuePhys);
-        if(isOutRange(pcue))
-            return true;
-        //pcue.Set(11.83899f, 7.477563f);                   // TODO ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ
-        pcue.setObj(ref ballCue);
-
-        // Camera
-        d2p ptarget = paim;
-        d2p pcam =  getPCameraHoriz(ptarget, pcue);
-
-        d2p pbnd = new d2p(bounds); //  far point arc
-        float wfar = pcam.dist(pbnd);
-        float wnear = pcam.dist(pcue);
-        float h = plcamera.transform.position.y;
-
-        float degcamnear = d2p.rad2deg(Mathf.Atan2(h, wnear));
-        float degcamfar = d2p.rad2deg(Mathf.Atan2(h - bounds.transform.position.y, wfar));
-        float degcamavg = (degcamnear + degcamfar) / 2;
-
-        float aCueTarget = pcue.rad(ptarget);
-        float agCueCam = d2p.rad2deg(aCueTarget - Mathf.PI / 2);
-
-        Quaternion rotation = Quaternion.Euler(degcamavg, agCueCam, 0);
-        plcamera.transform.SetPositionAndRotation(
-            new Vector3(pcam.x, plcamera.transform.position.y, pcam.z),
-            rotation);
-
-        float sectorHor = getHorSector(pcam, pcue, paim, pluze, Mathf.PI - aCueTarget);
-        float sectorVert = degcamnear - degcamfar;
-        float sectorMax = Mathf.Max(sectorVert, sectorHor);
-        plcamera.fieldOfView = 1.05f * sectorMax;
-
-        // Marks aim
-        d2p px, ptmp = new d2p(pcue.x + pcam.z - pcue.z, pcue.z + pcue.x - pcam.x);
-        _ = d2p.Intersection(pcue, ptmp, pcam, pvir, out px);
-
-
-        float gama = alfa - beta;
-        float dsel = Field.BallD * Mathf.Cos(alfa);
-        d2p pAimCenter = pvir.CreateDp(gama, dsel);
-        pAimCenter.setObj(ref aimCenter);
-
-        float dkcue = kCue0 * studyProcess.dkcue;
-        d2p pAimLeft = d2p.addDist(paim, pAimCenter, Field.BallD * dkcue);
-        pAimLeft.setObj(ref aimLeft);
-        d2p pAimRight = d2p.addDist(paim, pAimCenter, -Field.BallD * dkcue);
-        pAimRight.setObj(ref aimRight);
-
-        //paim.dbg("Aim ");        pcue.dbg("Cue ");
-        //p.dbg("aim:" + ballaim.curDeg.ToString() + " dist:" + ballaim.curDist.ToString() + "  " + " k:" + ballcue.curK);
-        mode = GameMode.waitChoice;
-        return false;
-    } // ///////////////////// EHD MODES ///////////////////////////////////////////////////
+    } // //////////////////////////////////////////////////////////////////////////////////////
     d2p getPCameraHoriz(d2p ptarget, d2p pcue) {
         float alfa = -ptarget.rad(pcue);
         if(alfa == 0)
