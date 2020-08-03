@@ -19,7 +19,7 @@ public class StudyProcess {
     Topics topics;
     RipeExercises ripeExercises;
     Lesson lesson;
-    TrueAim curAim = TrueAim.none;
+    public TrueAim curAim = TrueAim.none;
 
     static Random rand = new Random();
 

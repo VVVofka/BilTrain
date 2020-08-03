@@ -12,9 +12,7 @@ public class Layout {
     public d2p paim;
     public d2p pvir;
     public d2p pcue;
-    public d2p ptargCentre;
-    public d2p ptargLeft { get; private set; }
-    public d2p ptargRight { get; private set; }
+    public d2p pTarg;
 
     public float angAimRad { get => d2p.deg2rad(angAimDeg); }
     public float distAimPhys { get => distAimInD * Field.BallD; }
@@ -63,8 +61,8 @@ public class Layout {
         // Target point
         float kd = kCue * Field.BallD;
         float alfa = getAlfa(kd, distCuePhys);
-        ptargCentre = d2p.rotateRef(paim, pvir, Mathf.Sign(kd) * Mathf.PI / 2 - alfa);
-        ptargCentre = d2p.setDist(paim, ptargCentre, kd);
+        pTarg = d2p.rotateRef(paim, pvir, Mathf.Sign(kd) * Mathf.PI / 2 - alfa);
+        pTarg = d2p.setDist(paim, pTarg, kd);
 
         // Cue ball
         pcue = d2p.rotateRef(paim, pvir, -alfa);

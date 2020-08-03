@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public enum GameMode {
     waitSetBalls,
@@ -29,6 +30,7 @@ public class Controller : MonoBehaviour {
     float xmax, zmax;
     TrueAim selectAim = TrueAim.none;
     GameObject curTarg = null;
+    Targs targs;
 
     public Controller() {
         studyProcess = new StudyProcess();
@@ -41,6 +43,9 @@ public class Controller : MonoBehaviour {
         zmax = luzeLeft.transform.position.z;
         if(!showVirtBall)
             ballVirt.transform.position = new Vector3(ballVirt.transform.position.x, -100f, ballVirt.transform.position.z);
+        targs = new Targs(aimLeft, aimLeft.GetComponent<Renderer>().material.color,
+                        aimCenter, aimCenter.GetComponent<Renderer>().material.color,
+                        aimRight, aimRight.GetComponent<Renderer>().material.color);
     } // ////////////////////////////////////////////////////////////////////////////////
     void OnReactOnChoose(TrueAim trueAim) {
         if(selectAim == trueAim) {
@@ -53,6 +58,7 @@ public class Controller : MonoBehaviour {
         switch(mode) {
         case GameMode.waitSetBalls:
             if(ballAim != null) {
+                RestoreTargs();
                 waitSetAimBall();
                 setCamera(ballAim);
                 mode = GameMode.waitTakeAim;
@@ -79,11 +85,11 @@ public class Controller : MonoBehaviour {
             } else if(Input.GetKeyDown(KeyCode.Escape)) {
                 exitApp();
             } else if(Input.GetKeyDown(KeyCode.A)) {
-                setRes(aimLeft, TrueAim.left);
+                isSetRes(aimLeft, TrueAim.left);
             } else if(Input.GetKeyDown(KeyCode.S)) {
-                setRes(aimCenter, TrueAim.center);
+                isSetRes(aimCenter, TrueAim.center);
             } else if(Input.GetKeyDown(KeyCode.D)) {
-                setRes(aimRight, TrueAim.right);
+                isSetRes(aimRight, TrueAim.right);
             }
             break;
         case GameMode.waitShowResult:
@@ -91,7 +97,11 @@ public class Controller : MonoBehaviour {
             mode = GameMode.waitExitShowResult;
             break;
         case GameMode.waitExitShowResult:
-            if(Input.GetKeyDown(KeyCode.Space)) {   // TODO: press true key
+            if(Input.GetKeyDown(KeyCode.Space) ||
+                Input.GetKeyDown(KeyCode.A) ||
+                Input.GetKeyDown(KeyCode.S) ||
+                Input.GetKeyDown(KeyCode.D)
+                ) {   
                 mode = GameMode.waitSetBalls;
             } else if(Input.GetKeyDown(KeyCode.Escape)) {
                 exitApp();
@@ -101,6 +111,21 @@ public class Controller : MonoBehaviour {
             break;
         }
     } // ///////////////////////////////////////////////////////////////////////////////////
+    void OnGUI() {
+        int fontsize = 24;
+        float posX = 2;
+        float posY = fontsize * 0.5f;
+        float posW = plcamera.pixelWidth/2;
+        float posH = 30;
+        GUIStyle style = new GUIStyle();
+        style.fontSize = fontsize;
+        //style.fontStyle = FontStyle.Bold;
+        style.font = Font.CreateDynamicFontFromOSFont("Arial", fontsize);
+        style.normal.textColor = new Color(1, 1, 0);
+        //style.normal.background = new Texture2D(;
+        GUI.Label(new Rect(posX, posY, posW, posH), "ksadfljsdfjdsasdkj'ksdaglkjsdgdkjsasdjgf'sdjag", style);
+    } // /////////////////////////////////////////////////////////////////////////////////////
+
     //                  MODES
     void ShowResult() {
         //aimLeft.GetComponent<Renderer>().material.color = Color.white;
@@ -111,17 +136,39 @@ public class Controller : MonoBehaviour {
 
         lay.paim.setObj(ref ballAim);
         lay.pvir.setObj(ref ballVirt);
-        lay.ptargCentre.setObj(ref aimCenter);
         lay.pcue.setObj(ref ballCue);
 
-        float dkcue = kCue0 * studyProcess.dkcue;
-        d2p ptargLeft = d2p.addDist(lay.paim, lay.ptargCentre, Field.BallD * dkcue);
-        ptargLeft.setObj(ref aimLeft);
-        d2p ptargRight = d2p.addDist(lay.paim, lay.ptargCentre, -Field.BallD * dkcue);
-        ptargRight.setObj(ref aimRight);
-
+        float dkcue = kCue0 * studyProcess.dkcue; // also set curAim
+        switch(studyProcess.curAim) {
+        case TrueAim.left: {
+            lay.pTarg.setObj(ref aimLeft);
+            d2p ptarg1 = d2p.addDist(lay.paim, lay.pTarg, -Field.BallD * dkcue);
+            ptarg1.setObj(ref aimCenter);
+            d2p ptarg2 = d2p.addDist(lay.paim, lay.pTarg, -2 * Field.BallD * dkcue);
+            ptarg2.setObj(ref aimRight);
+            break;
+        }
+        case TrueAim.center: {
+            lay.pTarg.setObj(ref aimCenter);
+            d2p ptarg1 = d2p.addDist(lay.paim, lay.pTarg, Field.BallD * dkcue);
+            ptarg1.setObj(ref aimLeft);
+            d2p ptarg2 = d2p.addDist(lay.paim, lay.pTarg, -Field.BallD * dkcue);
+            ptarg2.setObj(ref aimRight);
+            break;
+        }
+        case TrueAim.right: {
+            lay.pTarg.setObj(ref aimRight);
+            d2p ptarg1 = d2p.addDist(lay.paim, lay.pTarg, 2 * Field.BallD * dkcue);
+            ptarg1.setObj(ref aimLeft);
+            d2p ptarg2 = d2p.addDist(lay.paim, lay.pTarg, Field.BallD * dkcue);
+            ptarg2.setObj(ref aimCenter);
+            break;
+        }
+        default:
+            break;
+        }
         //lay.paim.dbg("Aim ");        pcue.dbg("Cue ");
-        Debug.Log("aim:" + lay.paim.x + "*" + lay.paim.z + " virt:" + lay.pvir.x + "*" + lay.pvir.z + " cue:" + lay.pcue.x + "*" + lay.pcue.z + "  targ:" + lay.ptargCentre.x + "*" + lay.ptargCentre.z);
+        Debug.Log("aim:" + lay.paim.x + "*" + lay.paim.z + " virt:" + lay.pvir.x + "*" + lay.pvir.z + " cue:" + lay.pcue.x + "*" + lay.pcue.z + "  targ:" + lay.pTarg.x + "*" + lay.pTarg.z);
     } // ///////////////////// EHD MODES ///////////////////////////////////////////////////
     void setCamera(GameObject gobj) {
         curTarg = gobj;
@@ -196,9 +243,8 @@ public class Controller : MonoBehaviour {
             if(camshort.dist(pcue) <= camlong.dist(pcue))
                 return camshort;
             return camlong;
-        } else {
+        } else
             Debug.Break();
-        }
         return null;
     } // //////////////////////////////////////////////////////////////////////////////////////////////////
     void getAngle(d2p cam, d2p pnt, float diam, out float min, out float max) {
@@ -206,8 +252,6 @@ public class Controller : MonoBehaviour {
         float alfa = Mathf.Atan2(diam / 2, dist);
         float beta = Mathf.PI - cam.rad(pnt);
         beta = d2p.normrad(beta);
-        //if(beta > Mathf.PI)
-        //beta -= Mathf.PI;
         min = Mathf.Min(beta - alfa, beta + alfa);
         max = Mathf.Max(beta - alfa, beta + alfa);
     } // //////////////////////////////////////////////////////////////////////////////////
@@ -224,24 +268,38 @@ public class Controller : MonoBehaviour {
         float maxd = d2p.rad2deg(Mathf.Max(agCueTarget - min, max - agCueTarget));
         return 2 * maxd;
     } // //////////////////////////////////////////////////////////////////////////////////
-    bool isOutRange(d2p p) {
-        float xr = p.x + Field.BallR;
-        float zr = p.z + Field.BallR;
-        //return !(xr <= xmax && zr <= zmax && xr >= -xmax && zr >= -zmax);
-        return !(xr < xmax && zr < zmax && xr > -xmax && zr > -zmax);
-    } // /////////////////////////////////////////////////////////////////////////////////
     void exitApp() {
         studyProcess.Close();
         Application.Quit();
     } // /////////////////////////////////////////////////////////////////////////////////
-    void setRes(GameObject gobj, TrueAim trueAim) {
+    void isSetRes(GameObject gobj, TrueAim trueAim) {
         if(curTarg == gobj) {
-            bool res = studyProcess.SetRes(trueAim);
-            mode = GameMode.waitShowResult;
+            setRes(gobj, trueAim);
         } else {
             setCamera(gobj);
         }
     } // ///////////////////////////////////////////////////////////////////////////////////
+    void setRes(GameObject gobj, TrueAim trueAim) {
+        float alfa = 0.333f;
+        bool res = studyProcess.SetRes(trueAim);
+        if(res) {
+            foreach(var go in targs.v)
+                if(go.gobject == gobj)
+                    go.gobject.GetComponent<Renderer>().material.color = new Color(1, 1, 0);
+                else {
+                    Color clr = go.gobject.GetComponent<Renderer>().material.color;
+                    go.gobject.GetComponent<Renderer>().material.color = new Color(clr.r, clr.g, clr.b, 0);
+                }
+            mode = GameMode.waitShowResult;
+        } else {
+            Color clr = gobj.GetComponent<Renderer>().material.color;
+            gobj.GetComponent<Renderer>().material.color = new Color(clr.r, clr.g, clr.b, alfa);
+        }
+    } // ///////////////////////////////////////////////////////////////////////////////////
+    void RestoreTargs() {
+        foreach(var go in targs.v) 
+            go.gobject.GetComponent<Renderer>().material.color = go.clr;
+    } // ////////////////////////////////////////////////////////////////////////////////////
 } // ************************************************************************************
   //bool waitSetAimBall() {
   //    Layout lay = studyProcess.layout;

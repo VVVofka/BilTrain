@@ -70,6 +70,7 @@
     <Compile Include="Assets\Scripts\Intersections.cs" />
     <Compile Include="Assets\Scripts\Squadre.cs" />
     <Compile Include="Assets\Scripts\StudyProcess\Exercise.cs" />
+    <Compile Include="Assets\Scripts\Targs.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
