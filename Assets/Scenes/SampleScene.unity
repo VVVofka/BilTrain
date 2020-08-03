@@ -854,6 +854,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -2046020209208158121, guid: c32e557300e0f6441a0ac9eae605c5b3,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 444f128d5a3f54e4a8e1f487b832569a, type: 2}
     - target: {fileID: -1466700304364617772, guid: c32e557300e0f6441a0ac9eae605c5b3,
         type: 3}
       propertyPath: m_IsActive
@@ -1212,7 +1217,6 @@ GameObject:
   - component: {fileID: 742985783}
   - component: {fileID: 742985782}
   - component: {fileID: 742985781}
-  - component: {fileID: 742985780}
   m_Layer: 0
   m_Name: AimLeft
   m_TagString: Untagged
@@ -1220,20 +1224,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!136 &742985780
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 742985779}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!23 &742985781
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3089,7 +3079,6 @@ GameObject:
   - component: {fileID: 1554865395}
   - component: {fileID: 1554865394}
   - component: {fileID: 1554865393}
-  - component: {fileID: 1554865392}
   m_Layer: 0
   m_Name: AimCenter
   m_TagString: Untagged
@@ -3097,20 +3086,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!136 &1554865392
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1554865391}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!23 &1554865393
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4603,7 +4578,7 @@ MonoBehaviour:
   plcamera: {fileID: 963194227}
   luzeLeft: {fileID: 550647682}
   luzeRight: {fileID: 2050695731}
-  showVirtBall: 1
+  showVirtBall: 0
 --- !u!1 &2073622783
 GameObject:
   m_ObjectHideFlags: 0

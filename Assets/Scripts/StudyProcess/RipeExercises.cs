@@ -40,7 +40,19 @@ public class RipeExercises {
             return null;
         }
     } // ///////////////////////////////////////////////////////////////////////////////////////
-
+    public void setResult(Exercise q, bool val) {
+        //foreach(var q in vriped) {
+        Exercise aaa = vripe.Find(x => x.EQ(q));
+        Exercise bbb = vriped.Find(x => x.EQ(q));
+        q.SetRes(val);
+        if(aaa == null)
+            vripe.Add(q);
+        else
+            aaa = q;
+        vriped.Remove(bbb);
+        //}
+        //vriped.Clear();
+    } // //////////////////////////////////////////////////////////////////////////////////////
     //void Sortv() {
     //    vripe.Sort(delegate (Exercise x, Exercise y) {
     //        DateTime dt = DateTime.Now;

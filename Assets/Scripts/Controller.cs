@@ -188,7 +188,7 @@ public class Controller : MonoBehaviour {
         lay.pvir.setObj(ref ballVirt);
         lay.pcue.setObj(ref ballCue);
 
-        float dkcue = kCue0 * studyProcess.dkcue; // also set curAim
+        float dkcue = kCue0 * studyProcess.dkcue(); // also set curAim
         switch(studyProcess.curAim) {
         case TrueAim.left: {
             lay.pTarg.setObj(ref aimLeft);

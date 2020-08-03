@@ -23,13 +23,6 @@ public class StudyProcess {
 
     static Random rand = new Random();
 
-    public float dkcue {
-        get {
-            curAim = (TrueAim)rand.Next(-1, 1);
-            return (topics.dkcue + topics.curTopic.dkcue + lesson.dkcue + lesson.curExercise.dkcue) / 4;
-        }
-    }
-
     public StudyProcess() {
         LoadTopicFile(TopicsFileDefault);
         LoadRipeExercisesFile(RipeExercisesFileDefault);
@@ -189,6 +182,7 @@ public class StudyProcess {
             bool sucess = (aim == curAim);
             lesson.SetRes(sucess);
             topics.SetRes(sucess);
+            ripeExercises.setResult(lesson.curExercise, sucess);
             return sucess;
         } catch(Exception ex) {
             Console.WriteLine($"Исключение in SetRes({aim}): {ex.Message}");
@@ -209,12 +203,14 @@ public class StudyProcess {
     void OnEndLesson() {
         foreach(var q in lesson.vstuded) 
             ripeExercises.Add(q);
-
-        // TODO: update ripeExercises
         lesson.vstuded.Clear();
-
         LoadLesson();
     } // /////////////////////////////////////////////////////////////////////////
+    public float dkcue() {
+        curAim = (TrueAim)rand.Next(-1, 1);
+        return (topics.dkcue + topics.curTopic.dkcue + lesson.dkcue + lesson.curExercise.dkcue) / 4;
+    } // ////////////////////////////////////////////////////////////////////////////////////////////////
+
     public delegate void StateHandlerAim(TrueAim realAim);   // Объявляем делегат
     public event StateHandlerAim on_aim;                 // Создаем переменную делегата
 } // *******************************************************************************************
