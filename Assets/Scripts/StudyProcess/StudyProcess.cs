@@ -209,6 +209,8 @@ public class StudyProcess {
     void OnEndLesson() {
         foreach(var q in lesson.vstuded) 
             ripeExercises.Add(q);
+
+        // TODO: update ripeExercises
         lesson.vstuded.Clear();
 
         LoadLesson();
