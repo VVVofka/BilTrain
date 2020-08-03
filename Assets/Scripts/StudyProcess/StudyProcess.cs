@@ -11,14 +11,14 @@ public enum TrueAim {
 } // ***********************************************************************************
 
 public class StudyProcess {
-    const string ver = "ver:(0.1.42)";
+    const string ver = "ver:(0.1.48)";
     const string TopicsFileDefault = "Develop.tpcs";
     const string RipeExercisesFileDefault = "Develop.rpex";
     const string LessonFileDefault = "Develop.lesn";
 
-    Topics topics;
+    public Topics topics;
     RipeExercises ripeExercises;
-    Lesson lesson;
+    public Lesson lesson;
     public TrueAim curAim = TrueAim.none;
 
     static Random rand = new Random();
@@ -26,7 +26,7 @@ public class StudyProcess {
     public float dkcue {
         get {
             curAim = (TrueAim)rand.Next(-1, 1);
-            return (topics.dkcue + topics.topic.dkcue + lesson.dkcue + lesson.curExercise.dkcue) / 4;
+            return (topics.dkcue + topics.curTopic.dkcue + lesson.dkcue + lesson.curExercise.dkcue) / 4;
         }
     }
 
@@ -71,9 +71,11 @@ public class StudyProcess {
             List<Exercise> vripe = ripeExercises.getRiped(Lesson.ExercisesInLesson);
             int rest = lesson.LoadRipe(vripe);
             if(rest > 0) {
-                Topic topic = topics.topic;
+                Topic topic = topics.curTopic;
                 if(topic.cntCur >= topic.cntMax)
                     topic = topics.ToNextTopic();
+                if(topic == null)
+                    topic = topics.ToFirstTopic();
                 lesson.LoadNew(topic);
             }
             return lesson.layout;
@@ -185,8 +187,8 @@ public class StudyProcess {
     public bool SetRes(TrueAim aim) {
         try {
             bool sucess = (aim == curAim);
-            topics.SetRes(sucess);
             lesson.SetRes(sucess);
+            topics.SetRes(sucess);
             return sucess;
         } catch(Exception ex) {
             Console.WriteLine($"Исключение in SetRes({aim}): {ex.Message}");
@@ -197,8 +199,6 @@ public class StudyProcess {
     } // ///////////////////////////////////////////////////////////////////////
     void OnChoose(bool isSucess) {
         try {
-            foreach(var x in lesson.vstuded) {
-            }
             on_aim?.Invoke(curAim);
         } catch(Exception ex) {
             Console.WriteLine($"Исключение in SetRes({isSucess}): {ex.Message}");
@@ -207,6 +207,11 @@ public class StudyProcess {
         }
     } // ///////////////////////////////////////////////////////////////////////
     void OnEndLesson() {
+        foreach(var q in lesson.vstuded) 
+            ripeExercises.Add(q);
+        lesson.vstuded.Clear();
+
+        LoadLesson();
     } // /////////////////////////////////////////////////////////////////////////
     public delegate void StateHandlerAim(TrueAim realAim);   // Объявляем делегат
     public event StateHandlerAim on_aim;                 // Создаем переменную делегата

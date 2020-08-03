@@ -5,14 +5,18 @@ using System.Collections.Generic;
 public class Lesson : DKCue {
     List<ExerciseEnh> v = new List<ExerciseEnh>();
     public List<Exercise> vstuded = new List<Exercise>();
+    List<Topic> vnewTopics = new List<Topic>();
 
-    public static int ExercisesInLesson = 10;
-    public int[] vluzes = {0, 2};
+    public static int ExercisesInLesson = 3;
+    public int[] vluzes = {2}; // TODO: Luzes
     public int[] vsigns = {1, -1};
     List<Exercise> vripe = new List<Exercise>();
 
     public Layout layout { get => v.Count > 0 ? v[0].layout : null; }
     public ExerciseEnh curExercise { get => v.Count > 0 ? v[0] : null; }
+
+    public int cntStuded { get => vstuded.Count; }
+    public int cntUnStuded { get => v.Count; }
 
     public int LoadRipe(List<Exercise> vRipe) {
         try {
@@ -30,7 +34,7 @@ public class Lesson : DKCue {
                     foreach(int signAng in vsigns)
                         foreach(int signK in vsigns) {
                             if(lay.SetBandRnd(signAng, signK))
-                                v.Add(new ExerciseEnh(new Exercise(lay), luz, signK));
+                                v.Add(new ExerciseEnh(new Exercise(lay), luz));
                         }
             }
             return ExercisesInLesson - j;
@@ -50,12 +54,13 @@ public class Lesson : DKCue {
                     foreach(int signAng in vsigns) {
                         foreach(int signK in vsigns) {
                             if(lay.SetBandRnd(signAng, signK))
-                                v.Add(new ExerciseEnh(new Exercise(lay), luz, signK));
+                                v.Add(new ExerciseEnh(new Exercise(lay), luz));
                         }
                     }
             }
             Shuffle();
             dkcue = 1.0f;
+            vnewTopics.Add(topic);
             return v.Count;
         } catch(Exception ex) {
             Console.WriteLine($"Исключение in LoadNew({topic.name}): {ex.Message}");
@@ -80,9 +85,12 @@ public class Lesson : DKCue {
             if(sucess) {
                 vstuded.Add(curExercise);
                 v.Remove(curExercise);
-                if(v.Count <= 0)
+                if(v.Count <= 0) {
+                    foreach(var q in vnewTopics)
+                        q.cntCur++;
+                    vnewTopics.Clear();
                     OnEndOfLesson?.Invoke();
-            } else {
+                }
             }
             Shuffle();
             On_Choose?.Invoke(sucess);

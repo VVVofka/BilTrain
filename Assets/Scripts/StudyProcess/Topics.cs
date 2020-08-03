@@ -8,8 +8,8 @@ public class Topics : DKCue {
 
     public Topics() {
         topics.Add(new Topic("TestDbg", 1,
-            1.0f, 1.5f, 30.0f, 0.4f,     // distAimFrom, distCueFrom, angAimDegFrom, kCueFrom,
-            1.0f, 1.5f, 30.0f, 0.4f      // distAimTo,   distCueTo,   angAimDegTo,   kCueTo
+            5.0f, 5.5f, 10.0f, 0.2f,     // distAimFrom, distCueFrom, angAimDegFrom, kCueFrom,
+            5.0f, 5.5f, 10.0f, 0.2f      // distAimTo,   distCueTo,   angAimDegTo,   kCueTo
             ));
 
         //topics.Add(new Topic("Intro", 30, 
@@ -26,17 +26,21 @@ public class Topics : DKCue {
         //   ));
     } // ////////////////////////////////////////////////////////////////////////////////////
 
-    public Topic topic { get => topics[ntopic]; }
-    public new void SetRes(bool sucess) { base.SetRes(sucess); topic.SetRes(sucess);}
+    public Topic curTopic { get => topics[ntopic]; }
+    public int Count { get => topics.Count; }
+    public new void SetRes(bool sucess) { base.SetRes(sucess); curTopic.SetRes(sucess);}
     
     public Topic ToNextTopic() {
         if(++ntopic >= topics.Count) {
-            ntopic = 0;
             EndOfTopics?.Invoke();
-            return null;
+            return ToFirstTopic();
         }
-        return topic;
+        return curTopic;
     } // ////////////////////////////////////////////////////////////////////////////////////
+    public Topic ToFirstTopic() {
+        ntopic = 0;
+        return curTopic;
+    } // ///////////////////////////////////////////////////////////////////////////////
     public delegate void TopicsStateHandler();      // Объявляем делегат
     public event TopicsStateHandler EndOfTopics;    // Создаем переменную делегата
 

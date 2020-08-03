@@ -112,18 +112,68 @@ public class Controller : MonoBehaviour {
         }
     } // ///////////////////////////////////////////////////////////////////////////////////
     void OnGUI() {
-        int fontsize = 24;
-        float posX = 2;
-        float posY = fontsize * 0.5f;
-        float posW = plcamera.pixelWidth/2;
-        float posH = 30;
-        GUIStyle style = new GUIStyle();
-        style.fontSize = fontsize;
-        //style.fontStyle = FontStyle.Bold;
-        style.font = Font.CreateDynamicFontFromOSFont("Arial", fontsize);
-        style.normal.textColor = new Color(1, 1, 0);
-        //style.normal.background = new Texture2D(;
-        GUI.Label(new Rect(posX, posY, posW, posH), "ksadfljsdfjdsasdkj'ksdaglkjsdgdkjsasdjgf'sdjag", style);
+        {
+            int fontsize = 24;
+            float posX = 2;
+            float posY = fontsize * 0.5f;
+            float posW = plcamera.pixelWidth/2;
+            float posH = fontsize * 1.1f;
+            Rect rct = new Rect(posX, posY, posW, posH);
+            GUIStyle style = new GUIStyle();
+            style.fontSize = fontsize;
+            //style.fontStyle = FontStyle.Bold;
+            style.font = Font.CreateDynamicFontFromOSFont("Arial", fontsize);
+            style.normal.textColor = new Color(1, 1, 0);
+            string s = "ksadfljsdfjdsasdkj'ksdaglkjsdgdkjsasdjgf'sdjag";
+            GUI.Label(rct, s, style);
+        }
+        {
+            int fontsize = 20;
+            float posXL = 2;
+            float posY = plcamera.pixelHeight - fontsize * 1.2f - 2;
+            float posW = plcamera.pixelWidth/2;
+            float posH = fontsize;
+            Rect rctL = new Rect(posXL, posY, posW, posH);
+            GUIStyle styleL = new GUIStyle();
+            styleL.fontSize = fontsize;
+            //style.fontStyle = FontStyle.Bold;
+            styleL.font = Font.CreateDynamicFontFromOSFont("Arial", fontsize);
+            styleL.normal.textColor = new Color(1, 1, 0);
+            styleL.alignment = TextAnchor.LowerLeft;
+            Topics topics = studyProcess.topics;
+            Topic topic = topics.curTopic;
+            string sL = "Topic: '" + topic.name + "'";
+            sL += " №" + topics.ntopic + "(" + topics.Count + ") ";
+            sL += topic.info;
+            sL += "; Repeat lesson:" + topic.cntCur + "[" + topic.cntMax + "]";
+            GUI.Label(rctL, sL, styleL);
+
+            float posXR = plcamera.pixelWidth / 2;
+            Rect rctR = new Rect(posXR, posY, posW - 2, posH);
+            GUIStyle styleR = new GUIStyle(styleL);
+            styleR.alignment = TextAnchor.LowerRight;
+            string sR = studyProcess.lesson.cntStuded + " remain:" + studyProcess.lesson.cntUnStuded;
+            GUI.Label(rctR, sR, styleR);
+        }
+        //{
+        //    int fontsize = 18;
+        //    float posX = 2;
+        //    float posY = plcamera.pixelHeight - fontsize;
+        //    float posW = plcamera.pixelWidth/2;
+        //    float posH = fontsize;
+        //    Rect rct = new Rect(posX, posY, posW, posH);
+        //    GUIStyle style = new GUIStyle();
+        //    style.fontSize = fontsize;
+        //    //style.fontStyle = FontStyle.Bold;
+        //    style.font = Font.CreateDynamicFontFromOSFont("Arial", fontsize);
+        //    style.normal.textColor = new Color(1, 1, 0);
+        //    Topics topics = studyProcess.topics;
+        //    Topic topic = topics.topic;
+        //    string s = "Topic: '" + topic.name + "'";
+        //    s += " №" + topics.ntopic + "(" + topics.Count + ") ";
+        //    s += topic.info;
+        //    GUI.Label(rct, s, style);
+        //}
     } // /////////////////////////////////////////////////////////////////////////////////////
 
     //                  MODES

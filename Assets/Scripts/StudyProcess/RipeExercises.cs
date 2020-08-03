@@ -28,11 +28,11 @@ public class RipeExercises {
             resfind.Sort(delegate (Exercise x, Exercise y) {
                 return x.overdue(dt) > y.overdue(dt) ? -1 : 0;
             });
-            if(resfind.Count > outCount) {
+            if(resfind.Count > outCount)
                 vriped = resfind.GetRange(0, outCount);
-                return vriped;
-            }
-            return resfind;
+            else
+                vriped = vripe;
+            return vriped;
         } catch(Exception ex) {
             Console.WriteLine($"Исключение in RipeExercises.GetRiped({outCount}): {ex.Message}");
             Console.WriteLine($"Метод: {ex.TargetSite}");
