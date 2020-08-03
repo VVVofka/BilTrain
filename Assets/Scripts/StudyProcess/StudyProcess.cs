@@ -182,15 +182,17 @@ public class StudyProcess {
             Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
         }
     } // ////////////////////////////////////////////////////////////////////////
-    public void SetRes(TrueAim aim) {
+    public bool SetRes(TrueAim aim) {
         try {
             bool sucess = (aim == curAim);
             topics.SetRes(sucess);
             lesson.SetRes(sucess);
+            return sucess;
         } catch(Exception ex) {
             Console.WriteLine($"Исключение in SetRes({aim}): {ex.Message}");
             Console.WriteLine($"Метод: {ex.TargetSite}");
             Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+            return false;
         }
     } // ///////////////////////////////////////////////////////////////////////
     void OnChoose(bool isSucess) {

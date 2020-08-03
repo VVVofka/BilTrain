@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 public enum GameMode {
-    waitSetAimBall,
+    waitSetBalls,
     waitTakeAim,
     waitChoice,
     waitShowResult,
@@ -28,6 +28,7 @@ public class Controller : MonoBehaviour {
 
     float xmax, zmax;
     TrueAim selectAim = TrueAim.none;
+    GameObject curTarg = null;
 
     public Controller() {
         studyProcess = new StudyProcess();
@@ -35,7 +36,7 @@ public class Controller : MonoBehaviour {
     } // ////////////////////////////////////////////////////////////////////////////////
 
     void Start() {
-        mode = GameMode.waitSetAimBall;
+        mode = GameMode.waitSetBalls;
         xmax = luzeRight.transform.position.x;
         zmax = luzeLeft.transform.position.z;
         if(!showVirtBall)
@@ -47,17 +48,19 @@ public class Controller : MonoBehaviour {
         }
     } // ////////////////////////////////////////////////////////////////////////////////
     void Update() {
+        //if(GUI.Button(new Rect(Screen.width / 2 - 50, Screen.height / 2 - 50, 100, 25), "Выход")) 
+        //    Application.Quit();
         switch(mode) {
-        case GameMode.waitSetAimBall:
+        case GameMode.waitSetBalls:
             if(ballAim != null) {
-                int cnt = 0;
-                while(cnt < 64 && waitSetAimBall())
-                    cnt++;
+                waitSetAimBall();
+                setCamera(ballAim);
+                mode = GameMode.waitTakeAim;
             }
             break;
         case GameMode.waitTakeAim:
             if(Input.GetKeyDown(KeyCode.Escape)) {
-                studyProcess.Close();
+                exitApp();
             } else if(Input.GetKeyDown(KeyCode.A)) {
                 setCamera(aimLeft);
                 mode = GameMode.waitChoice;
@@ -71,18 +74,16 @@ public class Controller : MonoBehaviour {
             break;
         case GameMode.waitChoice:
             if(Input.GetKeyDown(KeyCode.Space)) {
-                mode = GameMode.waitSetAimBall;
+                setCamera(ballAim);
+                mode = GameMode.waitTakeAim;
             } else if(Input.GetKeyDown(KeyCode.Escape)) {
-                studyProcess.Close();
+                exitApp();
             } else if(Input.GetKeyDown(KeyCode.A)) {
-                studyProcess.SetRes(TrueAim.left);
-                mode = GameMode.waitShowResult;
+                setRes(aimLeft, TrueAim.left);
             } else if(Input.GetKeyDown(KeyCode.S)) {
-                studyProcess.SetRes(TrueAim.center);
-                mode = GameMode.waitShowResult;
+                setRes(aimCenter, TrueAim.center);
             } else if(Input.GetKeyDown(KeyCode.D)) {
-                studyProcess.SetRes(TrueAim.right);
-                mode = GameMode.waitShowResult;
+                setRes(aimRight, TrueAim.right);
             }
             break;
         case GameMode.waitShowResult:
@@ -91,9 +92,9 @@ public class Controller : MonoBehaviour {
             break;
         case GameMode.waitExitShowResult:
             if(Input.GetKeyDown(KeyCode.Space)) {   // TODO: press true key
-                mode = GameMode.waitSetAimBall;
+                mode = GameMode.waitSetBalls;
             } else if(Input.GetKeyDown(KeyCode.Escape)) {
-                studyProcess.Close();
+                exitApp();
             }
             break;
         default:
@@ -105,7 +106,7 @@ public class Controller : MonoBehaviour {
         //aimLeft.GetComponent<Renderer>().material.color = Color.white;
         //aimRight.GetComponent<Renderer>().material.color = new Color(1, 0, 1, 0.5f);
     } // ////////////////////////////////////////////////////////////////////////////////////
-    bool waitSetAimBall() {
+    void waitSetAimBall() {
         Layout lay = studyProcess.layout;
 
         lay.paim.setObj(ref ballAim);
@@ -119,44 +120,20 @@ public class Controller : MonoBehaviour {
         d2p ptargRight = d2p.addDist(lay.paim, lay.ptargCentre, -Field.BallD * dkcue);
         ptargRight.setObj(ref aimRight);
 
-        // Camera
-        setCamera(lay.paim);
-        //d2p ptarget = lay.paim;
-        //d2p pcam =  getPCameraHoriz(ptarget, lay.pcue);
-
-        //d2p pbnd = new d2p(bounds); //  far point arc
-        //float wfar = pcam.dist(pbnd);
-        //float wnear = pcam.dist(lay.pcue);
-        //float h = plcamera.transform.position.y;
-
-        //float degcamnear = d2p.rad2deg(Mathf.Atan2(h, wnear));
-        //float degcamfar = d2p.rad2deg(Mathf.Atan2(h - bounds.transform.position.y, wfar));
-        //float degcamavg = (degcamnear + degcamfar) / 2;
-
-        //float aCueTarget = lay.pcue.rad(ptarget);
-        //float agCueCam = d2p.rad2deg(aCueTarget - Mathf.PI / 2);
-
-        //Quaternion rotation = Quaternion.Euler(degcamavg, agCueCam, 0);
-        //plcamera.transform.SetPositionAndRotation(
-        //    new Vector3(pcam.x, plcamera.transform.position.y, pcam.z),
-        //    rotation);
-
-        //float sectorHor = getHorSector(pcam, lay.pcue, lay.paim, lay.pluze, Mathf.PI - aCueTarget);
-        //float sectorVert = degcamnear - degcamfar;
-        //float sectorMax = Mathf.Max(sectorVert, sectorHor);
-        //plcamera.fieldOfView = 1.05f * sectorMax;
         //lay.paim.dbg("Aim ");        pcue.dbg("Cue ");
         Debug.Log("aim:" + lay.paim.x + "*" + lay.paim.z + " virt:" + lay.pvir.x + "*" + lay.pvir.z + " cue:" + lay.pcue.x + "*" + lay.pcue.z + "  targ:" + lay.ptargCentre.x + "*" + lay.ptargCentre.z);
-        mode = GameMode.waitTakeAim;
-        return false;
     } // ///////////////////// EHD MODES ///////////////////////////////////////////////////
     void setCamera(GameObject gobj) {
+        curTarg = gobj;
         d2p p = new d2p(gobj);
         setCamera(p);
     } // //////////////////////////////////////////////////////////////////////////////////////
     void setCamera(d2p ptarget) {
         Layout lay = studyProcess.layout;
         d2p pcam =  getPCameraHoriz(ptarget, lay.pcue);
+        float camdist = pcam.dist(lay.pcue);
+        if(camdist < Field.distCueCam)
+            pcam = d2p.setDist(lay.pcue, pcam, Field.distCueCam);
 
         d2p pbnd = new d2p(bounds); //  far point arc
         float wfar = pcam.dist(pbnd);
@@ -253,7 +230,18 @@ public class Controller : MonoBehaviour {
         //return !(xr <= xmax && zr <= zmax && xr >= -xmax && zr >= -zmax);
         return !(xr < xmax && zr < zmax && xr > -xmax && zr > -zmax);
     } // /////////////////////////////////////////////////////////////////////////////////
-
+    void exitApp() {
+        studyProcess.Close();
+        Application.Quit();
+    } // /////////////////////////////////////////////////////////////////////////////////
+    void setRes(GameObject gobj, TrueAim trueAim) {
+        if(curTarg == gobj) {
+            bool res = studyProcess.SetRes(trueAim);
+            mode = GameMode.waitShowResult;
+        } else {
+            setCamera(gobj);
+        }
+    } // ///////////////////////////////////////////////////////////////////////////////////
 } // ************************************************************************************
   //bool waitSetAimBall() {
   //    Layout lay = studyProcess.layout;

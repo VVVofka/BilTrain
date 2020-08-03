@@ -9,6 +9,7 @@ public class Field {
     static public float zmax = 8.85f;
     static public float BallD = 0.68f;
     static public float luzeCornerWidth = 0.73f;
+    static public float distCueCam = 9.7f;  // 97 cm
 
     static float luzeCornerR = 0.05f;
 
