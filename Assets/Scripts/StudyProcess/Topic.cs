@@ -7,10 +7,11 @@ public class Topic : DKCue {
     public string name { get; private set; } = "no name";
     public Layout from { get; private set; }
     public Layout to { get; private set; }
-    public int cntMax { get; private set; }
-    public int cntCur = 0;
+    public int cntInStudyMax { get; private set; }
+    public int cntInStudyCur = 0;
+    public int cntInStudyNew = 0;
 
-    public Topic(string Name, int count,
+    public Topic(string Name, int countStudy,
                 float distAimFrom,
                 float distCueFrom,
                 float angAimDegFrom,
@@ -21,8 +22,8 @@ public class Topic : DKCue {
                 float angAimDegTo,
                 float kCueTo) {
         name = Name;
-        cntMax = count;
-        cntCur = 0;
+        cntInStudyMax = countStudy;
+        cntInStudyCur = 0;
         from = new Layout(distAimFrom, distCueFrom, angAimDegFrom, kCueFrom);
         to = new Layout(distAimTo, distCueTo, angAimDegTo, kCueTo);
     } // /////////////////////////////////////////////////////////////////////////////////

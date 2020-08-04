@@ -11,7 +11,7 @@ public enum TrueAim {
 } // ***********************************************************************************
 
 public class StudyProcess {
-    const string ver = "ver:(0.1.48)";
+    const string ver = "ver:(0.1.56)";
     const string TopicsFileDefault = "Develop.tpcs";
     const string RipeExercisesFileDefault = "Develop.rpex";
     const string LessonFileDefault = "Develop.lesn";
@@ -61,16 +61,10 @@ public class StudyProcess {
     //} // //////////////////////////////////////////////////////////////////
     public Layout LoadLesson() {
         try {
-            List<Exercise> vripe = ripeExercises.getRiped(Lesson.ExercisesInLesson);
+            List<Exercise> vripe = ripeExercises.getRiped(lesson.ExercisesInLesson);
             int rest = lesson.LoadRipe(vripe);
-            if(rest > 0) {
-                Topic topic = topics.curTopic;
-                if(topic.cntCur >= topic.cntMax)
-                    topic = topics.ToNextTopic();
-                if(topic == null)
-                    topic = topics.ToFirstTopic();
-                lesson.LoadNew(topic);
-            }
+            if(rest > 0) 
+                lesson.LoadNew(topics);
             return lesson.layout;
         } catch(Exception ex) {
             Console.WriteLine($"Исключение in public Layout LoadLesson(): {ex.Message}");

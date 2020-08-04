@@ -31,14 +31,6 @@ public class Layout {
         _fromInD = fromInD;
         _toInD = toInD;
     } // ////////////////////////////////////////////////////////////////////
-    //void tst() {
-    //    d2p bs = new d2p(-1.5f, 3);
-    //    d2p p0 = new d2p(5, -1);
-    //    d2p p;
-    //    float rad = d2p.deg2rad(80);
-
-    //    p = d2p.rotateRef(bs, p0, rad);
-    //} // /////////////////////////////////////////////////////////////////////////////////
     bool Set() {
         //tst();
         // Target point

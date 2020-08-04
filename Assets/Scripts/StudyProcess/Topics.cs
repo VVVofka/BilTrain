@@ -4,10 +4,10 @@ using System;
 [Serializable]
 public class Topics : DKCue {
     public int ntopic { get; private set; } = 0;
-    List<Topic> topics = new List<Topic>();
+    List<Topic> v = new List<Topic>();
 
     public Topics() {
-        topics.Add(new Topic("TestDbg", 1,
+        v.Add(new Topic("TestDbg", 1,
             5.0f, 5.5f, 10.0f, 0.2f,     // distAimFrom, distCueFrom, angAimDegFrom, kCueFrom,
             5.0f, 5.5f, 10.0f, 0.2f      // distAimTo,   distCueTo,   angAimDegTo,   kCueTo
             ));
@@ -26,21 +26,33 @@ public class Topics : DKCue {
         //   ));
     } // ////////////////////////////////////////////////////////////////////////////////////
 
-    public Topic curTopic { get => topics[ntopic]; }
-    public int Count { get => topics.Count; }
-    public new void SetRes(bool sucess) { base.SetRes(sucess); curTopic.SetRes(sucess);}
+    public Topic curTopic { get => v[ntopic]; }
+    public int Count { get => v.Count; }
+    public new void SetRes(bool sucess) {
+        base.SetRes(sucess); 
+        curTopic.SetRes(sucess);
+    }
     
     public Topic ToNextTopic() {
-        if(++ntopic >= topics.Count) {
+        if(++ntopic >= v.Count) {
             EndOfTopics?.Invoke();
             return ToFirstTopic();
         }
-        return curTopic;
+        return v[ntopic];
     } // ////////////////////////////////////////////////////////////////////////////////////
     public Topic ToFirstTopic() {
         ntopic = 0;
-        return curTopic;
+        return v[0];
     } // ///////////////////////////////////////////////////////////////////////////////
+    public void resetNew() {
+        foreach(var q in v) 
+            q.cntInStudyNew = 0;
+    } // /////////////////////////////////////////////////////////////////////////////////////
+   public void setNew() {
+        foreach(var q in v)
+            q.cntInStudyCur += q.cntInStudyNew;
+    } // /////////////////////////////////////////////////////////////////////////////////////
+ 
     public delegate void TopicsStateHandler();      // Объявляем делегат
     public event TopicsStateHandler EndOfTopics;    // Создаем переменную делегата
 

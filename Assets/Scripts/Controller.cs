@@ -22,15 +22,17 @@ public class Controller : MonoBehaviour {
     [SerializeField] private GameObject aimLeft;    // left
     [SerializeField] private GameObject aimRight;   // right
     [SerializeField] private GameObject bounds;   // far point of arc
-    [SerializeField] private Camera plcamera;   // 
+    [SerializeField] private Camera plcamera = null;   // 
     [SerializeField] private GameObject luzeLeft;    // left
     [SerializeField] private GameObject luzeRight;   // right
-    [SerializeField] private bool showVirtBall;   // right
+    [SerializeField] private bool showVirtBall = false;   // right
 
     float xmax, zmax;
     TrueAim selectAim = TrueAim.none;
     GameObject curTarg = null;
     Targs targs;
+
+    GUIStyle style = new GUIStyle();
 
     public Controller() {
         studyProcess = new StudyProcess();
@@ -46,6 +48,11 @@ public class Controller : MonoBehaviour {
         targs = new Targs(aimLeft, aimLeft.GetComponent<Renderer>().material.color,
                         aimCenter, aimCenter.GetComponent<Renderer>().material.color,
                         aimRight, aimRight.GetComponent<Renderer>().material.color);
+
+        style.fontSize = 24;
+        //style.fontStyle = FontStyle.Bold;
+        style.font = Font.CreateDynamicFontFromOSFont("Arial", style.fontSize);
+        style.normal.textColor = new Color(1, 1, 0);
     } // ////////////////////////////////////////////////////////////////////////////////
     void OnReactOnChoose(TrueAim trueAim) {
         if(selectAim == trueAim) {
@@ -101,7 +108,7 @@ public class Controller : MonoBehaviour {
                 Input.GetKeyDown(KeyCode.A) ||
                 Input.GetKeyDown(KeyCode.S) ||
                 Input.GetKeyDown(KeyCode.D)
-                ) {   
+                ) {
                 mode = GameMode.waitSetBalls;
             } else if(Input.GetKeyDown(KeyCode.Escape)) {
                 exitApp();
@@ -113,17 +120,13 @@ public class Controller : MonoBehaviour {
     } // ///////////////////////////////////////////////////////////////////////////////////
     void OnGUI() {
         {
+            GUI.Button(new Rect(50, 50, 195, 150), "Raise Integer");
             int fontsize = 24;
             float posX = 2;
             float posY = fontsize * 0.5f;
             float posW = plcamera.pixelWidth/2;
             float posH = fontsize * 1.1f;
             Rect rct = new Rect(posX, posY, posW, posH);
-            GUIStyle style = new GUIStyle();
-            style.fontSize = fontsize;
-            //style.fontStyle = FontStyle.Bold;
-            style.font = Font.CreateDynamicFontFromOSFont("Arial", fontsize);
-            style.normal.textColor = new Color(1, 1, 0);
             string s = "ksadfljsdfjdsasdkj'ksdaglkjsdgdkjsasdjgf'sdjag";
             GUI.Label(rct, s, style);
         }
@@ -134,46 +137,27 @@ public class Controller : MonoBehaviour {
             float posW = plcamera.pixelWidth/2;
             float posH = fontsize;
             Rect rctL = new Rect(posXL, posY, posW, posH);
-            GUIStyle styleL = new GUIStyle();
-            styleL.fontSize = fontsize;
+            //GUIStyle styleL = new GUIStyle();
+            //styleL.fontSize = fontsize;
             //style.fontStyle = FontStyle.Bold;
-            styleL.font = Font.CreateDynamicFontFromOSFont("Arial", fontsize);
-            styleL.normal.textColor = new Color(1, 1, 0);
-            styleL.alignment = TextAnchor.LowerLeft;
+            //styleL.font = Font.CreateDynamicFontFromOSFont("Arial", fontsize);
+            //styleL.normal.textColor = new Color(1, 1, 0);
+            style.alignment = TextAnchor.LowerLeft;
             Topics topics = studyProcess.topics;
             Topic topic = topics.curTopic;
             string sL = "Topic: '" + topic.name + "'";
             sL += " №" + topics.ntopic + "(" + topics.Count + ") ";
             sL += topic.info;
-            sL += "; Repeat lesson:" + topic.cntCur + "[" + topic.cntMax + "]";
-            GUI.Label(rctL, sL, styleL);
+            sL += "; Repeat lesson:" + topic.cntInStudyCur + "[" + topic.cntInStudyMax + "]";
+            GUI.Label(rctL, sL, style);
 
             float posXR = plcamera.pixelWidth / 2;
             Rect rctR = new Rect(posXR, posY, posW - 2, posH);
-            GUIStyle styleR = new GUIStyle(styleL);
-            styleR.alignment = TextAnchor.LowerRight;
+            //GUIStyle styleR = new GUIStyle(styleL);
+            style.alignment = TextAnchor.LowerRight;
             string sR = studyProcess.lesson.cntStuded + " remain:" + studyProcess.lesson.cntUnStuded;
-            GUI.Label(rctR, sR, styleR);
+            GUI.Label(rctR, sR, style);
         }
-        //{
-        //    int fontsize = 18;
-        //    float posX = 2;
-        //    float posY = plcamera.pixelHeight - fontsize;
-        //    float posW = plcamera.pixelWidth/2;
-        //    float posH = fontsize;
-        //    Rect rct = new Rect(posX, posY, posW, posH);
-        //    GUIStyle style = new GUIStyle();
-        //    style.fontSize = fontsize;
-        //    //style.fontStyle = FontStyle.Bold;
-        //    style.font = Font.CreateDynamicFontFromOSFont("Arial", fontsize);
-        //    style.normal.textColor = new Color(1, 1, 0);
-        //    Topics topics = studyProcess.topics;
-        //    Topic topic = topics.topic;
-        //    string s = "Topic: '" + topic.name + "'";
-        //    s += " №" + topics.ntopic + "(" + topics.Count + ") ";
-        //    s += topic.info;
-        //    GUI.Label(rct, s, style);
-        //}
     } // /////////////////////////////////////////////////////////////////////////////////////
 
     //                  MODES
@@ -347,8 +331,9 @@ public class Controller : MonoBehaviour {
         }
     } // ///////////////////////////////////////////////////////////////////////////////////
     void RestoreTargs() {
-        foreach(var go in targs.v) 
-            go.gobject.GetComponent<Renderer>().material.color = go.clr;
+        if(targs != null)
+            foreach(var go in targs.v)
+                go.gobject.GetComponent<Renderer>().material.color = go.clr;
     } // ////////////////////////////////////////////////////////////////////////////////////
 } // ************************************************************************************
   //bool waitSetAimBall() {

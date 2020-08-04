@@ -5,9 +5,8 @@ using System.Collections.Generic;
 public class Lesson : DKCue {
     List<ExerciseEnh> v = new List<ExerciseEnh>();
     public List<Exercise> vstuded = new List<Exercise>();
-    List<Topic> vnewTopics = new List<Topic>();
 
-    public static int ExercisesInLesson = 3;
+    public int ExercisesInLesson = 3;
     public int[] vluzes = {2}; // TODO: Luzes
     public int[] vsigns = {1, -1};
     List<Exercise> vripe = new List<Exercise>();
@@ -19,54 +18,55 @@ public class Lesson : DKCue {
     public int cntUnStuded { get => v.Count; }
 
     public int LoadRipe(List<Exercise> vRipe) {
-        try {
-            vripe = vRipe;
-            v.Clear();
-            DateTime now = DateTime.Now;
-            int j = 0;
-            foreach(Exercise exercise in vripe) {
-                if(exercise.overdue(now) <= 0)
-                    break;
-                if(++j >= ExercisesInLesson)
-                    break;
-                Layout lay = exercise.layout;
-                foreach(int luz in vluzes)
-                    foreach(int signAng in vsigns)
-                        foreach(int signK in vsigns) {
-                            if(lay.SetBandRnd(signAng, signK))
-                                v.Add(new ExerciseEnh(new Exercise(lay), luz));
-                        }
-            }
-            return ExercisesInLesson - j;
-        } catch(Exception ex) {
-            Console.WriteLine($"Исключение in LoadRipe(): {ex.Message}");
-            Console.WriteLine($"Метод: {ex.TargetSite}");
-            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-            return -1;
-        }
-    } // ////////////////////////////////////////////////////////////////
-    public int LoadNew(Topic topic) {
-        try {
-            int jmax = ExercisesInLesson - v.Count;
-            for(int j = 0; j < jmax; j++) {
-                Layout lay = new Layout(topic.from, topic.to);
-                foreach(int luz in vluzes)
-                    foreach(int signAng in vsigns) {
-                        foreach(int signK in vsigns) {
-                            if(lay.SetBandRnd(signAng, signK))
-                                v.Add(new ExerciseEnh(new Exercise(lay), luz));
+        vripe = vRipe;
+        v.Clear();
+        DateTime now = DateTime.Now;
+        int j = 0;
+        foreach(Exercise exercise in vripe) {
+            if(exercise.overdue(now) <= 0)
+                break;
+            Layout lay = exercise.layout;
+            foreach(int luz in vluzes)
+                foreach(int signAng in vsigns)
+                    foreach(int signK in vsigns) {
+                        if(lay.SetBandRnd(signAng, signK)) {
+                            v.Add(new ExerciseEnh(new Exercise(lay), luz));
+                            if(++j >= ExercisesInLesson)
+                                return 0;
                         }
                     }
-            }
-            Shuffle();
-            dkcue = 1.0f;
-            vnewTopics.Add(topic);
-            return v.Count;
-        } catch(Exception ex) {
-            Console.WriteLine($"Исключение in LoadNew({topic.name}): {ex.Message}");
-            Console.WriteLine($"Метод: {ex.TargetSite}");
-            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-            return -1;
+        }
+        return ExercisesInLesson - j;
+    } // ////////////////////////////////////////////////////////////////
+    public int LoadNew(Topics topics) {
+        topics.resetNew();
+        fillv(topics);
+        Shuffle();
+        dkcue = 1.0f;
+        return v.Count;
+    } // /////////////////////////////////////////////////////////////////////
+    void fillv(Topics topics) {
+        int jmax = ExercisesInLesson - v.Count;
+        for(int j = 0; ;) {
+            foreach(int luz in vluzes)
+                foreach(int signAng in vsigns)
+                    foreach(int signK in vsigns) {
+                        Topic topic = topics.curTopic;
+                        if(topic.cntInStudyCur + topic.cntInStudyNew >= topic.cntInStudyMax) {
+                            if(topic.cntInStudyNew == 0)
+                                topic.cntInStudyCur--;
+                            else
+                                topic.cntInStudyNew--;
+                            topic = topics.ToNextTopic();
+                        }
+                        Layout lay = new Layout(topic.from, topic.to);
+                        if(lay.SetBandRnd(signAng, signK)) {
+                            if(j++ >= jmax)
+                                return;
+                            v.Add(new ExerciseEnh(new Exercise(lay), luz));
+                            topic.cntInStudyNew++;
+                        }
+                    }
         }
     } // /////////////////////////////////////////////////////////////////////
     void Shuffle() {
@@ -86,9 +86,6 @@ public class Lesson : DKCue {
                 vstuded.Add(curExercise);
                 v.Remove(curExercise);
                 if(v.Count <= 0) {
-                    foreach(var q in vnewTopics)
-                        q.cntCur++;
-                    vnewTopics.Clear();
                     OnEndOfLesson?.Invoke();
                 }
             }
