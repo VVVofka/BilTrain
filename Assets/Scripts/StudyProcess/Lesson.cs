@@ -97,7 +97,7 @@ public class Lesson : DKCue {
         }
     } // ///////////////////////////////////////////////////////////////////////////////////////
 
-    public delegate void StateHandlerOnChoose(bool isSucess);   // Объявляем делегат
+    public delegate void StateHandlerOnChoose(bool sucess);   // Объявляем делегат
     public event StateHandlerOnChoose On_Choose;                 // Создаем переменную делегата
     public delegate void StateHandlerOnEndOfLesson();           // Объявляем делегат
     public event StateHandlerOnEndOfLesson OnEndOfLesson;       // Создаем переменную делегата

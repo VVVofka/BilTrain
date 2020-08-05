@@ -3,13 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-public enum TrueTarg {
-    left = -1,
-    center = 0,
-    right = 1,
-    none = -2
-} // ***********************************************************************************
-
 public class StudyProcess {
     const string ver = "ver:(0.1.59)";
     const string TopicsFileDefault = "Develop.tpcs";
@@ -19,7 +12,7 @@ public class StudyProcess {
     public Topics topics;
     RipeExercises ripeExercises;
     public Lesson lesson;
-    public TrueTarg curTarg = TrueTarg.none;
+    public Targs targs;
 
     public StudyProcess() {
         LoadTopicFile(TopicsFileDefault);
@@ -61,7 +54,7 @@ public class StudyProcess {
         try {
             List<Exercise> vripe = ripeExercises.getRiped(lesson.ExercisesInLesson);
             int rest = lesson.LoadRipe(vripe);
-            if(rest > 0) 
+            if(rest > 0)
                 lesson.LoadNew(topics);
             return lesson.layout;
         } catch(Exception ex) {
@@ -169,9 +162,9 @@ public class StudyProcess {
             Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
         }
     } // ////////////////////////////////////////////////////////////////////////
-    public bool SetRes(TrueTarg aim) {
+    public bool SetRes(int aim) {
         try {
-            bool sucess = (aim == curTarg);
+            bool sucess = (aim == targs.truepos);
             lesson.SetRes(sucess);
             topics.SetRes(sucess);
             ripeExercises.setResult(lesson.curExercise, sucess);
@@ -183,40 +176,19 @@ public class StudyProcess {
             return false;
         }
     } // ///////////////////////////////////////////////////////////////////////
-    void OnChoose(bool isSucess) {
-        try {
-            on_aim?.Invoke(curTarg);
-        } catch(Exception ex) {
-            Console.WriteLine($"Исключение in SetRes({isSucess}): {ex.Message}");
-            Console.WriteLine($"Метод: {ex.TargetSite}");
-            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-        }
+    void OnChoose(bool sucess) {
+        on_aim?.Invoke(targs.selectLast, targs.truepos);
     } // ///////////////////////////////////////////////////////////////////////
     void OnEndLesson() {
-        foreach(var q in lesson.vstuded) 
+        foreach(var q in lesson.vstuded)
             ripeExercises.Add(q);
         lesson.vstuded.Clear();
         LoadLesson();
     } // /////////////////////////////////////////////////////////////////////////
     public float dkcue() {
-        int rnd = Field.rand.Next(-1, 1);
-        switch(rnd) {
-        case -1:
-            curTarg = TrueTarg.left;
-            break;
-        case 0:
-            curTarg = TrueTarg.center;
-            break;
-        case 1:
-            curTarg = TrueTarg.right;
-            break;
-        default:
-            curTarg = TrueTarg.none;
-            break;
-        }
         return (topics.dkcue + topics.curTopic.dkcue + lesson.dkcue + lesson.curExercise.dkcue) / 4;
     } // ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public delegate void StateHandlerAim(TrueTarg realAim);   // Объявляем делегат
+    public delegate void StateHandlerAim(int select_targ, int true_targ);   // Объявляем делегат
     public event StateHandlerAim on_aim;                 // Создаем переменную делегата
 } // *******************************************************************************************
