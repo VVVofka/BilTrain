@@ -16,6 +16,9 @@ public class Field {
     public static float BallR {get => BallD / 2f;}
     public static d2p endArc { get => new d2p(xmax + BallD, zmax + BallD); }
 
+    static public System.Random rand = new System.Random(1);
+
+
     public static d2p luzeCornerShortO {
         get {
             float x = xmax + luzeCornerR;

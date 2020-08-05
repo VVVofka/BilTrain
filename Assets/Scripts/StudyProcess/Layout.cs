@@ -19,7 +19,6 @@ public class Layout {
     public float distCuePhys { get => distCueInD * Field.BallD; }
 
     Layout _fromInD, _toInD;
-    static System.Random rand = new System.Random();
 
     public Layout(float DistAimInD, float DistCueInD, float AngleAimDeg, float KoefCue) {
         distAimInD = DistAimInD;
@@ -85,7 +84,7 @@ public class Layout {
             angAimDeg == other.angAimDeg && kCue == other.kCue;
     } // ///////////////////////////////////////////////////////////////////////
     float rnd(float from, float to) {
-        float rnd = (float)rand.NextDouble();
+        float rnd = (float)Field.rand.NextDouble();
         return from + rnd * (to - from);
     } // /////////////////////////////////////////////////////////////////////////
     float getAlfa(float kD, float distCue) {

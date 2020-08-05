@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-public enum TrueAim {
+public enum TrueTarg {
     left = -1,
     center = 0,
     right = 1,
@@ -11,7 +11,7 @@ public enum TrueAim {
 } // ***********************************************************************************
 
 public class StudyProcess {
-    const string ver = "ver:(0.1.56)";
+    const string ver = "ver:(0.1.59)";
     const string TopicsFileDefault = "Develop.tpcs";
     const string RipeExercisesFileDefault = "Develop.rpex";
     const string LessonFileDefault = "Develop.lesn";
@@ -19,9 +19,7 @@ public class StudyProcess {
     public Topics topics;
     RipeExercises ripeExercises;
     public Lesson lesson;
-    public TrueAim curAim = TrueAim.none;
-
-    static Random rand = new Random();
+    public TrueTarg curTarg = TrueTarg.none;
 
     public StudyProcess() {
         LoadTopicFile(TopicsFileDefault);
@@ -171,9 +169,9 @@ public class StudyProcess {
             Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
         }
     } // ////////////////////////////////////////////////////////////////////////
-    public bool SetRes(TrueAim aim) {
+    public bool SetRes(TrueTarg aim) {
         try {
-            bool sucess = (aim == curAim);
+            bool sucess = (aim == curTarg);
             lesson.SetRes(sucess);
             topics.SetRes(sucess);
             ripeExercises.setResult(lesson.curExercise, sucess);
@@ -187,7 +185,7 @@ public class StudyProcess {
     } // ///////////////////////////////////////////////////////////////////////
     void OnChoose(bool isSucess) {
         try {
-            on_aim?.Invoke(curAim);
+            on_aim?.Invoke(curTarg);
         } catch(Exception ex) {
             Console.WriteLine($"Исключение in SetRes({isSucess}): {ex.Message}");
             Console.WriteLine($"Метод: {ex.TargetSite}");
@@ -201,10 +199,24 @@ public class StudyProcess {
         LoadLesson();
     } // /////////////////////////////////////////////////////////////////////////
     public float dkcue() {
-        curAim = (TrueAim)rand.Next(-1, 1);
+        int rnd = Field.rand.Next(-1, 1);
+        switch(rnd) {
+        case -1:
+            curTarg = TrueTarg.left;
+            break;
+        case 0:
+            curTarg = TrueTarg.center;
+            break;
+        case 1:
+            curTarg = TrueTarg.right;
+            break;
+        default:
+            curTarg = TrueTarg.none;
+            break;
+        }
         return (topics.dkcue + topics.curTopic.dkcue + lesson.dkcue + lesson.curExercise.dkcue) / 4;
     } // ////////////////////////////////////////////////////////////////////////////////////////////////
 
-    public delegate void StateHandlerAim(TrueAim realAim);   // Объявляем делегат
+    public delegate void StateHandlerAim(TrueTarg realAim);   // Объявляем делегат
     public event StateHandlerAim on_aim;                 // Создаем переменную делегата
 } // *******************************************************************************************

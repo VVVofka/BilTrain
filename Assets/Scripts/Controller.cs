@@ -28,7 +28,7 @@ public class Controller : MonoBehaviour {
     [SerializeField] private bool showVirtBall = false;   // right
 
     float xmax, zmax;
-    TrueAim selectAim = TrueAim.none;
+    TrueTarg selectAim = TrueTarg.none;
     GameObject curTarg = null;
     Targs targs;
 
@@ -40,6 +40,7 @@ public class Controller : MonoBehaviour {
     } // ////////////////////////////////////////////////////////////////////////////////
 
     void Start() {
+       // Field.rand.
         mode = GameMode.waitSetBalls;
         xmax = luzeRight.transform.position.x;
         zmax = luzeLeft.transform.position.z;
@@ -54,7 +55,7 @@ public class Controller : MonoBehaviour {
         style.font = Font.CreateDynamicFontFromOSFont("Arial", style.fontSize);
         style.normal.textColor = new Color(1, 1, 0);
     } // ////////////////////////////////////////////////////////////////////////////////
-    void OnReactOnChoose(TrueAim trueAim) {
+    void OnReactOnChoose(TrueTarg trueAim) {
         if(selectAim == trueAim) {
         } else {
         }
@@ -66,6 +67,7 @@ public class Controller : MonoBehaviour {
         case GameMode.waitSetBalls:
             if(ballAim != null) {
                 RestoreTargs();
+                targs.setRnd();
                 waitSetAimBall();
                 setCamera(ballAim);
                 mode = GameMode.waitTakeAim;
@@ -92,11 +94,11 @@ public class Controller : MonoBehaviour {
             } else if(Input.GetKeyDown(KeyCode.Escape)) {
                 exitApp();
             } else if(Input.GetKeyDown(KeyCode.A)) {
-                isSetRes(aimLeft, TrueAim.left);
+                isSetRes(aimLeft, TrueTarg.left);
             } else if(Input.GetKeyDown(KeyCode.S)) {
-                isSetRes(aimCenter, TrueAim.center);
+                isSetRes(aimCenter, TrueTarg.center);
             } else if(Input.GetKeyDown(KeyCode.D)) {
-                isSetRes(aimRight, TrueAim.right);
+                isSetRes(aimRight, TrueTarg.right);
             }
             break;
         case GameMode.waitShowResult:
@@ -165,7 +167,7 @@ public class Controller : MonoBehaviour {
         //aimLeft.GetComponent<Renderer>().material.color = Color.white;
         //aimRight.GetComponent<Renderer>().material.color = new Color(1, 0, 1, 0.5f);
     } // ////////////////////////////////////////////////////////////////////////////////////
-    void waitSetAimBall() {
+    void waitSetAimBall(int true_targ) {
         Layout lay = studyProcess.layout;
 
         lay.paim.setObj(ref ballAim);
@@ -173,8 +175,8 @@ public class Controller : MonoBehaviour {
         lay.pcue.setObj(ref ballCue);
 
         float dkcue = kCue0 * studyProcess.dkcue(); // also set curAim
-        switch(studyProcess.curAim) {
-        case TrueAim.left: {
+        switch(studyProcess.curTarg) {
+        case TrueTarg.left: {
             lay.pTarg.setObj(ref aimLeft);
             d2p ptarg1 = d2p.addDist(lay.paim, lay.pTarg, -Field.BallD * dkcue);
             ptarg1.setObj(ref aimCenter);
@@ -182,7 +184,7 @@ public class Controller : MonoBehaviour {
             ptarg2.setObj(ref aimRight);
             break;
         }
-        case TrueAim.center: {
+        case TrueTarg.center: {
             lay.pTarg.setObj(ref aimCenter);
             d2p ptarg1 = d2p.addDist(lay.paim, lay.pTarg, Field.BallD * dkcue);
             ptarg1.setObj(ref aimLeft);
@@ -190,7 +192,7 @@ public class Controller : MonoBehaviour {
             ptarg2.setObj(ref aimRight);
             break;
         }
-        case TrueAim.right: {
+        case TrueTarg.right: {
             lay.pTarg.setObj(ref aimRight);
             d2p ptarg1 = d2p.addDist(lay.paim, lay.pTarg, 2 * Field.BallD * dkcue);
             ptarg1.setObj(ref aimLeft);
@@ -306,14 +308,14 @@ public class Controller : MonoBehaviour {
         studyProcess.Close();
         Application.Quit();
     } // /////////////////////////////////////////////////////////////////////////////////
-    void isSetRes(GameObject gobj, TrueAim trueAim) {
+    void isSetRes(GameObject gobj, TrueTarg trueAim) {
         if(curTarg == gobj) {
             setRes(gobj, trueAim);
         } else {
             setCamera(gobj);
         }
     } // ///////////////////////////////////////////////////////////////////////////////////
-    void setRes(GameObject gobj, TrueAim trueAim) {
+    void setRes(GameObject gobj, TrueTarg trueAim) {
         float alfa = 0.333f;
         bool res = studyProcess.SetRes(trueAim);
         if(res) {

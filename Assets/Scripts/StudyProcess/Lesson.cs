@@ -53,10 +53,10 @@ public class Lesson : DKCue {
                     foreach(int signK in vsigns) {
                         Topic topic = topics.curTopic;
                         if(topic.cntInStudyCur + topic.cntInStudyNew >= topic.cntInStudyMax) {
-                            if(topic.cntInStudyNew == 0)
-                                topic.cntInStudyCur--;
-                            else
-                                topic.cntInStudyNew--;
+                            //if(topic.cntInStudyNew == 0)
+                            //    topic.cntInStudyCur--;
+                            //else
+                            //    topic.cntInStudyNew--;
                             topic = topics.ToNextTopic();
                         }
                         Layout lay = new Layout(topic.from, topic.to);
@@ -70,9 +70,8 @@ public class Lesson : DKCue {
         }
     } // /////////////////////////////////////////////////////////////////////
     void Shuffle() {
-        Random rand = new Random();
         for(int i = v.Count - 1; i >= 1; i--) {
-            int j = rand.Next(i + 1);
+            int j = Field.rand.Next(i + 1);
             ExerciseEnh tmp = v[j];
             v[j] = v[i];
             v[i] = tmp;
