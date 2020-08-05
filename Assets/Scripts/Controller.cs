@@ -62,7 +62,7 @@ public class Controller : MonoBehaviour {
         switch(mode) {
         case GameMode.waitSetBalls:
             if(ballAim != null) {
-                RestoreTargs();
+                
                 waitSetAimBall();
                 setCamera(ballAim);
                 mode = GameMode.waitTakeAim;
@@ -169,6 +169,7 @@ public class Controller : MonoBehaviour {
         lay.pvir.setObj(ref ballVirt);
         lay.pcue.setObj(ref ballCue);
 
+        studyProcess.targs.Reset();
         float dkcue = kCue0 * studyProcess.dkcue(); // also set curAim
         switch(studyProcess.targs.truepos) {
         case -1: {
@@ -328,14 +329,7 @@ public class Controller : MonoBehaviour {
             gobj.GetComponent<Renderer>().material.color = new Color(clr.r, clr.g, clr.b, alfa);
         }
     } // ///////////////////////////////////////////////////////////////////////////////////
-    void RestoreTargs() {
-        Targs targs =  studyProcess.targs;
-        if(targs != null) {
-            targs.Reset();
-            foreach(var go in targs.v)
-                go.gobject.GetComponent<Renderer>().material.color = go.clr;
-        }
-    } // ////////////////////////////////////////////////////////////////////////////////////
+
 } // ************************************************************************************
   //bool waitSetAimBall() {
   //    Layout lay = studyProcess.layout;
