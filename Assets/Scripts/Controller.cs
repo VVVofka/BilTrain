@@ -61,7 +61,6 @@ public class Controller : MonoBehaviour {
         switch(mode) {
         case GameMode.waitSetBalls:
             if(ballAim != null) {
-                
                 waitSetAimBall();
                 setCamera(ballAim);
                 mode = GameMode.waitTakeAim;
@@ -88,11 +87,14 @@ public class Controller : MonoBehaviour {
             } else if(Input.GetKeyDown(KeyCode.Escape)) {
                 exitApp();
             } else if(Input.GetKeyDown(KeyCode.A)) {
-                isSetRes(aimLeft, -1);
+                studyProcess.targs.setSelect(-1);
+                //isSetRes(aimLeft, -1);
             } else if(Input.GetKeyDown(KeyCode.S)) {
-                isSetRes(aimCenter, 0);
+                studyProcess.targs.setSelect(0);
+                //isSetRes(aimCenter, 0);
             } else if(Input.GetKeyDown(KeyCode.D)) {
-                isSetRes(aimRight, 1);
+                studyProcess.targs.setSelect(1);
+                //isSetRes(aimRight, 1);
             }
             break;
         case GameMode.waitShowResult:
@@ -116,7 +118,7 @@ public class Controller : MonoBehaviour {
     } // ///////////////////////////////////////////////////////////////////////////////////
     void OnGUI() {
         {
-            GUI.Button(new Rect(50, 50, 195, 150), "Raise Integer");
+            //GUI.Button(new Rect(50, 50, 195, 150), "Raise Integer");
             int fontsize = 24;
             float posX = 2;
             float posY = fontsize * 0.5f;

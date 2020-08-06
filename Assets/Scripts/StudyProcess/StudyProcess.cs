@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 public class StudyProcess {
-    const string ver = "ver:(0.1.60)";
+    const string ver = "ver:(0.1.63)";
     const string TopicsFileDefault = "Develop.tpcs";
     const string RipeExercisesFileDefault = "Develop.rpex";
     const string LessonFileDefault = "Develop.lesn";
@@ -156,19 +156,15 @@ public class StudyProcess {
             Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
         }
     } // ////////////////////////////////////////////////////////////////////////
-    public bool SetRes(int aim) {
-        try {
-            bool sucess = (aim == targs.truepos);
+    public bool SetRes(int choose) {
+        bool ischange = targs.setSelect(choose);
+        bool sucess = targs.sucess;
+        if(ischange) {
             lesson.SetRes(sucess);
             topics.SetRes(sucess);
             ripeExercises.setResult(lesson.curExercise, sucess);
-            return sucess;
-        } catch(Exception ex) {
-            Console.WriteLine($"Исключение in SetRes({aim}): {ex.Message}");
-            Console.WriteLine($"Метод: {ex.TargetSite}");
-            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-            return false;
         }
+        return sucess;
     } // ///////////////////////////////////////////////////////////////////////
     void OnChoose(bool sucess) {
         on_aim?.Invoke(targs.selectLast, targs.truepos);

@@ -49,6 +49,7 @@ public class Targs {    // in Controller
             q.reset();
         truepos = Field.rand.Next(-1, 1);
         sucess = false;
+        pball = new d2p(goBall);
         if(dkcue > 0) {
             float d = -Field.BallD * dkcue;
             switch(truepos) {
@@ -89,7 +90,8 @@ public class Targs {    // in Controller
         bool ret = targ.selected != true;
         if(ret) {
             targ.selected = true;
-            targ.clr = sucess ? clrSucess : targ.clrFade;
+            Color clr = sucess ? clrSucess : targ.clrFade;
+            targ.gobject.GetComponent<Renderer>().material.color = clr;
         }
         return ret;
     } // //////////////////////////////////////////////////////////////////////////////
