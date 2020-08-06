@@ -87,14 +87,11 @@ public class Controller : MonoBehaviour {
             } else if(Input.GetKeyDown(KeyCode.Escape)) {
                 exitApp();
             } else if(Input.GetKeyDown(KeyCode.A)) {
-                studyProcess.targs.setSelect(-1);
-                //isSetRes(aimLeft, -1);
+                setRes(-1);
             } else if(Input.GetKeyDown(KeyCode.S)) {
-                studyProcess.targs.setSelect(0);
-                //isSetRes(aimCenter, 0);
+                setRes(0);
             } else if(Input.GetKeyDown(KeyCode.D)) {
-                studyProcess.targs.setSelect(1);
-                //isSetRes(aimRight, 1);
+                setRes(1);
             }
             break;
         case GameMode.waitShowResult:
@@ -276,32 +273,16 @@ public class Controller : MonoBehaviour {
         studyProcess.Close();
         Application.Quit();
     } // /////////////////////////////////////////////////////////////////////////////////
-    void isSetRes(GameObject gobj, int trueAim) {
-        if(curTarg == gobj) {
-            setRes(gobj, trueAim);
-        } else {
-            setCamera(gobj);
+    void setRes(int select) {
+        bool bFirstChange = studyProcess.SetRes(select);
+        Targs targs = studyProcess.targs;
+        if(targs.changeCamera) {
+            GameObject obj = targs.targ.gobject;
+            setCamera(obj);
         }
-    } // ///////////////////////////////////////////////////////////////////////////////////
-    void setRes(GameObject gobj, int trueAim) {
-        float alfa = 0.333f;
-        bool res = studyProcess.SetRes(trueAim);
-        if(res) {
-            Targs targs =  studyProcess.targs;
-            foreach(var go in targs.v)
-                if(go.gobject == gobj)
-                    go.gobject.GetComponent<Renderer>().material.color = new Color(1, 1, 0);
-                else {
-                    Color clr = go.gobject.GetComponent<Renderer>().material.color;
-                    go.gobject.GetComponent<Renderer>().material.color = new Color(clr.r, clr.g, clr.b, 0);
-                }
+        if(targs.sucess)
             mode = GameMode.waitShowResult;
-        } else {
-            Color clr = gobj.GetComponent<Renderer>().material.color;
-            gobj.GetComponent<Renderer>().material.color = new Color(clr.r, clr.g, clr.b, alfa);
-        }
     } // ///////////////////////////////////////////////////////////////////////////////////
-
 } // ************************************************************************************
   //bool waitSetAimBall() {
   //    Layout lay = studyProcess.layout;

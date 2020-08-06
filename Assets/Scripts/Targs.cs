@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 
 public class Targ {
@@ -24,18 +23,27 @@ public class Targ {
 public class Targs {    // in Controller
     public List<Targ> v = new List<Targ>();
 
-    public int truepos = 0;    // -1 0 +1
-    public bool sucess = false;
-    public Color clrSucess = new Color(1, 1, 0);
-    public int selectLast = 0;
+    public int truepos;    // -1 0 +1
+    public int selectLast;
+    public int selectPrev;
+    public bool sucess;
+    public bool firstSelectItem;
+    public bool firstSelectSeries;
+    public bool seriesFail;
+    public Color clrSucess;
+    public int cntSelect;
 
-    public d2p pball = null;
-    GameObject goBall = null;
-    d2p ptarg = null;
+    public d2p pball;
+    GameObject goBall;
+    d2p ptarg;
 
     public Targs(GameObject ball, GameObject object_left, GameObject object_center, GameObject object_right) {
         goBall = ball;
         pball = new d2p(goBall);
+        truepos = selectLast = selectPrev = -2;
+        sucess = firstSelectItem = seriesFail = false;
+        clrSucess = new Color(1, 1, 0);
+        cntSelect = 0;
 
         v.Add(new Targ(object_left));
         v.Add(new Targ(object_center));
@@ -48,8 +56,9 @@ public class Targs {    // in Controller
         foreach(var q in v)
             q.reset();
         truepos = Field.rand.Next(-1, 1);
-        sucess = false;
+        sucess = seriesFail = false;
         pball = new d2p(goBall);
+        cntSelect = 0;
         if(dkcue > 0) {
             float d = -Field.BallD * dkcue;
             switch(truepos) {
@@ -75,6 +84,7 @@ public class Targs {    // in Controller
                 break;
             }
         }
+        selectPrev = selectLast = -2;
         return truepos;
     } // //////////////////////////////////////////////////////////////////////////////
     void assign(int n, float shift = 0f) {
@@ -83,17 +93,21 @@ public class Targs {    // in Controller
     } // /////////////////////////////////////////////////////////////////////////////
     // return true if changed
     public bool setSelect(int select) {
+        ++cntSelect;
+        selectPrev = selectLast;
         selectLast = select;
         sucess = (select == truepos);
+        seriesFail |= !sucess;
         int idx = select + 1;
         Targ targ = v[idx];
-        bool ret = targ.selected != true;
-        if(ret) {
+        firstSelectItem = !targ.selected;
+        if(firstSelectItem) {
             targ.selected = true;
             Color clr = sucess ? clrSucess : targ.clrFade;
             targ.gobject.GetComponent<Renderer>().material.color = clr;
         }
-        return ret;
+        return cntSelect == 1;
     } // //////////////////////////////////////////////////////////////////////////////
-
+    public Targ targ { get => v[selectLast + 1]; }
+    public bool changeCamera { get => selectLast != selectPrev; }
 } // ***********************************************************************************

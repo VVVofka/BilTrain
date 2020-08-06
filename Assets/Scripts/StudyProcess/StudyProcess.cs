@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 public class StudyProcess {
-    const string ver = "ver:(0.1.63)";
+    const string ver = "ver:(0.1.64)";
     const string TopicsFileDefault = "Develop.tpcs";
     const string RipeExercisesFileDefault = "Develop.rpex";
     const string LessonFileDefault = "Develop.lesn";
@@ -157,14 +157,14 @@ public class StudyProcess {
         }
     } // ////////////////////////////////////////////////////////////////////////
     public bool SetRes(int choose) {
-        bool ischange = targs.setSelect(choose);
-        bool sucess = targs.sucess;
-        if(ischange) {
+        bool bFirstChange = targs.setSelect(choose);
+        if(bFirstChange) {
+            bool sucess = targs.sucess;
             lesson.SetRes(sucess);
             topics.SetRes(sucess);
             ripeExercises.setResult(lesson.curExercise, sucess);
         }
-        return sucess;
+        return bFirstChange;
     } // ///////////////////////////////////////////////////////////////////////
     void OnChoose(bool sucess) {
         on_aim?.Invoke(targs.selectLast, targs.truepos);
