@@ -11,7 +11,6 @@ public enum GameMode {
 public class Controller : MonoBehaviour {
     static public GameMode mode;
     StudyProcess studyProcess;
-    float kCue0 = 0.3f;
 
     //[SerializeField] private GameObject luzeAimPoint;
     public GameObject ballAim;
@@ -44,7 +43,7 @@ public class Controller : MonoBehaviour {
         zmax = luzeLeft.transform.position.z;
         if(!showVirtBall)
             ballVirt.transform.position = new Vector3(ballVirt.transform.position.x, -100f, ballVirt.transform.position.z);
-        studyProcess.targs = new Targs(aimLeft, aimCenter, aimRight);
+        studyProcess.targs = new Targs(ballAim, aimLeft, aimCenter, aimRight);
 
         style.fontSize = 24;
         //style.fontStyle = FontStyle.Bold;
@@ -124,7 +123,7 @@ public class Controller : MonoBehaviour {
             float posW = plcamera.pixelWidth/2;
             float posH = fontsize * 1.1f;
             Rect rct = new Rect(posX, posY, posW, posH);
-            string s = "ksadfljsdfjdsasdkj'ksdaglkjsdgdkjsasdjgf'sdjag";
+            string s = studyProcess.targs.truepos.ToString();
             GUI.Label(rct, s, style);
         }
         {
@@ -169,38 +168,9 @@ public class Controller : MonoBehaviour {
         lay.pvir.setObj(ref ballVirt);
         lay.pcue.setObj(ref ballCue);
 
-        studyProcess.targs.Reset();
-        float dkcue = kCue0 * studyProcess.dkcue(); // also set curAim
-        switch(studyProcess.targs.truepos) {
-        case -1: {
-            lay.pTarg.setObj(ref aimLeft);
-            d2p ptarg1 = d2p.addDist(lay.paim, lay.pTarg, -Field.BallD * dkcue);
-            ptarg1.setObj(ref aimCenter);
-            d2p ptarg2 = d2p.addDist(lay.paim, lay.pTarg, -2 * Field.BallD * dkcue);
-            ptarg2.setObj(ref aimRight);
-            break;
-        }
-        case 0: {
-            lay.pTarg.setObj(ref aimCenter);
-            d2p ptarg1 = d2p.addDist(lay.paim, lay.pTarg, Field.BallD * dkcue);
-            ptarg1.setObj(ref aimLeft);
-            d2p ptarg2 = d2p.addDist(lay.paim, lay.pTarg, -Field.BallD * dkcue);
-            ptarg2.setObj(ref aimRight);
-            break;
-        }
-        case 1: {
-            lay.pTarg.setObj(ref aimRight);
-            d2p ptarg1 = d2p.addDist(lay.paim, lay.pTarg, 2 * Field.BallD * dkcue);
-            ptarg1.setObj(ref aimLeft);
-            d2p ptarg2 = d2p.addDist(lay.paim, lay.pTarg, Field.BallD * dkcue);
-            ptarg2.setObj(ref aimCenter);
-            break;
-        }
-        default:
-            break;
-        }
-        //lay.paim.dbg("Aim ");        pcue.dbg("Cue ");
-        Debug.Log("aim:" + lay.paim.x + "*" + lay.paim.z + " virt:" + lay.pvir.x + "*" + lay.pvir.z + " cue:" + lay.pcue.x + "*" + lay.pcue.z + "  targ:" + lay.pTarg.x + "*" + lay.pTarg.z);
+        float dkcue = studyProcess.dkcue(); // also set curAim
+        int trg = studyProcess.targs.Reset(lay.pTarg, dkcue);
+        Debug.Log(trg + " aim:" + lay.paim.x + "*" + lay.paim.z + " virt:" + lay.pvir.x + "*" + lay.pvir.z + " cue:" + lay.pcue.x + "*" + lay.pcue.z + "  targ:" + lay.pTarg.x + "*" + lay.pTarg.z);
     } // ///////////////////// EHD MODES ///////////////////////////////////////////////////
     void setCamera(GameObject gobj) {
         curTarg = gobj;

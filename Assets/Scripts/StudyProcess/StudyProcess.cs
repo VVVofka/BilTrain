@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 public class StudyProcess {
-    const string ver = "ver:(0.1.59)";
+    const string ver = "ver:(0.1.60)";
     const string TopicsFileDefault = "Develop.tpcs";
     const string RipeExercisesFileDefault = "Develop.rpex";
     const string LessonFileDefault = "Develop.lesn";
@@ -14,11 +14,12 @@ public class StudyProcess {
     public Lesson lesson;
     public Targs targs;
 
+    float kCue0 = 0.3f;
+
     public StudyProcess() {
         LoadTopicFile(TopicsFileDefault);
         LoadRipeExercisesFile(RipeExercisesFileDefault);
         //LoadLessonFile(LessonFileDefault);
-        lesson = new Lesson();
         LoadLesson();
 
         lesson.On_Choose += OnChoose;
@@ -51,19 +52,12 @@ public class StudyProcess {
     //        CreateLessonFile(fname);
     //} // //////////////////////////////////////////////////////////////////
     public Layout LoadLesson() {
-        try {
-            List<Exercise> vripe = ripeExercises.getRiped(lesson.ExercisesInLesson);
-            int rest = lesson.LoadRipe(vripe);
-            if(rest > 0)
-                lesson.LoadNew(topics);
-            return lesson.layout;
-        } catch(Exception ex) {
-            Console.WriteLine($"Исключение in public Layout LoadLesson(): {ex.Message}");
-            Console.WriteLine($"Метод: {ex.TargetSite}");
-            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
-            //throw;
-            return null;
-        }
+        lesson = new Lesson();
+        List<Exercise> vripe = ripeExercises.getRiped(lesson.ExercisesInLesson);
+        int rest = lesson.LoadRipe(vripe);
+        if(rest > 0)
+            lesson.LoadNew(topics);
+        return lesson.layout;
     } // ///////////////////////////////////////////////////////////////////
     void LoadTopicFile(string fname) {
         try {
@@ -186,7 +180,7 @@ public class StudyProcess {
         LoadLesson();
     } // /////////////////////////////////////////////////////////////////////////
     public float dkcue() {
-        return (topics.dkcue + topics.curTopic.dkcue + lesson.dkcue + lesson.curExercise.dkcue) / 4;
+        return kCue0 * (topics.dkcue + topics.curTopic.dkcue + lesson.dkcue + lesson.curExercise.dkcue) / 4;
     } // ////////////////////////////////////////////////////////////////////////////////////////////////
 
     public delegate void StateHandlerAim(int select_targ, int true_targ);   // Объявляем делегат
