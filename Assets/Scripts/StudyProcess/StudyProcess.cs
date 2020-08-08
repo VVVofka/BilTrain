@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine;
 
 public class StudyProcess {
-    const string ver = "ver:(0.1.69)";
+    const string ver = "ver:(0.1.80)";
     const string TopicsFileDefault = "Develop.tpcs";
     const string RipeExercisesFileDefault = "Develop.rpex";
     const string LessonFileDefault = "Develop.lesn";
@@ -13,19 +14,21 @@ public class StudyProcess {
     RipeExercises ripeExercises;
     public Lesson lesson;
     public Targs targs;
+    public bool initComplete = false;
 
     float kCue0 = 0.3f;
 
     public StudyProcess() {
+    } // //////////////////////////////////////////////////////////////////
+
+    public void Create(GameObject ball, GameObject object_left, GameObject object_center, GameObject object_right) {
+        targs = new Targs(ball, object_left, object_center, object_right);
         LoadTopicFile(TopicsFileDefault);
         LoadRipeExercisesFile(RipeExercisesFileDefault);
         //LoadLessonFile(LessonFileDefault);
         LoadLesson();
-
-        lesson.On_Choose += OnChoose;
-        lesson.OnEndOfLesson += OnEndLesson;
-        //lesson.RegisterHandler(new Lesson.LessonStateHandler(DelStuded));
-    } // //////////////////////////////////////////////////////////////////
+        initComplete = true;
+    } // /////////////////////////////////////////////////////////////////////////////
     public Layout layout { get => lesson.layout; } // ///////////////////
     public Layout moveNext() {
         Layout lay = lesson.layout;
@@ -162,25 +165,13 @@ public class StudyProcess {
     } // ///////////////////////////////////////////////////////////////////////
     public void saveRes() {
         bool sucess = targs.seriesSucess;
-        lesson.SetRes(sucess);
-        topics.SetRes(sucess);
         ripeExercises.setResult(lesson.curExercise, sucess);
-        if(lesson.cntUnStuded <= 0)
-            OnEndLesson();
+        topics.SetRes(sucess);
+        bool bContinueLesson = lesson.SetRes(sucess);
+        if(!bContinueLesson)
+            LoadLesson();
     } // ///////////////////////////////////////////////////////////////////////
-    void OnChoose(bool sucess) {
-        on_aim?.Invoke(targs.selectLast, targs.truepos);
-    } // ///////////////////////////////////////////////////////////////////////
-    void OnEndLesson() {
-        foreach(var q in lesson.vstuded)
-            ripeExercises.Add(q);
-        lesson.vstuded.Clear();
-        LoadLesson();
-    } // /////////////////////////////////////////////////////////////////////////
     public float dkcue() {
         return kCue0 * (topics.dkcue + topics.curTopic.dkcue + lesson.dkcue + lesson.curExercise.dkcue) / 4;
     } // ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    public delegate void StateHandlerAim(int select_targ, int true_targ);   // Объявляем делегат
-    public event StateHandlerAim on_aim;                 // Создаем переменную делегата
 } // *******************************************************************************************

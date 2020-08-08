@@ -4,17 +4,18 @@ using System.Collections.Generic;
 [Serializable]
 public class Lesson : DKCue {
     List<ExerciseEnh> v = new List<ExerciseEnh>();
+    public ExerciseEnh curExercise;
     public List<Exercise> vstuded = new List<Exercise>();
 
-    public int ExercisesInLesson = 3;
+    public int ExercisesInLesson = 2; // TODO: ExercisesInLesson = 10
     public int[] vluzes = {2}; // TODO: Luzes
     public int[] vsigns = {1, -1};
     List<Exercise> vripe = new List<Exercise>();
 
-    public Layout layout { 
-        get => v.Count > 0 ? curExercise.layout : null; 
+    public Layout layout {
+        get => v.Count > 0 ? curExercise.layout : null;
     }
-    public ExerciseEnh curExercise { get => v.Count > 0 ? v[0] : null; }
+    //public ExerciseEnh curExercise { get => v.Count > 0 ? v[0] : null; }
 
     public int cntStuded { get => vstuded.Count; }
     public int cntUnStuded { get => v.Count; }
@@ -22,6 +23,7 @@ public class Lesson : DKCue {
     public int LoadRipe(List<Exercise> vRipe) {
         vripe = vRipe;
         v.Clear();
+        curExercise = null;
         DateTime now = DateTime.Now;
         int j = 0;
         foreach(Exercise exercise in vripe) {
@@ -32,7 +34,8 @@ public class Lesson : DKCue {
                 foreach(int signAng in vsigns)
                     foreach(int signK in vsigns) {
                         if(lay.SetBandRnd(signAng, signK)) {
-                            v.Add(new ExerciseEnh(new Exercise(lay), luz));
+                            curExercise = new ExerciseEnh(new Exercise(lay), luz);
+                            v.Add(curExercise);
                             if(++j >= ExercisesInLesson)
                                 return 0;
                         }
@@ -65,7 +68,8 @@ public class Lesson : DKCue {
                         if(lay.SetBandRnd(signAng, signK)) {
                             if(j++ >= jmax)
                                 return;
-                            v.Add(new ExerciseEnh(new Exercise(lay), luz));
+                            curExercise = new ExerciseEnh(new Exercise(lay), luz);
+                            v.Add(curExercise);
                             topic.cntInStudyNew++;
                         }
                     }
@@ -78,27 +82,21 @@ public class Lesson : DKCue {
             v[j] = v[i];
             v[i] = tmp;
         }
+        curExercise = v[0];
     } // ////////////////////////////////////////////////////////////////
-    public new void SetRes(bool sucess) {
+    public new bool SetRes(bool sucess) {
         base.SetRes(sucess);
-        ExerciseEnh exer = curExercise;
-        exer.SetRes(sucess);
-        if(exer == null)
-            return;
-        if(sucess) {
-            vstuded.Add(exer);
-            v.Remove(exer);
-            if(v.Count <= 0) {
-                OnEndOfLesson?.Invoke();
+        if(curExercise != null) {
+            curExercise.SetRes(sucess);
+            if(sucess) {
+                vstuded.Add(curExercise);
+                v.Remove(curExercise);
+            }
+            if(v.Count > 0) {
+                Shuffle();
+                return true;
             }
         }
-        Shuffle();
-        On_Choose?.Invoke(sucess);
+        return false;
     } // ///////////////////////////////////////////////////////////////////////////////////////
-
-    public delegate void StateHandlerOnChoose(bool sucess);   // Объявляем делегат
-    public event StateHandlerOnChoose On_Choose;                 // Создаем переменную делегата
-    public delegate void StateHandlerOnEndOfLesson();           // Объявляем делегат
-    public event StateHandlerOnEndOfLesson OnEndOfLesson;       // Создаем переменную делегата
-    //public void RegisterHandler(LessonStateHandler deleg){_deleg += deleg;}  // Регистрируем делегат
 } // *************************************************************
