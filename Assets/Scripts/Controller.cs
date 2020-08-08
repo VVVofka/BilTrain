@@ -53,59 +53,63 @@ public class Controller : MonoBehaviour {
         if(inUpdate)
             return;
         inUpdate = true;
-        switch(mode) {
-        case GameMode.waitSetBalls:
-            if(ballAim != null) {
-                waitSetAimBall();
-                setCamera(ballAim);
-                mode = GameMode.waitTakeAim;
+        if(Input.GetKeyDown(KeyCode.I)) {
+            studyProcess.info();
+        } else {
+            switch(mode) {
+            case GameMode.waitSetBalls:
+                if(ballAim != null) {
+                    waitSetAimBall();
+                    setCamera(ballAim);
+                    mode = GameMode.waitTakeAim;
+                }
+                break;
+            case GameMode.waitTakeAim:
+                if(Input.GetKeyDown(KeyCode.Escape)) {
+                    exitApp();
+                } else if(Input.GetKeyDown(KeyCode.A)) {
+                    setCamera(aimLeft);
+                    mode = GameMode.waitChoice;
+                } else if(Input.GetKeyDown(KeyCode.S)) {
+                    setCamera(aimCenter);
+                    mode = GameMode.waitChoice;
+                } else if(Input.GetKeyDown(KeyCode.D)) {
+                    setCamera(aimRight);
+                    mode = GameMode.waitChoice;
+                }
+                break;
+            case GameMode.waitChoice:
+                if(Input.GetKeyDown(KeyCode.Space)) {
+                    setCamera(ballAim);
+                    mode = GameMode.waitTakeAim;
+                } else if(Input.GetKeyDown(KeyCode.Escape)) {
+                    exitApp();
+                } else if(Input.GetKeyDown(KeyCode.A)) {
+                    mode = setRes(-1);
+                } else if(Input.GetKeyDown(KeyCode.S)) {
+                    mode = setRes(0);
+                } else if(Input.GetKeyDown(KeyCode.D)) {
+                    mode = setRes(1);
+                }
+                break;
+            case GameMode.waitShowResult:
+                ShowResult();
+                mode = GameMode.waitExitShowResult;
+                break;
+            case GameMode.waitExitShowResult:
+                if(Input.GetKeyDown(KeyCode.Space) ||
+                    Input.GetKeyDown(KeyCode.A) ||
+                    Input.GetKeyDown(KeyCode.S) ||
+                    Input.GetKeyDown(KeyCode.D)
+                    ) {
+                    mode = GameMode.waitSetBalls;
+                } else if(Input.GetKeyDown(KeyCode.Escape)) {
+                    exitApp();
+                }
+                break;
+            default:
+                break;
             }
-            break;
-        case GameMode.waitTakeAim:
-            if(Input.GetKeyDown(KeyCode.Escape)) {
-                exitApp();
-            } else if(Input.GetKeyDown(KeyCode.A)) {
-                setCamera(aimLeft);
-                mode = GameMode.waitChoice;
-            } else if(Input.GetKeyDown(KeyCode.S)) {
-                setCamera(aimCenter);
-                mode = GameMode.waitChoice;
-            } else if(Input.GetKeyDown(KeyCode.D)) {
-                setCamera(aimRight);
-                mode = GameMode.waitChoice;
-            }
-            break;
-        case GameMode.waitChoice:
-            if(Input.GetKeyDown(KeyCode.Space)) {
-                setCamera(ballAim);
-                mode = GameMode.waitTakeAim;
-            } else if(Input.GetKeyDown(KeyCode.Escape)) {
-                exitApp();
-            } else if(Input.GetKeyDown(KeyCode.A)) {
-                mode = setRes(-1);
-            } else if(Input.GetKeyDown(KeyCode.S)) {
-                mode = setRes(0);
-            } else if(Input.GetKeyDown(KeyCode.D)) {
-                mode = setRes(1);
-            }
-            break;
-        case GameMode.waitShowResult:
-            ShowResult();
-            mode = GameMode.waitExitShowResult;
-            break;
-        case GameMode.waitExitShowResult:
-            if(Input.GetKeyDown(KeyCode.Space) ||
-                Input.GetKeyDown(KeyCode.A) ||
-                Input.GetKeyDown(KeyCode.S) ||
-                Input.GetKeyDown(KeyCode.D)
-                ) {
-                mode = GameMode.waitSetBalls;
-            } else if(Input.GetKeyDown(KeyCode.Escape)) {
-                exitApp();
-            }
-            break;
-        default:
-            break;
         }
         inUpdate = false;
     } // ///////////////////////////////////////////////////////////////////////////////////

@@ -6,11 +6,11 @@ public class Lesson : DKCue {
     List<ExerciseEnh> v = new List<ExerciseEnh>();
     public ExerciseEnh curExercise;
     public List<Exercise> vstuded = new List<Exercise>();
+//    List<Exercise> vripe = new List<Exercise>();
 
     public int ExercisesInLesson = 2; // TODO: ExercisesInLesson = 10
     public int[] vluzes = {2}; // TODO: Luzes
     public int[] vsigns = {1, -1};
-    List<Exercise> vripe = new List<Exercise>();
 
     public Layout layout {
         get => v.Count > 0 ? curExercise.layout : null;
@@ -20,8 +20,8 @@ public class Lesson : DKCue {
     public int cntStuded { get => vstuded.Count; }
     public int cntUnStuded { get => v.Count; }
 
-    public int LoadRipe(List<Exercise> vRipe) {
-        vripe = vRipe;
+    public int LoadRipe(List<Exercise> vripe) {
+//        vripe = vRipe;
         v.Clear();
         curExercise = null;
         DateTime now = DateTime.Now;
@@ -99,4 +99,15 @@ public class Lesson : DKCue {
         }
         return false;
     } // ///////////////////////////////////////////////////////////////////////////////////////
+    public new void info() {
+        UnityEngine.Debug.Log("Lesson v:");
+        foreach(var q in v) {
+            q.info();
+        }
+        UnityEngine.Debug.Log("Lesson vstuded:");
+        foreach(var q in vstuded) {
+            q.info();
+        }
+        UnityEngine.Debug.Log("End lesson");
+    } // //////////////////////////////////////////////////////////////////////////////////////
 } // *************************************************************

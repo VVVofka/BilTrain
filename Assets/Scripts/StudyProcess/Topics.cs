@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
+using System.Diagnostics;
 
 [Serializable]
 public class Topics : DKCue {
@@ -29,13 +30,12 @@ public class Topics : DKCue {
     public Topic curTopic { get => v[ntopic]; }
     public int Count { get => v.Count; }
     public new void SetRes(bool sucess) {
-        base.SetRes(sucess); 
+        base.SetRes(sucess);
         curTopic.SetRes(sucess);
     }
-    
+
     public Topic ToNextTopic() {
         if(++ntopic >= v.Count) {
-            EndOfTopics?.Invoke();
             return ToFirstTopic();
         }
         return v[ntopic];
@@ -45,15 +45,24 @@ public class Topics : DKCue {
         return v[0];
     } // ///////////////////////////////////////////////////////////////////////////////
     public void resetNew() {
-        foreach(var q in v) 
+        foreach(var q in v)
             q.cntInStudyNew = 0;
     } // /////////////////////////////////////////////////////////////////////////////////////
-   public void setNew() {
+    public void setNew() {
         foreach(var q in v)
             q.cntInStudyCur += q.cntInStudyNew;
     } // /////////////////////////////////////////////////////////////////////////////////////
- 
-    public delegate void TopicsStateHandler();      // Объявляем делегат
-    public event TopicsStateHandler EndOfTopics;    // Создаем переменную делегата
-
+    public new string info() {
+        string s1 ="Start Topics(count=" + v.Count.ToString() + ") :";
+        string s = s1  + "\n";
+        UnityEngine.Debug.Log(s);
+        foreach(var q in v) {
+            s1 = q.info;
+            s += s1 + "\n";
+            UnityEngine.Debug.Log(s1);
+        }
+        s1 = "End Topics (ntopic=" + ntopic.ToString() + ")";
+        UnityEngine.Debug.Log(s1);
+        return s + "\n" + s1;
+    } // /////////////////////////////////////////////////////////////////////////////////////
 } // ****************************************************************************************

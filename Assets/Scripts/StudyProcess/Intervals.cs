@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 
 [Serializable]
 public class Intervals {
@@ -8,7 +6,6 @@ public class Intervals {
     int index = -1;
     DateTime lastDT = DateTime.Now;
 
-    public bool isComplete { get => index >= vhours.Length; }
     public void setResult(bool val) {
         if(val) {
             index++;
@@ -18,8 +15,6 @@ public class Intervals {
                 index = 0;
         }
     } // ///////////////////////////////////////////////////////////////////////
-    //public void setSuc() { setResult(true); }
-    //public void setErr() { setResult(false); }
 
     public int difH(DateTime dt) { // if > 0 - expired
         DateTime expect = lastDT.AddHours(vhours[index]);
@@ -29,4 +24,10 @@ public class Intervals {
     public bool EQ(Intervals other) {
         return index == other.index && lastDT == other.lastDT;
     } // ///////////////////////////////////////////////////////////////////////
+    public string info { get {
+            string s = " Interval: idx=" + index.ToString();
+            if (index >= 0) s += " DT:" + lastDT.ToString() + " expired:" + difH(DateTime.Now);
+            return s;
+        }
+    }
 } // ****************************************************************************

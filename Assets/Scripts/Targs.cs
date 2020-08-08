@@ -115,5 +115,4 @@ public class Targs {    // in Controller
         return seriesSucess;
     } // //////////////////////////////////////////////////////////////////////////////
     public Targ targ { get => v[selectLast + 1]; }
-    public bool changeCamera { get => selectLast != selectPrev; }
 } // ***********************************************************************************

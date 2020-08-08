@@ -5,7 +5,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
 public class StudyProcess {
-    const string ver = "ver:(0.1.80)";
+    const string ver = "ver:(0.1.88)";
     const string TopicsFileDefault = "Develop.tpcs";
     const string RipeExercisesFileDefault = "Develop.rpex";
     const string LessonFileDefault = "Develop.lesn";
@@ -173,5 +173,12 @@ public class StudyProcess {
     } // ///////////////////////////////////////////////////////////////////////
     public float dkcue() {
         return kCue0 * (topics.dkcue + topics.curTopic.dkcue + lesson.dkcue + lesson.curExercise.dkcue) / 4;
+    } // ////////////////////////////////////////////////////////////////////////////////////////////////
+    public void info() {
+        UnityEngine.Debug.Log("Study process:");
+        topics.info();
+        lesson.info();
+        ripeExercises.info();
+        UnityEngine.Debug.Log("End Study process:");
     } // ////////////////////////////////////////////////////////////////////////////////////////////////
 } // *******************************************************************************************

@@ -31,7 +31,7 @@ public class Topic : DKCue {
     public string infoCue { get => frmt("Cue", from.distCueInD, to.distCueInD); }
     public string infoAng { get => frmt("Угол", from.angAimDeg, to.angAimDeg); }
     public string infoK { get => frmt("Резка", from.kCue, to.kCue); }
-    public string info { get => infoAim + " " + infoCue + " " + infoAng + " " + infoK; }
+    public new string info { get => base.info + " " + infoAim + " " + infoCue + " " + infoAng + " " + infoK; }
 
     string frmt(string str, float a, float b) {
         string s = str + ":" + a.ToString();
