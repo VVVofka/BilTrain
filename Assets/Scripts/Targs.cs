@@ -29,8 +29,9 @@ public class Targs {    // in Controller
     public bool sucess;
     public bool firstSelectItem;
     public bool firstSelectSeries;
-    public bool seriesFail;
+    public bool seriesSucess;
     public Color clrSucess;
+    public Color clrInvisible;
     public int cntSelect;
 
     public d2p pball;
@@ -41,8 +42,9 @@ public class Targs {    // in Controller
         goBall = ball;
         pball = new d2p(goBall);
         truepos = selectLast = selectPrev = -2;
-        sucess = firstSelectItem = seriesFail = false;
+        sucess = firstSelectItem = seriesSucess = false;
         clrSucess = new Color(1, 1, 0);
+        clrInvisible = new Color(0, 0, 0, 0);
         cntSelect = 0;
 
         v.Add(new Targ(object_left));
@@ -56,7 +58,7 @@ public class Targs {    // in Controller
         foreach(var q in v)
             q.reset();
         truepos = Field.rand.Next(-1, 1);
-        sucess = seriesFail = false;
+        sucess = seriesSucess = false;
         pball = new d2p(goBall);
         cntSelect = 0;
         if(dkcue > 0) {
@@ -91,22 +93,26 @@ public class Targs {    // in Controller
         v[n].pnt = (shift == 0f) ? ptarg : d2p.addDist(pball, ptarg, shift);
         v[n].pnt.setObj(ref v[n].gobject);
     } // /////////////////////////////////////////////////////////////////////////////
-    // return true if changed
+    // return true if end of attempt (any sucess)
     public bool setSelect(int select) {
-        ++cntSelect;
+        sucess = (select == truepos);
+        if(++cntSelect == 1)
+            seriesSucess = sucess;
         selectPrev = selectLast;
         selectLast = select;
-        sucess = (select == truepos);
-        seriesFail |= !sucess;
         int idx = select + 1;
         Targ targ = v[idx];
         firstSelectItem = !targ.selected;
         if(firstSelectItem) {
             targ.selected = true;
-            Color clr = sucess ? clrSucess : targ.clrFade;
-            targ.gobject.GetComponent<Renderer>().material.color = clr;
+            if(sucess) {
+                foreach(var q in v)
+                    q.gobject.GetComponent<Renderer>().material.color = (q == targ) ? clrSucess : clrInvisible;
+            } else {
+                targ.gobject.GetComponent<Renderer>().material.color = targ.clrFade;
+            }
         }
-        return cntSelect == 1;
+        return seriesSucess;
     } // //////////////////////////////////////////////////////////////////////////////
     public Targ targ { get => v[selectLast + 1]; }
     public bool changeCamera { get => selectLast != selectPrev; }

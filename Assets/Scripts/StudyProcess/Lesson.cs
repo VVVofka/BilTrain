@@ -11,7 +11,9 @@ public class Lesson : DKCue {
     public int[] vsigns = {1, -1};
     List<Exercise> vripe = new List<Exercise>();
 
-    public Layout layout { get => v.Count > 0 ? v[0].layout : null; }
+    public Layout layout { 
+        get => v.Count > 0 ? curExercise.layout : null; 
+    }
     public ExerciseEnh curExercise { get => v.Count > 0 ? v[0] : null; }
 
     public int cntStuded { get => vstuded.Count; }
@@ -78,23 +80,20 @@ public class Lesson : DKCue {
         }
     } // ////////////////////////////////////////////////////////////////
     public new void SetRes(bool sucess) {
-        try {
-            base.SetRes(sucess);
-            curExercise.SetRes(sucess);
-            if(sucess) {
-                vstuded.Add(curExercise);
-                v.Remove(curExercise);
-                if(v.Count <= 0) {
-                    OnEndOfLesson?.Invoke();
-                }
+        base.SetRes(sucess);
+        ExerciseEnh exer = curExercise;
+        exer.SetRes(sucess);
+        if(exer == null)
+            return;
+        if(sucess) {
+            vstuded.Add(exer);
+            v.Remove(exer);
+            if(v.Count <= 0) {
+                OnEndOfLesson?.Invoke();
             }
-            Shuffle();
-            On_Choose?.Invoke(sucess);
-        } catch(Exception ex) {
-            Console.WriteLine($"Исключение in SetRes({sucess}): {ex.Message}");
-            Console.WriteLine($"Метод: {ex.TargetSite}");
-            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
         }
+        Shuffle();
+        On_Choose?.Invoke(sucess);
     } // ///////////////////////////////////////////////////////////////////////////////////////
 
     public delegate void StateHandlerOnChoose(bool sucess);   // Объявляем делегат

@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 public class StudyProcess {
-    const string ver = "ver:(0.1.64)";
+    const string ver = "ver:(0.1.69)";
     const string TopicsFileDefault = "Develop.tpcs";
     const string RipeExercisesFileDefault = "Develop.rpex";
     const string LessonFileDefault = "Develop.lesn";
@@ -51,13 +51,12 @@ public class StudyProcess {
     //    } else
     //        CreateLessonFile(fname);
     //} // //////////////////////////////////////////////////////////////////
-    public Layout LoadLesson() {
+    public void LoadLesson() {
         lesson = new Lesson();
         List<Exercise> vripe = ripeExercises.getRiped(lesson.ExercisesInLesson);
         int rest = lesson.LoadRipe(vripe);
         if(rest > 0)
             lesson.LoadNew(topics);
-        return lesson.layout;
     } // ///////////////////////////////////////////////////////////////////
     void LoadTopicFile(string fname) {
         try {
@@ -156,15 +155,18 @@ public class StudyProcess {
             Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
         }
     } // ////////////////////////////////////////////////////////////////////////
+    // Return sucess (end attempt)
     public bool SetRes(int choose) {
-        bool bFirstChange = targs.setSelect(choose);
-        if(bFirstChange) {
-            bool sucess = targs.sucess;
-            lesson.SetRes(sucess);
-            topics.SetRes(sucess);
-            ripeExercises.setResult(lesson.curExercise, sucess);
-        }
-        return bFirstChange;
+        bool bSeriesSucess = targs.setSelect(choose);
+        return bSeriesSucess;
+    } // ///////////////////////////////////////////////////////////////////////
+    public void saveRes() {
+        bool sucess = targs.seriesSucess;
+        lesson.SetRes(sucess);
+        topics.SetRes(sucess);
+        ripeExercises.setResult(lesson.curExercise, sucess);
+        if(lesson.cntUnStuded <= 0)
+            OnEndLesson();
     } // ///////////////////////////////////////////////////////////////////////
     void OnChoose(bool sucess) {
         on_aim?.Invoke(targs.selectLast, targs.truepos);

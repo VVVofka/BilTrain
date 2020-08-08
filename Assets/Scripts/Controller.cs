@@ -87,11 +87,11 @@ public class Controller : MonoBehaviour {
             } else if(Input.GetKeyDown(KeyCode.Escape)) {
                 exitApp();
             } else if(Input.GetKeyDown(KeyCode.A)) {
-                setRes(-1);
+                mode = setRes(-1);
             } else if(Input.GetKeyDown(KeyCode.S)) {
-                setRes(0);
+                mode = setRes(0);
             } else if(Input.GetKeyDown(KeyCode.D)) {
-                setRes(1);
+                mode = setRes(1);
             }
             break;
         case GameMode.waitShowResult:
@@ -156,10 +156,6 @@ public class Controller : MonoBehaviour {
     } // /////////////////////////////////////////////////////////////////////////////////////
 
     //                  MODES
-    void ShowResult() {
-        //aimLeft.GetComponent<Renderer>().material.color = Color.white;
-        //aimRight.GetComponent<Renderer>().material.color = new Color(1, 0, 1, 0.5f);
-    } // ////////////////////////////////////////////////////////////////////////////////////
     void waitSetAimBall() {
         Layout lay = studyProcess.layout;
 
@@ -177,6 +173,8 @@ public class Controller : MonoBehaviour {
         setCamera(p);
     } // //////////////////////////////////////////////////////////////////////////////////////
     void setCamera(d2p ptarget) {
+        if(studyProcess.layout == null)
+            Debug.Break();
         Layout lay = studyProcess.layout;
         d2p pcam =  getPCameraHoriz(ptarget, lay.pcue);
         float camdist = pcam.dist(lay.pcue);
@@ -273,16 +271,18 @@ public class Controller : MonoBehaviour {
         studyProcess.Close();
         Application.Quit();
     } // /////////////////////////////////////////////////////////////////////////////////
-    void setRes(int select) {
-        bool bFirstChange = studyProcess.SetRes(select);
-        Targs targs = studyProcess.targs;
-        if(targs.changeCamera) {
-            GameObject obj = targs.targ.gobject;
-            setCamera(obj);
-        }
-        if(targs.sucess)
-            mode = GameMode.waitShowResult;
+    GameMode setRes(int select) {
+        bool bSeriesSucess = studyProcess.SetRes(select);
+        if(bSeriesSucess)
+            return GameMode.waitShowResult;
+        return GameMode.waitChoice;
     } // ///////////////////////////////////////////////////////////////////////////////////
+    void ShowResult() {
+        Targ targ = studyProcess.targs.targ;
+        setCamera(targ.gobject);
+        studyProcess.saveRes();
+    } // ////////////////////////////////////////////////////////////////////////////////////
+
 } // ************************************************************************************
   //bool waitSetAimBall() {
   //    Layout lay = studyProcess.layout;
