@@ -19,6 +19,9 @@ public class Targ {
         gobject.GetComponent<Renderer>().material.color = clr;
         selected = false;
     } // /////////////////////////////////////////////////////////////////////////////
+    public string info(int n) {
+        return n.ToString() + " " + selected.ToString() + " pnt:" + pnt.info;
+            }
 } // ***********************************************************************************
 public class Targs {    // in Controller
     public List<Targ> v = new List<Targ>();
@@ -115,4 +118,12 @@ public class Targs {    // in Controller
         return seriesSucess;
     } // //////////////////////////////////////////////////////////////////////////////
     public Targ targ { get => v[selectLast + 1]; }
+    public string info(string s0 = "") {
+        for(int j=0; j<v.Count; j++) {
+            string s = v[j].info(j);
+            UnityEngine.Debug.Log(s);
+            s0 += s;
+        }
+        return s0;
+    } // //////////////////////////////////////////////////////////////////////////////
 } // ***********************************************************************************

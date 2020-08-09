@@ -179,6 +179,7 @@ public class StudyProcess {
         topics.info();
         lesson.info();
         ripeExercises.info();
+        targs.info("Targs ");
         UnityEngine.Debug.Log("End Study process:");
     } // ////////////////////////////////////////////////////////////////////////////////////////////////
 } // *******************************************************************************************
