@@ -117,13 +117,15 @@ public class Targs {    // in Controller
         }
         return seriesSucess;
     } // //////////////////////////////////////////////////////////////////////////////
-    public Targ targ { get => v[selectLast + 1]; }
-    public string info(string s0 = "") {
+    public Targ targ { get => v[selectLast + 1]; } // /////////////////////////////////
+    public string info(string s0) {
+        UnityEngine.Debug.Log(s0 + "Start Targs:");
         for(int j=0; j<v.Count; j++) {
             string s = v[j].info(j);
-            UnityEngine.Debug.Log(s);
+            UnityEngine.Debug.Log(s0 + " -" + j.ToString() + ". " + s);
             s0 += s;
         }
+        UnityEngine.Debug.Log(s0 + "End Targs:");
         return s0;
     } // //////////////////////////////////////////////////////////////////////////////
 } // ***********************************************************************************

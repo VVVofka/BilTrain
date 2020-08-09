@@ -176,10 +176,10 @@ public class StudyProcess {
     } // ////////////////////////////////////////////////////////////////////////////////////////////////
     public void info() {
         UnityEngine.Debug.Log("Study process:");
-        topics.info();
-        lesson.info();
-        ripeExercises.info();
-        targs.info("Targs ");
+        topics.info(" ");
+        lesson.info(" ");
+        ripeExercises.info(" ");
+        targs.info(" Targs ");
         UnityEngine.Debug.Log("End Study process:");
     } // ////////////////////////////////////////////////////////////////////////////////////////////////
 } // *******************************************************************************************

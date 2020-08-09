@@ -37,15 +37,15 @@ public class RipeExercises {
             aaa = q;
         vriped.Remove(bbb);
     } // //////////////////////////////////////////////////////////////////////////////////////
-    public void info() {
-        UnityEngine.Debug.Log("Start RipeExercises");
-        UnityEngine.Debug.Log("  vripe(count=" + vripe.Count + ")");
+    public void info(string s0) {
+        UnityEngine.Debug.Log(s0 + "Start RipeExercises");
+        UnityEngine.Debug.Log(s0 + " vripe(count=" + vripe.Count + ")");
         foreach(var q in vripe)
-            q.info();
-        UnityEngine.Debug.Log("  vriped(count=" + vriped.Count + ")");
+            q.info(s0 + "  ");
+        UnityEngine.Debug.Log(s0 + " vriped(count=" + vriped.Count + ")");
         foreach(var q in vriped)
-            q.info();
-        UnityEngine.Debug.Log("End RipeExercises");
+            q.info(s0 + "  ");
+        UnityEngine.Debug.Log(s0 + "End RipeExercises");
     } // /////////////////////////////////////////////////////////////////////////////////////
     //void Sortv() {
     //    vripe.Sort(delegate (Exercise x, Exercise y) {

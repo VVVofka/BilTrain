@@ -99,15 +99,13 @@ public class Lesson : DKCue {
         }
         return false;
     } // ///////////////////////////////////////////////////////////////////////////////////////
-    public new void info() {
-        UnityEngine.Debug.Log("Lesson v:");
-        foreach(var q in v) {
-            q.info();
-        }
-        UnityEngine.Debug.Log("Lesson vstuded:");
-        foreach(var q in vstuded) {
-            q.info();
-        }
-        UnityEngine.Debug.Log("End lesson");
+    public new void info(string s0) {
+        UnityEngine.Debug.Log(s0 + "Lesson v:");
+        foreach(var q in v) 
+            q.info(s0 + " ");
+        UnityEngine.Debug.Log(s0 + "Lesson vstuded:");
+        foreach(var q in vstuded) 
+            q.info(s0 + " ");
+        UnityEngine.Debug.Log(s0 + "End lesson");
     } // //////////////////////////////////////////////////////////////////////////////////////
 } // *************************************************************

@@ -52,17 +52,17 @@ public class Topics : DKCue {
         foreach(var q in v)
             q.cntInStudyCur += q.cntInStudyNew;
     } // /////////////////////////////////////////////////////////////////////////////////////
-    public new string info() {
-        string s1 ="Start Topics(count=" + v.Count.ToString() + ") :";
+    public new string info(string s0) {
+        string s1 = "Start Topics(count=" + v.Count.ToString() + ") :";
         string s = s1  + "\n";
-        UnityEngine.Debug.Log(s);
+        UnityEngine.Debug.Log(s0 + s1);
         foreach(var q in v) {
             s1 = q.info;
             s += s1 + "\n";
-            UnityEngine.Debug.Log(s1);
+            UnityEngine.Debug.Log(s0 + " " + s1);
         }
         s1 = "End Topics (ntopic=" + ntopic.ToString() + ")";
-        UnityEngine.Debug.Log(s1);
+        UnityEngine.Debug.Log(s0 + s1);
         return s + "\n" + s1;
     } // /////////////////////////////////////////////////////////////////////////////////////
 } // ****************************************************************************************
