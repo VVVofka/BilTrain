@@ -16,7 +16,7 @@ public class Intervals {
         }
     } // ///////////////////////////////////////////////////////////////////////
 
-    public int difH(DateTime dt) { // if > 0 - expired
+    public int HouresExpired(DateTime dt) { // if > 0 - expired
         DateTime expect = lastDT.AddHours(vhours[index]);
         TimeSpan d = dt.Subtract(expect);
         return d.Hours;
@@ -26,7 +26,7 @@ public class Intervals {
     } // ///////////////////////////////////////////////////////////////////////
     public string info { get {
             string s = " Interval: idx=" + index.ToString();
-            if (index >= 0) s += " DT:" + lastDT.ToString() + " expired:" + difH(DateTime.Now);
+            if (index >= 0) s += " DT:" + lastDT.ToString() + " expired:" + HouresExpired(DateTime.Now);
             return s;
         }
     }

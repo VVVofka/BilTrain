@@ -38,14 +38,14 @@ public class RipeExercises {
         vriped.Remove(bbb);
     } // //////////////////////////////////////////////////////////////////////////////////////
     public void info(string s0) {
-        UnityEngine.Debug.Log(s0 + "Start RipeExercises");
+        UnityEngine.Debug.Log(s0 + "Start RipeExercises:");
         UnityEngine.Debug.Log(s0 + " vripe(count=" + vripe.Count + ")");
         foreach(var q in vripe)
             q.info(s0 + "  ");
         UnityEngine.Debug.Log(s0 + " vriped(count=" + vriped.Count + ")");
         foreach(var q in vriped)
             q.info(s0 + "  ");
-        UnityEngine.Debug.Log(s0 + "End RipeExercises");
+        UnityEngine.Debug.Log(s0 + "End RipeExercises.");
     } // /////////////////////////////////////////////////////////////////////////////////////
     //void Sortv() {
     //    vripe.Sort(delegate (Exercise x, Exercise y) {

@@ -21,7 +21,7 @@ public class Targ {
     } // /////////////////////////////////////////////////////////////////////////////
     public string info(int n) {
         return n.ToString() + " " + selected.ToString() + " pnt:" + pnt.info;
-            }
+    }
 } // ***********************************************************************************
 public class Targs {    // in Controller
     public List<Targ> v = new List<Targ>();
@@ -31,7 +31,6 @@ public class Targs {    // in Controller
     public int selectPrev;
     public bool sucess;
     public bool firstSelectItem;
-    public bool firstSelectSeries;
     public bool seriesSucess;
     public Color clrSucess;
     public Color clrInvisible;
@@ -119,13 +118,19 @@ public class Targs {    // in Controller
     } // //////////////////////////////////////////////////////////////////////////////
     public Targ targ { get => v[selectLast + 1]; } // /////////////////////////////////
     public string info(string s0) {
-        UnityEngine.Debug.Log(s0 + "Start Targs:");
-        for(int j=0; j<v.Count; j++) {
+        UnityEngine.Debug.Log(s0 + "start:" +
+            "truepos=" + truepos +
+            " selectLast=" + selectLast +
+            " selectPrev=" + selectPrev +
+            " sucess=" + sucess +
+            " firstSelectItem=" + firstSelectItem +
+            " seriesSucess=" + seriesSucess +
+            " cntSelect=" + cntSelect
+            );
+        for(int j = 0; j < v.Count; j++) {
             string s = v[j].info(j);
-            UnityEngine.Debug.Log(s0 + " -" + j.ToString() + ". " + s);
-            s0 += s;
+            UnityEngine.Debug.Log(s0 + " ->" + j.ToString() + ": " + s + ((j==v.Count-1)? " End Targs:":""));
         }
-        UnityEngine.Debug.Log(s0 + "End Targs:");
         return s0;
     } // //////////////////////////////////////////////////////////////////////////////
 } // ***********************************************************************************

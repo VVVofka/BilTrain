@@ -108,7 +108,7 @@ public class d2p {
         float z = -nrm.x * sin + nrm.z * cos;
         return new d2p(Base.x + x, Base.z + z);
     } // ////////////////////////////////////////////////////////////////////////////////////
-    public string info { get => x + "*" + y; }
+    public string info { get => x + "*" + z; }
 } // ********************************************************************************
 
 //public class d2v {

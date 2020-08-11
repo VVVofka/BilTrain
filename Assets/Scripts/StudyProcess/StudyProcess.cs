@@ -174,12 +174,12 @@ public class StudyProcess {
     public float dkcue() {
         return kCue0 * (topics.dkcue + topics.curTopic.dkcue + lesson.dkcue + lesson.curExercise.dkcue) / 4;
     } // ////////////////////////////////////////////////////////////////////////////////////////////////
-    public void info() {
-        UnityEngine.Debug.Log("Study process:");
+    public void info(string s0 = "") {
+        UnityEngine.Debug.Log("Study process:" + s0);
         topics.info(" ");
         lesson.info(" ");
         ripeExercises.info(" ");
         targs.info(" Targs ");
-        UnityEngine.Debug.Log("End Study process:");
+        UnityEngine.Debug.Log("End Study process: " + s0);
     } // ////////////////////////////////////////////////////////////////////////////////////////////////
 } // *******************************************************************************************

@@ -11,7 +11,7 @@ public class Exercise : DKCue {
         layout = inLayout;
     } // ///////////////////////////////////////////////////////////////
     
-    public int overdue(DateTime dt) { return interval.difH(dt); }
+    public int overdue(DateTime dt) { return interval.HouresExpired(dt); }
     public bool EQ(Exercise other) { return layout.EQ(other.layout); }
     public new string info(string s0) {
         string s = "Exercise dkue:" + base.info + layout.info + interval.info;

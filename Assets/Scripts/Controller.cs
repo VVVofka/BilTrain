@@ -9,7 +9,7 @@ public enum GameMode {
     waitExitShowResult
 } // ******************************************************************************************
 public class Controller : MonoBehaviour {
-    static public GameMode mode;
+    private GameMode _mode;
     StudyProcess studyProcess = new StudyProcess();
 
     //[SerializeField] private GameObject luzeAimPoint;
@@ -17,14 +17,15 @@ public class Controller : MonoBehaviour {
     public GameObject ballCue;
     public GameObject ballVirt;
 
-    [SerializeField] private GameObject aimCenter;  // center
-    [SerializeField] private GameObject aimLeft;    // left
-    [SerializeField] private GameObject aimRight;   // right
-    [SerializeField] private GameObject bounds;   // far point of arc
-    [SerializeField] private Camera plcamera = null;   // 
-    [SerializeField] private GameObject luzeLeft;    // left
-    [SerializeField] private GameObject luzeRight;   // right
-    [SerializeField] private bool showVirtBall = false;   // right
+    public GameObject aimCenter;  // center
+    public GameObject aimLeft;    // left
+    public GameObject aimRight;   // right
+    public GameObject bounds;   // far point of arc
+    public Camera plcamera;   // 
+    public GameObject luzeLeft;    // left
+    public GameObject luzeRight;   // right
+    public bool showVirtBall;   // right
+    //[SerializeField] private bool showVirtBall;   // right
 
     float xmax, zmax;
     GameObject curTarg = null;
@@ -54,7 +55,7 @@ public class Controller : MonoBehaviour {
             return;
         inUpdate = true;
         if(Input.GetKeyDown(KeyCode.I)) {
-            studyProcess.info();
+            studyProcess.info(sGameMode);
         } else {
             switch(mode) {
             case GameMode.waitSetBalls:
@@ -77,6 +78,7 @@ public class Controller : MonoBehaviour {
                     setCamera(aimRight);
                     mode = GameMode.waitChoice;
                 }
+                UnityEngine.Debug.Log(sGameMode);
                 break;
             case GameMode.waitChoice:
                 if(Input.GetKeyDown(KeyCode.Space)) {
@@ -281,4 +283,26 @@ public class Controller : MonoBehaviour {
     void ShowResult() {
         studyProcess.saveRes();
     } // ////////////////////////////////////////////////////////////////////////////////////
+    public string sGameMode {
+        get {
+            if(mode == GameMode.waitSetBalls)
+                return "waitSetBalls";
+            if(mode == GameMode.waitTakeAim)
+                return "waitTakeAim";
+            if(mode == GameMode.waitChoice)
+                return "waitChoice";
+            if(mode == GameMode.waitShowResult)
+                return "waitShowResult";
+            if(mode == GameMode.waitExitShowResult)
+                return "waitExitShowResult";
+            return "";
+        }
+    } // ///////////////////////////////////////////////////////////////////////////////////
+    public GameMode mode {
+        get => _mode;
+        set {
+            _mode = value;
+            UnityEngine.Debug.Log(sGameMode);
+        }
+    } // /////////////////////////////////////////////////////////////////////////
 } // ************************************************************************************
