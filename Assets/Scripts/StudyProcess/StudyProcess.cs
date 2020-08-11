@@ -158,11 +158,11 @@ public class StudyProcess {
             Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
         }
     } // ////////////////////////////////////////////////////////////////////////
-    // Return sucess (end attempt)
-    public bool SetRes(int choose) {
-        bool bSeriesSucess = targs.setSelect(choose);
-        return bSeriesSucess;
-    } // ///////////////////////////////////////////////////////////////////////
+    //// Return sucess (end attempt)
+    //public bool SetRes(int choose) {
+    //    bool bSeriesSucess = targs.setSelect(choose);
+    //    return bSeriesSucess;
+    //} // ///////////////////////////////////////////////////////////////////////
     public void saveRes() {
         bool sucess = targs.seriesSucess;
         ripeExercises.setResult(lesson.curExercise, sucess);

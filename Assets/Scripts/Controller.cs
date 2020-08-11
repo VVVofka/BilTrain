@@ -69,16 +69,21 @@ public class Controller : MonoBehaviour {
                 if(Input.GetKeyDown(KeyCode.Escape)) {
                     exitApp();
                 } else if(Input.GetKeyDown(KeyCode.A)) {
-                    setCamera(aimLeft);
-                    mode = GameMode.waitChoice;
+                    if(studyProcess.targs.setSelect(-1)) {
+                        setCamera(aimLeft);
+                        mode = GameMode.waitChoice;
+                    }
                 } else if(Input.GetKeyDown(KeyCode.S)) {
-                    setCamera(aimCenter);
-                    mode = GameMode.waitChoice;
+                    if(studyProcess.targs.setSelect(0)) {
+                        setCamera(aimCenter);
+                        mode = GameMode.waitChoice;
+                    }
                 } else if(Input.GetKeyDown(KeyCode.D)) {
-                    setCamera(aimRight);
-                    mode = GameMode.waitChoice;
+                        if(studyProcess.targs.setSelect(1)) {
+                            setCamera(aimRight);
+                            mode = GameMode.waitChoice;
+                        }
                 }
-                UnityEngine.Debug.Log(sGameMode);
                 break;
             case GameMode.waitChoice:
                 if(Input.GetKeyDown(KeyCode.Space)) {
@@ -87,11 +92,20 @@ public class Controller : MonoBehaviour {
                 } else if(Input.GetKeyDown(KeyCode.Escape)) {
                     exitApp();
                 } else if(Input.GetKeyDown(KeyCode.A)) {
-                    mode = setRes(-1);
+                    if(studyProcess.targs.setChoise(-1))
+                        mode = GameMode.waitShowResult;
+                    else if(studyProcess.targs.changePos)
+                        setCamera(aimLeft);
                 } else if(Input.GetKeyDown(KeyCode.S)) {
-                    mode = setRes(0);
+                    if(studyProcess.targs.setChoise(0))
+                        mode = GameMode.waitShowResult;
+                    else if(studyProcess.targs.changePos)
+                        setCamera(aimCenter);
                 } else if(Input.GetKeyDown(KeyCode.D)) {
-                    mode = setRes(1);
+                    if(studyProcess.targs.setChoise(1))
+                        mode = GameMode.waitShowResult;
+                    else if(studyProcess.targs.changePos)
+                        setCamera(aimRight);
                 }
                 break;
             case GameMode.waitShowResult:
@@ -165,7 +179,7 @@ public class Controller : MonoBehaviour {
         lay.pcue.setObj(ref ballCue);
 
         float dkcue = studyProcess.dkcue(); // also set curAim
-        int trg = studyProcess.targs.Reset(lay.pTarg, dkcue);
+        int trg = studyProcess.targs. Preset(lay.pTarg, dkcue);
         Debug.Log(trg + " aim:" + lay.paim.x + "*" + lay.paim.z + " virt:" + lay.pvir.x + "*" + lay.pvir.z + " cue:" + lay.pcue.x + "*" + lay.pcue.z + "  targ:" + lay.pTarg.x + "*" + lay.pTarg.z);
     } // ///////////////////// EHD MODES ///////////////////////////////////////////////////
     void setCamera(GameObject gobj) {
@@ -272,13 +286,20 @@ public class Controller : MonoBehaviour {
         studyProcess.Close();
         Application.Quit();
     } // /////////////////////////////////////////////////////////////////////////////////
-    GameMode setRes(int select) {
-        bool bSeriesSucess = studyProcess.SetRes(select);
-        Targ targ = studyProcess.targs.targ;
+    bool setRes(int select) {
+        bool bSeriesSucess = false;
+        Targs targs = studyProcess.targs;
+        if(targs.selectLast == select) {
+            bSeriesSucess = targs.setChoise(select);
+            if(bSeriesSucess)
+                mode = GameMode.waitShowResult;
+            return bSeriesSucess;
+        } else {
+
+        }
+        Targ targ = targs.targ;
         setCamera(targ.gobject);
-        if(bSeriesSucess)
-            return GameMode.waitShowResult;
-        return GameMode.waitChoice;
+        return bSeriesSucess;
     } // ///////////////////////////////////////////////////////////////////////////////////
     void ShowResult() {
         studyProcess.saveRes();

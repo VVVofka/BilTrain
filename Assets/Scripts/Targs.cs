@@ -3,24 +3,27 @@ using System.Collections.Generic;
 
 public class Targ {
     public GameObject gobject;
-    public Color clr = new Color();
+    public Color clrSel = new Color();
+    public Color clrUnSel;
     public Color clrFade = new Color();
     public bool selected;
     public d2p pnt;
 
     public Targ(GameObject game_object) {
         gobject = game_object;
-        clr = gobject.GetComponent<Renderer>().material.color;
-        clrFade = new Color(clr.r, clr.g, clr.b, 0.3f);
+        clrSel = gobject.GetComponent<Renderer>().material.color;
+        float lUnSel = 0.7f;
+        clrUnSel = new Color(clrSel.r * lUnSel, clrSel.g * lUnSel, clrSel.b * lUnSel);
+        clrFade = new Color(clrSel.r, clrSel.g, clrSel.b, 0.3f);
         selected = false;
         pnt = new d2p(gobject);
     } // //////////////////////////////////////////////////////////////////////////////
     public void reset() {
-        gobject.GetComponent<Renderer>().material.color = clr;
+        gobject.GetComponent<Renderer>().material.color = clrUnSel;
         selected = false;
     } // /////////////////////////////////////////////////////////////////////////////
-    public string info(int n) {
-        return n.ToString() + " " + selected.ToString() + " pnt:" + pnt.info;
+    public string info() {
+        return " sel:" + selected.ToString() + " pnt:" + pnt.info;
     }
 } // ***********************************************************************************
 public class Targs {    // in Controller
@@ -28,13 +31,13 @@ public class Targs {    // in Controller
 
     public int truepos;    // -1 0 +1
     public int selectLast;
-    public int selectPrev;
     public bool sucess;
     public bool firstSelectItem;
     public bool seriesSucess;
     public Color clrSucess;
     public Color clrInvisible;
     public int cntSelect;
+    public bool changePos;
 
     public d2p pball;
     GameObject goBall;
@@ -43,11 +46,12 @@ public class Targs {    // in Controller
     public Targs(GameObject ball, GameObject object_left, GameObject object_center, GameObject object_right) {
         goBall = ball;
         pball = new d2p(goBall);
-        truepos = selectLast = selectPrev = -2;
-        sucess = firstSelectItem = seriesSucess = false;
+        truepos = selectLast = -2;
+        sucess = seriesSucess = false;
         clrSucess = new Color(1, 1, 0);
         clrInvisible = new Color(0, 0, 0, 0);
         cntSelect = 0;
+        firstSelectItem = true;
 
         v.Add(new Targ(object_left));
         v.Add(new Targ(object_center));
@@ -55,7 +59,7 @@ public class Targs {    // in Controller
         foreach(var q in v)
             q.reset();
     } // //////////////////////////////////////////////////////////////////////////////
-    public int Reset(d2p p_targ, float dkcue) {
+    public int Preset(d2p p_targ, float dkcue) {    //  call in waitSetBalls
         ptarg = p_targ;
         foreach(var q in v)
             q.reset();
@@ -88,49 +92,65 @@ public class Targs {    // in Controller
                 break;
             }
         }
-        selectPrev = selectLast = -2;
+        selectLast = -2;
+        changePos = false;
+        firstSelectItem = true;
         return truepos;
     } // //////////////////////////////////////////////////////////////////////////////
     void assign(int n, float shift = 0f) {
-        v[n].pnt = (shift == 0f) ? ptarg : d2p.addDist(pball, ptarg, shift);
-        v[n].pnt.setObj(ref v[n].gobject);
+        Targ t = v[n];
+        t.pnt = (shift == 0f) ? ptarg : d2p.addDist(pball, ptarg, shift);
+        t.pnt.setObj(ref t.gobject);
+    } // /////////////////////////////////////////////////////////////////////////////
+    public bool setSelect(int select) {     // call in waitTakeAim
+        changePos = (selectLast != select);
+        selectLast = select;
+        sucess = (select == truepos);
+        cntSelect = 0;
+        foreach(var q in v)
+            q.gobject.GetComponent<Renderer>().material.color = (q == targ) ? q.clrSel : q.clrUnSel;
+        return changePos;
     } // /////////////////////////////////////////////////////////////////////////////
     // return true if end of attempt (any sucess)
-    public bool setSelect(int select) {
-        sucess = (select == truepos);
-        if(++cntSelect == 1)
-            seriesSucess = sucess;
-        selectPrev = selectLast;
-        selectLast = select;
-        int idx = select + 1;
-        Targ targ = v[idx];
-        firstSelectItem = !targ.selected;
-        if(firstSelectItem) {
-            targ.selected = true;
-            if(sucess) {
-                foreach(var q in v)
-                    q.gobject.GetComponent<Renderer>().material.color = (q == targ) ? clrSucess : clrInvisible;
-            } else {
-                targ.gobject.GetComponent<Renderer>().material.color = targ.clrFade;
+    public bool setChoise(int select) {     // call in waitChoice
+        changePos = (selectLast != select);
+        if(changePos) {
+            setSelect(select);
+            return false;
+        } else {        //  select == selectLast
+            sucess = (select == truepos);
+            if(++cntSelect == 1)
+                seriesSucess = sucess;
+            if(firstSelectItem) {
+                firstSelectItem = false;
+                targ.selected = true;
+                if(sucess) {
+                    foreach(var q in v)
+                        q.gobject.GetComponent<Renderer>().material.color = (q == targ) ? clrSucess : clrInvisible;
+                } else {
+                    targ.gobject.GetComponent<Renderer>().material.color = targ.clrFade;
+                }
             }
         }
-        return seriesSucess;
+        return sucess;
     } // //////////////////////////////////////////////////////////////////////////////
     public Targ targ { get => v[selectLast + 1]; } // /////////////////////////////////
     public string info(string s0) {
         UnityEngine.Debug.Log(s0 + "start:" +
             "truepos=" + truepos +
             " selectLast=" + selectLast +
-            " selectPrev=" + selectPrev +
             " sucess=" + sucess +
             " firstSelectItem=" + firstSelectItem +
             " seriesSucess=" + seriesSucess +
             " cntSelect=" + cntSelect
             );
+        string s3 = s0;
         for(int j = 0; j < v.Count; j++) {
-            string s = v[j].info(j);
-            UnityEngine.Debug.Log(s0 + " ->" + j.ToString() + ": " + s + ((j==v.Count-1)? " End Targs:":""));
+            string s = v[j].info();
+            s3 += " " + (j - 1).ToString() + ":" + s + ";";
+            //UnityEngine.Debug.Log(s0 + " ->" + j.ToString() + ": " + s + ((j==v.Count-1)? " End Targs:":""));
         }
+        UnityEngine.Debug.Log(s3);
         return s0;
     } // //////////////////////////////////////////////////////////////////////////////
 } // ***********************************************************************************
