@@ -109,7 +109,7 @@ public class Controller : MonoBehaviour {
                 }
                 break;
             case GameMode.waitShowResult:
-                ShowResult();
+                studyProcess.saveRes();
                 mode = GameMode.waitExitShowResult;
                 break;
             case GameMode.waitExitShowResult:
@@ -301,9 +301,6 @@ public class Controller : MonoBehaviour {
         setCamera(targ.gobject);
         return bSeriesSucess;
     } // ///////////////////////////////////////////////////////////////////////////////////
-    void ShowResult() {
-        studyProcess.saveRes();
-    } // ////////////////////////////////////////////////////////////////////////////////////
     public string sGameMode {
         get {
             if(mode == GameMode.waitSetBalls)
@@ -323,7 +320,7 @@ public class Controller : MonoBehaviour {
         get => _mode;
         set {
             _mode = value;
-            UnityEngine.Debug.Log(sGameMode);
+            //UnityEngine.Debug.Log(sGameMode);
         }
     } // /////////////////////////////////////////////////////////////////////////
 } // ************************************************************************************

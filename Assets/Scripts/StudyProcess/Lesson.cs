@@ -6,10 +6,9 @@ public class Lesson : DKCue {
     List<ExerciseEnh> v = new List<ExerciseEnh>();
     public ExerciseEnh curExercise;
     public List<Exercise> vstuded = new List<Exercise>();
-//    List<Exercise> vripe = new List<Exercise>();
 
-    public int ExercisesInLesson = 2; // TODO: ExercisesInLesson = 10
-    public int[] vluzes = {2}; // TODO: Luzes
+    public int ExercisesInLesson = 2;   // TODO: ExercisesInLesson = 10
+    public int[] vluzes = {2};          // TODO: Luzes
     public int[] vsigns = {1, -1};
 
     public Layout layout {
@@ -21,7 +20,6 @@ public class Lesson : DKCue {
     public int cntUnStuded { get => v.Count; }
 
     public int LoadRipe(List<Exercise> vripe) {
-//        vripe = vRipe;
         v.Clear();
         curExercise = null;
         DateTime now = DateTime.Now;

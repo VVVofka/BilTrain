@@ -15,12 +15,8 @@ public class RipeExercises {
     } // ////////////////////////////////////////////////////////////////////////////////////
     public List<Exercise> getRiped(int outCount) {
         DateTime dt = DateTime.Now;
-        List<Exercise> resfind = vripe.FindAll(delegate (Exercise x) {
-            return x.overdue(dt) > 0;
-        });
-        resfind.Sort(delegate (Exercise x, Exercise y) {
-            return x.overdue(dt) > y.overdue(dt) ? -1 : 0;
-        });
+        List<Exercise> resfind = vripe.FindAll(delegate (Exercise x) {return x.overdue(dt) > 0;});
+        resfind.Sort(delegate (Exercise x, Exercise y) {return x.overdue(dt) > y.overdue(dt) ? -1 : 0;});
         if(resfind.Count > outCount)
             vriped = resfind.GetRange(0, outCount);
         else
@@ -35,7 +31,8 @@ public class RipeExercises {
             vripe.Add(q);
         else
             aaa = q;
-        vriped.Remove(bbb);
+        if(bbb != null)
+            vriped.Remove(bbb);
     } // //////////////////////////////////////////////////////////////////////////////////////
     public void info(string s0) {
         UnityEngine.Debug.Log(s0 + "Start RipeExercises:");

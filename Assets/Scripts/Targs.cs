@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public class Targ {
     public GameObject gobject;
@@ -32,7 +33,6 @@ public class Targs {    // in Controller
     public int truepos;    // -1 0 +1
     public int selectLast;
     public bool sucess;
-    public bool firstSelectItem;
     public bool seriesSucess;
     public Color clrSucess;
     public Color clrInvisible;
@@ -51,7 +51,6 @@ public class Targs {    // in Controller
         clrSucess = new Color(1, 1, 0);
         clrInvisible = new Color(0, 0, 0, 0);
         cntSelect = 0;
-        firstSelectItem = true;
 
         v.Add(new Targ(object_left));
         v.Add(new Targ(object_center));
@@ -94,7 +93,6 @@ public class Targs {    // in Controller
         }
         selectLast = -2;
         changePos = false;
-        firstSelectItem = true;
         return truepos;
     } // //////////////////////////////////////////////////////////////////////////////
     void assign(int n, float shift = 0f) {
@@ -105,8 +103,6 @@ public class Targs {    // in Controller
     public bool setSelect(int select) {     // call in waitTakeAim
         changePos = (selectLast != select);
         selectLast = select;
-        //sucess = (select == truepos);
-        cntSelect = 0;
         foreach(var q in v)
             if(!q.selected)
                 q.gobject.GetComponent<Renderer>().material.color = (q == targ) ? q.clrSel : q.clrUnSel;
@@ -122,15 +118,11 @@ public class Targs {    // in Controller
             sucess = (select == truepos);
             if(++cntSelect == 1)
                 seriesSucess = sucess;
-            //if(firstSelectItem) {
-                //firstSelectItem = false;
-                if(sucess) {
-                    foreach(var q in v)
-                        q.gobject.GetComponent<Renderer>().material.color = (q == targ) ? clrSucess : clrInvisible;
-                } else {
-                    targ.gobject.GetComponent<Renderer>().material.color = targ.clrFade;
-                }
-            //}
+            if(sucess) {
+                foreach(var q in v)
+                    q.gobject.GetComponent<Renderer>().material.color = (q == targ) ? clrSucess : clrInvisible;
+            } else 
+                targ.gobject.GetComponent<Renderer>().material.color = targ.clrFade;
             targ.selected = true;
         }
         return sucess;
@@ -141,7 +133,6 @@ public class Targs {    // in Controller
             "truepos=" + truepos +
             " selectLast=" + selectLast +
             " sucess=" + sucess +
-            " firstSelectItem=" + firstSelectItem +
             " seriesSucess=" + seriesSucess +
             " cntSelect=" + cntSelect
             );

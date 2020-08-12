@@ -5,7 +5,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
 public class StudyProcess {
-    const string ver = "ver:(0.1.88)";
+    const string ver = "ver:(0.1.89)";
     const string TopicsFileDefault = "Develop.tpcs";
     const string RipeExercisesFileDefault = "Develop.rpex";
     const string LessonFileDefault = "Develop.lesn";
@@ -79,9 +79,9 @@ public class StudyProcess {
             } else
                 CreateTopicFile(fname);
         } catch(Exception ex) {
-            Console.WriteLine($"Исключение in {fname}: {ex.Message}");
-            Console.WriteLine($"Метод: {ex.TargetSite}");
-            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+            UnityEngine.Debug.LogError($"Исключение in {fname}: {ex.Message}");
+            UnityEngine.Debug.LogError($"Метод: {ex.TargetSite}");
+            UnityEngine.Debug.LogError($"Трассировка стека: {ex.StackTrace}");
             //throw;
         }
     } // //////////////////////////////////////////////////////////////////
@@ -104,9 +104,9 @@ public class StudyProcess {
             } else
                 CreateRipeExercisesFile(fname);
         } catch(Exception ex) {
-            Console.WriteLine($"Исключение in {fname}: {ex.Message}");
-            Console.WriteLine($"Метод: {ex.TargetSite}");
-            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+            UnityEngine.Debug.LogError($"Исключение in {fname}: {ex.Message}");
+            UnityEngine.Debug.LogError($"Метод: {ex.TargetSite}");
+            UnityEngine.Debug.LogError($"Трассировка стека: {ex.StackTrace}");
             //throw;
         }
     } // ///////////////////////////////////////////////////////////////////////////
@@ -119,9 +119,9 @@ public class StudyProcess {
                 formatter.Serialize(fs, topics);
             }
         } catch(Exception ex) {
-            Console.WriteLine($"Исключение in {fname}: {ex.Message}");
-            Console.WriteLine($"Метод: {ex.TargetSite}");
-            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+            UnityEngine.Debug.LogError($"Исключение in {fname}: {ex.Message}");
+            UnityEngine.Debug.LogError($"Метод: {ex.TargetSite}");
+            UnityEngine.Debug.LogError($"Трассировка стека: {ex.StackTrace}");
             //throw;
         }
     } // ////////////////////////////////////////////////////////////////////////
@@ -142,9 +142,9 @@ public class StudyProcess {
                 formatter.Serialize(fs, ripeExercises);
             }
         } catch(Exception ex) {
-            Console.WriteLine($"Исключение in {fname}: {ex.Message}");
-            Console.WriteLine($"Метод: {ex.TargetSite}");
-            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+            UnityEngine.Debug.LogError($"Исключение in {fname}: {ex.Message}");
+            UnityEngine.Debug.LogError($"Метод: {ex.TargetSite}");
+            UnityEngine.Debug.LogError($"Трассировка стека: {ex.StackTrace}");
         }
     } // ////////////////////////////////////////////////////////////////////////
     public void Close() {
@@ -153,16 +153,11 @@ public class StudyProcess {
             CreateRipeExercisesFile(RipeExercisesFileDefault);
             //CreateLessonFile(LessonFileDefault);
         } catch(Exception ex) {
-            Console.WriteLine($"Исключение in Close(): {ex.Message}");
-            Console.WriteLine($"Метод: {ex.TargetSite}");
-            Console.WriteLine($"Трассировка стека: {ex.StackTrace}");
+            UnityEngine.Debug.LogError($"Исключение in Close(): {ex.Message}");
+            UnityEngine.Debug.LogError($"Метод: {ex.TargetSite}");
+            UnityEngine.Debug.LogError($"Трассировка стека: {ex.StackTrace}");
         }
     } // ////////////////////////////////////////////////////////////////////////
-    //// Return sucess (end attempt)
-    //public bool SetRes(int choose) {
-    //    bool bSeriesSucess = targs.setSelect(choose);
-    //    return bSeriesSucess;
-    //} // ///////////////////////////////////////////////////////////////////////
     public void saveRes() {
         bool sucess = targs.seriesSucess;
         ripeExercises.setResult(lesson.curExercise, sucess);

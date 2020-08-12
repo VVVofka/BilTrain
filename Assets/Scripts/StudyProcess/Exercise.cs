@@ -10,7 +10,10 @@ public class Exercise : DKCue {
     public Exercise(Layout inLayout) {     // Topic inTopic
         layout = inLayout;
     } // ///////////////////////////////////////////////////////////////
-    
+    public new void SetRes(bool sucess) {
+        base.SetRes(sucess);
+        interval.setResult(sucess);
+    } // ///////////////////////////////////////////////////////////////
     public int overdue(DateTime dt) { return interval.HouresExpired(dt); }
     public bool EQ(Exercise other) { return layout.EQ(other.layout); }
     public new string info(string s0) {
