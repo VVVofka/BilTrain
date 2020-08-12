@@ -17,13 +17,15 @@ public class Intervals {
     } // ///////////////////////////////////////////////////////////////////////
 
     public int HouresExpired(DateTime dt) { // if > 0 - expired
+        if(index < 0)
+            return int.MaxValue;
         DateTime expect = lastDT.AddHours(vhours[index]);
         TimeSpan d = dt.Subtract(expect);
         return d.Hours;
     } // ///////////////////////////////////////////////////////////////////////
-    public bool EQ(Intervals other) {
-        return index == other.index && lastDT == other.lastDT;
-    } // ///////////////////////////////////////////////////////////////////////
+    //public bool EQ(Intervals other) {
+    //    return index == other.index && lastDT == other.lastDT;
+    //} // ///////////////////////////////////////////////////////////////////////
     public string info { get {
             string s = " Interval: idx=" + index.ToString();
             if (index >= 0) s += " DT:" + lastDT.ToString() + " expired:" + HouresExpired(DateTime.Now);

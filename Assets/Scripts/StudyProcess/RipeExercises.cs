@@ -24,15 +24,23 @@ public class RipeExercises {
         return vriped;
     } // ///////////////////////////////////////////////////////////////////////////////////////
     public void setResult(Exercise q, bool val) {
-        Exercise aaa = vripe.Find(x => x.EQ(q));
-        Exercise bbb = vriped.Find(x => x.EQ(q));
         q.SetRes(val);
-        if(aaa == null)
-            vripe.Add(q);
+        Exercise bbb = vriped.Find(x => x.EQ(q));
+        if(bbb == null)
+            vriped.Add(q);
         else
-            aaa = q;
-        if(bbb != null)
-            vriped.Remove(bbb);
+            bbb = q;
+    } // //////////////////////////////////////////////////////////////////////////////////////
+    public void saveResultLesson() {
+        foreach(var q in vriped) {
+            q.SaveRes();
+            Exercise aaa = vripe.Find(x => x.EQ(q));
+            if(aaa == null)
+                vripe.Add(q);
+            else
+                aaa = q;
+        }
+        vriped.Clear();
     } // //////////////////////////////////////////////////////////////////////////////////////
     public void info(string s0) {
         UnityEngine.Debug.Log(s0 + "Start RipeExercises:");

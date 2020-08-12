@@ -5,7 +5,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 
 public class StudyProcess {
-    const string ver = "ver:(0.1.89)";
+    const string ver = "ver:(0.1.92)";
     const string TopicsFileDefault = "Develop.tpcs";
     const string RipeExercisesFileDefault = "Develop.rpex";
     const string LessonFileDefault = "Develop.lesn";
@@ -17,9 +17,6 @@ public class StudyProcess {
     public bool initComplete = false;
 
     float kCue0 = 0.3f;
-
-    public StudyProcess() {
-    } // //////////////////////////////////////////////////////////////////
 
     public void Create(GameObject ball, GameObject object_left, GameObject object_center, GameObject object_right) {
         targs = new Targs(ball, object_left, object_center, object_right);
@@ -54,12 +51,16 @@ public class StudyProcess {
     //    } else
     //        CreateLessonFile(fname);
     //} // //////////////////////////////////////////////////////////////////
-    public void LoadLesson() {
+    public int LoadLesson() {
         lesson = new Lesson();
         List<Exercise> vripe = ripeExercises.getRiped(lesson.ExercisesInLesson);
-        int rest = lesson.LoadRipe(vripe);
-        if(rest > 0)
-            lesson.LoadNew(topics);
+        for(int j=vripe.Count; j<lesson.ExercisesInLesson; j++) {
+            Layout lay = new Layout(topics.curTopic.from, topics.curTopic.to);
+            vripe.Add(new Exercise(lay));
+        }
+        return lesson.LoadRipe(vripe);
+        //if(rest > 0)
+        //    lesson.LoadNew(topics);
     } // ///////////////////////////////////////////////////////////////////
     void LoadTopicFile(string fname) {
         try {
@@ -163,18 +164,24 @@ public class StudyProcess {
         ripeExercises.setResult(lesson.curExercise, sucess);
         topics.SetRes(sucess);
         bool bContinueLesson = lesson.SetRes(sucess);
-        if(!bContinueLesson)
+        if(!bContinueLesson) {
+            ripeExercises.saveResultLesson();
             LoadLesson();
+        }
     } // ///////////////////////////////////////////////////////////////////////
     public float dkcue() {
         return kCue0 * (topics.dkcue + topics.curTopic.dkcue + lesson.dkcue + lesson.curExercise.dkcue) / 4;
     } // ////////////////////////////////////////////////////////////////////////////////////////////////
     public void info(string s0 = "") {
-        UnityEngine.Debug.Log("Study process:" + s0);
-        topics.info(" ");
-        lesson.info(" ");
+        UnityEngine.Debug.ClearDeveloperConsole();
+        //UnityEngine.Debug.Log("Study process:" + s0);
+        //topics.info(" ");
+        //lesson.info(" ");
         ripeExercises.info(" ");
-        targs.info(" Targs ");
-        UnityEngine.Debug.Log("End Study process: " + s0);
+        //targs.info(" Targs ");
+        //UnityEngine.Debug.Log("End Study process: " + s0);
     } // ////////////////////////////////////////////////////////////////////////////////////////////////
+    public int cntStuded {
+       get => lesson.cntTotal - lesson.cntUnStuded;
+    } // ///////////////////////////////////////////////////////////////////////////////////////////////
 } // *******************************************************************************************

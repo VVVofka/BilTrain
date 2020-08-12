@@ -5,14 +5,19 @@ using System.Diagnostics;
 public class Exercise : DKCue {
     public Layout layout;
     public Intervals interval = new Intervals();
+    bool nowrong = true;
 
     //public Exercise() { }     // Topic inTopic
     public Exercise(Layout inLayout) {     // Topic inTopic
         layout = inLayout;
+        nowrong = true;
     } // ///////////////////////////////////////////////////////////////
     public new void SetRes(bool sucess) {
-        base.SetRes(sucess);
-        interval.setResult(sucess);
+        nowrong &= sucess;
+    } // ///////////////////////////////////////////////////////////////
+    public void SaveRes() {
+        base.SetRes(nowrong);
+        interval.setResult(nowrong);
     } // ///////////////////////////////////////////////////////////////
     public int overdue(DateTime dt) { return interval.HouresExpired(dt); }
     public bool EQ(Exercise other) { return layout.EQ(other.layout); }

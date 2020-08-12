@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Xml.Schema;
-using UnityEditor.Profiling.Memory.Experimental;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Field {
     static public float xmax = 17.8f;
@@ -42,17 +38,6 @@ public class Field {
     }
     public static d2p luzeCornerAimLong { get => new d2p(xmax - BallD, zmax); }
     public static d2p luzeCornerAimShort { get => new d2p(xmax, zmax - BallD); }
-    //public static d2p luzeCornerAimBAK(float angleRad) {
-    //    float x,z,k = 4 * angleRad / Mathf.PI; // 45dgr = Pi / 4
-    //    if(angleRad <= 0) {
-    //        z = zmax;
-    //        x = xmax + k * BallR;
-    //    } else {
-    //        x = xmax;
-    //        z = zmax - k * BallR;
-    //    }
-    //    return new d2p(x, z);
-    //} // ////////////////////////////////////////////////////////////////////////////
     public static d2p luzeCornerAim(float angleRad) {
         float dx, dz;
         float k = luzeCornerWidth * 0.70711f;

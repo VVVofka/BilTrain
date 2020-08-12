@@ -166,7 +166,7 @@ public class Controller : MonoBehaviour {
             Rect rctR = new Rect(posXR, posY, posW - 2, posH);
             //GUIStyle styleR = new GUIStyle(styleL);
             style.alignment = TextAnchor.LowerRight;
-            string sR = studyProcess.lesson.cntStuded + " remain:" + studyProcess.lesson.cntUnStuded;
+            string sR = studyProcess.cntStuded + " remain:" + studyProcess.lesson.cntUnStuded;
             GUI.Label(rctR, sR, style);
         }
     } // /////////////////////////////////////////////////////////////////////////////////////
