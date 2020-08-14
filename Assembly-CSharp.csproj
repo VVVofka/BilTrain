@@ -8,7 +8,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <ProjectGuid>{B2B58FB2-4462-6B0C-A872-40DD957E5FE0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -71,6 +72,7 @@
     <Compile Include="Assets\Scripts\Intersections.cs" />
     <Compile Include="Assets\Scripts\Squadre.cs" />
     <Compile Include="Assets\Scripts\StudyProcess\Exercise.cs" />
+    <Compile Include="Assets\Scripts\StudyProcess\LayoutParams.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
