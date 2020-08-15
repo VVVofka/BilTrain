@@ -4,7 +4,7 @@ using System.Diagnostics;
 [Serializable]
 public class Exercise : DKCue {
     public Layout layout;
-    public Intervals interval = new Intervals();
+    public TimeIntervals interval = new TimeIntervals();
     bool nowrong = true;
 
     //public Exercise() { }     // Topic inTopic
